@@ -58,5 +58,6 @@ export const becomeSellerAndCreateStore = {
     description: Joi.string().required(),
     address: Joi.string().required(),
     logoUrl: Joi.string().uri().required(),
+    ownerId: Joi.string().custom(objectId),
   }),
 };

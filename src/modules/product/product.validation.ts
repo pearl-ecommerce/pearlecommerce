@@ -14,8 +14,6 @@ const createProductBody: Record<keyof NewProduct, any> = {
   subCategory: Joi.string(),
   subsubcategory: Joi.string(),
   likes: Joi.string(),
-
-
 };
 
 export const createProduct = {

@@ -9,6 +9,7 @@ export interface IUser {
   email: string;
   password: string;
   dateOfBirth: Date;
+  phone: string;
   address: {
     street: string;
     city: string;

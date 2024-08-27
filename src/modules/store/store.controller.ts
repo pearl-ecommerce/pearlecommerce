@@ -54,10 +54,15 @@ export const deleteStore = catchAsync(async (req: Request, res: Response) => {
   }
 });
 
+
+
 // In store.controller.ts
 export const becomeSellerAndCreateStore = catchAsync(async (req: Request, res: Response) => {
-  const userId = req.user.id; // Assuming you have authentication middleware
+ // const userId = req.user.id; // Assuming you have authentication middleware
   const storeData = req.body;
+   const userId = req.body.ownerId;
+     console.log('hasStore:', userId);  // This will log the stores owned by the user
+
 
   const { user, store } = await storeService.createStoreAndUpdateUser(userId, storeData);
 

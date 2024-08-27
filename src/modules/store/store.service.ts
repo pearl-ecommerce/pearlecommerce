@@ -9,6 +9,7 @@ import User from '../user/user.model';
 
 export const createStore = async (storeBody: NewStore): Promise<IStoreDoc> => {
   return Store.create(storeBody);
+  
 };
 
 export const queryStores = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
@@ -17,6 +18,12 @@ export const queryStores = async (filter: Record<string, any>, options: IOptions
 };
 
 export const getStoreById = async (id: mongoose.Types.ObjectId): Promise<IStoreDoc | null> => Store.findById(id);
+
+
+export const getStoresByOwnerId = async (ownerId: mongoose.Types.ObjectId): Promise<IStoreDoc[]> => {
+  return Store.find({ ownerId }); 
+};
+
 
 export const updateStoreById = async (
   storeId: mongoose.Types.ObjectId,
@@ -41,22 +48,48 @@ export const deleteStoreById = async (storeId: mongoose.Types.ObjectId): Promise
 };
 
 
-
 export const createStoreAndUpdateUser = async (userId: mongoose.Types.ObjectId, storeData: NewStore) => {
   const user = await User.findById(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
 
-  // Create the store
-  const store = await Store.create({
-    ...storeData,
-    ownerId: userId
-  });
+ // Check if the user already has a store
+  const hasStore = await getStoresByOwnerId(userId);
+  console.log('hasStore:', hasStore);  // This will log the stores owned by the user
+  
+  if (hasStore.length > 0) {
+    throw new ApiError(httpStatus.CONFLICT, 'User already has a store');
+  }
 
+ // Create the store
+  // const store = await Store.create({
+  //   ...storeData,
+  //   ownerId: userId,
+  // });
+
+  const store = await Store.create(storeData);
   // Update user role
   user.role = 'seller';
   await user.save();
 
   return { user, store };
 };
+// export const createStoreAndUpdateUser = async (userId: mongoose.Types.ObjectId, storeData: NewStore) => {
+//   const user = await User.findById(userId);
+//   if (!user) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+//   }
+//   
+//   // Create the store
+//   const store = await Store.create({
+//     ...storeData,
+//     ownerId: userId
+//   });
+
+//   // Update user role
+//   user.role = 'seller';
+//   await user.save();
+
+//   return { user, store };
+// };

@@ -46,6 +46,10 @@ const userSchema = new Schema<IUserDoc>(
       },
       private: true, // used by the toJSON plugin
     },
+    phone: {
+      type: String,
+      minlength: 11,
+    },
     dateOfBirth: {
       type: Date,
     },

@@ -16,12 +16,17 @@ router
     .patch(auth('manageSellers'), validate(storeValidation.updateStore), storeController.updateStore)
     .delete(auth('manageSellers'), validate(storeValidation.deleteStore), storeController.deleteStore);
 
+// router.post(
+//     '/become-seller',
+//     auth('user'),
+//     validate(storeValidation.becomeSellerAndCreateStore), storeController.becomeSellerAndCreateStore
+// );
+
 router.post(
-    '/become-seller',
-    auth('user'),
-    validate(storeValidation.becomeSellerAndCreateStore),
-    storeController.becomeSellerAndCreateStore
+    '/become-seller', validate(storeValidation.becomeSellerAndCreateStore), storeController.becomeSellerAndCreateStore
 );
+
+
 
 export default router;
 

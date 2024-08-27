@@ -8,6 +8,7 @@ const createUserBody: Record<keyof NewCreatedUser, any> = {
   lastName: Joi.string().required(),
   email: Joi.string().required().email(),
   password: Joi.string().required().custom(password),
+  phone: Joi.string(),
   dateOfBirth: Joi.date().max('now').iso().required(),
   address: Joi.object({
     street: Joi.string().required(),
@@ -70,6 +71,7 @@ export const updateUser = {
       email: Joi.string().email(),
       password: Joi.string().custom(password),
       dateOfBirth: Joi.date().max('now').iso(),
+      phone: Joi.string(),
       address: Joi.object({
         street: Joi.string(),
         city: Joi.string(),

@@ -6,6 +6,8 @@ import { IOptions, QueryResult } from '../paginate/paginate';
 import { IProductDoc, NewProduct, UpdateProductBody } from './product.interfaces';
 
 export const createProduct = async (productBody: NewProduct): Promise<IProductDoc> => {
+  // check for KYC
+  
   return Product.create(productBody);
 };
 

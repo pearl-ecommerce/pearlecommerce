@@ -56,7 +56,7 @@ export const updateUser = catchAsync(async (req: Request, res: Response) => {
     const user = await userService.updateUserById(new mongoose.Types.ObjectId(req.params['userId']), req.body);
       const response = {
     status: true,
-    message: 'User registered successfully',
+    message: 'User profile updated successfully',
     data: user, // Include user and tokens as data
   };
     res.send(response);
