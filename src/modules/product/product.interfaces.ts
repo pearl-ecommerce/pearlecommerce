@@ -8,11 +8,11 @@ export interface IProduct {
   category: string;
   subCategory: string;
   subsubcategory: string;
-  storeId: mongoose.Types.ObjectId;
+  storeId: mongoose.Types.ObjectId; 
   imageUrl: string;
   stock: number;
   brand: string;
-  likes: string[]; // Array of user IDs who liked the product
+  likes:mongoose.Types.ObjectId[]; // Array of user IDs who liked the product
 }
 
 export interface IProductDoc extends IProduct, Document { }

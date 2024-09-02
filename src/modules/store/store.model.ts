@@ -23,7 +23,7 @@ const storeSchema = new Schema<IStoreDoc>(
       type: String,
       required: true,
     },
-    logoUrl: {
+    logoUrl: { 
       type: String,
       required: true,
     },

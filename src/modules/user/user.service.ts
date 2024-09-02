@@ -91,7 +91,50 @@ export const deleteUserById = async (userId: mongoose.Types.ObjectId): Promise<I
   await user.remove();
   return user;
 };
+export const followUser = async (userId: string, targetUserId: string) => {
+  const user = await User.findById(userId);
+  const targetUser = await User.findById(targetUserId);
 
+  if (!user || !targetUser) {
+    throw new Error('User not found');
+  }
+
+  const userIdStr = new mongoose.Types.ObjectId(userId).toString();
+  const targetUserIdStr = new mongoose.Types.ObjectId(targetUserId).toString();
+
+  // Check if the user is already following the target user
+  if (!user.following.map(id => id.toString()).includes(targetUserIdStr)) {
+    user.following.push(new mongoose.Types.ObjectId(targetUserId));
+    await user.save();
+  }
+
+  // Check if the target user already has the user as a follower
+  if (!targetUser.followers.map(id => id.toString()).includes(userIdStr)) {
+    targetUser.followers.push(new mongoose.Types.ObjectId(userId));
+    await targetUser.save();
+  }
+
+  return targetUser;
+};
+export const unfollowUser = async (userId: string, targetUserId: string) => {
+  const user = await User.findById(userId);
+  const targetUser = await User.findById(targetUserId);
+
+  if (!user || !targetUser) {
+    throw new Error('User not found');
+  }
+
+  const userIdStr = new mongoose.Types.ObjectId(userId).toString();
+  const targetUserIdStr = new mongoose.Types.ObjectId(targetUserId).toString();
+
+  user.following = user.following.filter(id => id.toString() !== targetUserIdStr);
+  await user.save();
+
+  targetUser.followers = targetUser.followers.filter(id => id.toString() !== userIdStr);
+  await targetUser.save();
+
+  return targetUser;
+};
 
 export const oauthSignup = async (userReq: any) => {
   const { firstName,
@@ -119,7 +162,9 @@ export const oauthSignup = async (userReq: any) => {
     role,
     platform: "google",
   
-  })
+  });
+
+  
 
   return await User.create(user);
 

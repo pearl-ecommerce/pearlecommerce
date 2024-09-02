@@ -73,11 +73,10 @@ console.log('Search Query:', query); // Log the query to the console
 
 //Like a product
 export const likeProduct = catchAsync(async (req: Request, res: Response) => {
-  const { productId } = req.params; // Correctly destructuring productId from req.params
-  const userId = req.user.id;
+ const { userId, productId } = req.body;
 
   if (typeof productId === 'string') {
-    const product = await productService.likeProduct(new mongoose.Types.ObjectId(productId), userId);
+    const product = await productService.likeProduct(productId, userId);
     res.status(200).send({ message: 'Product liked', product });
   } else {
     res.status(400).send({ message: 'Invalid product ID' });
@@ -86,11 +85,10 @@ export const likeProduct = catchAsync(async (req: Request, res: Response) => {
 
 // Unlike a product
 export const unlikeProduct = catchAsync(async (req: Request, res: Response) => {
-  const { productId } = req.params; // Correctly destructuring productId from req.params
-  const userId = req.user.id;
+  const { userId, productId } = req.body;
 
   if (typeof productId === 'string') {
-    const product = await productService.unlikeProduct(new mongoose.Types.ObjectId(productId), userId);
+    const product = await productService.unlikeProduct(productId, userId);
     res.status(200).send({ message: 'Product unliked', product });
   } else {
     res.status(400).send({ message: 'Invalid product ID' });
@@ -99,8 +97,8 @@ export const unlikeProduct = catchAsync(async (req: Request, res: Response) => {
 
 // Get liked products
 export const getLikedProducts = catchAsync(async (req: Request, res: Response) => {
-  const userId = req.user.id;
-
+//  const userId = req.user.id;
+const userId = req.body;
   if (typeof userId === 'string') {
     const products = await productService.getLikedProductsByUserId(userId);
     res.status(200).send({ likedProducts: products });

@@ -7,7 +7,7 @@ import { IProductDoc, NewProduct, UpdateProductBody } from './product.interfaces
 
 export const createProduct = async (productBody: NewProduct): Promise<IProductDoc> => {
   // check for KYC
-  
+   
   return Product.create(productBody);
 };
 
@@ -49,28 +49,35 @@ export const searchProduct = async (query: string): Promise<IProductDoc[]> => {
     ]
   });
 };
-export const likeProduct = async (productId: mongoose.Types.ObjectId, userId: string) => {
+export const likeProduct = async (productId: string, userId: string) => {
   const product = await Product.findById(productId);
   if (!product) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
   }
 
-  if (!product.likes.includes(userId)) {
-    product.likes.push(userId);
+  const userIdStr = new mongoose.Types.ObjectId(userId).toString();
+
+  // Check if the user has already liked the product
+  if (!product.likes.map(id => id.toString()).includes(userIdStr)) {
+    product.likes.push(new mongoose.Types.ObjectId(userId));
     await product.save();
   }
 
   return product;
 };
 
-export const unlikeProduct = async (productId: mongoose.Types.ObjectId, userId: string) => {
+
+export const unlikeProduct = async (productId: string, userId: string) => {
   const product = await Product.findById(productId);
   if (!product) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
   }
 
-  if (product.likes.includes(userId)) {
-    product.likes = product.likes.filter((id) => id.toString() !== userId);
+  const userIdStr = new mongoose.Types.ObjectId(userId).toString();
+
+  // Remove the user's like from the product
+  if (product.likes.map(id => id.toString()).includes(userIdStr)) {
+    product.likes = product.likes.filter(id => id.toString() !== userIdStr);
     await product.save();
   }
 

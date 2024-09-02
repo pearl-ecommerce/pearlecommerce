@@ -51,7 +51,13 @@ const productSchema = new Schema<IProductDoc>(
       required: true,
       min: 0,
     },
-    likes: [],
+   likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+  
   },
   {
     timestamps: true,

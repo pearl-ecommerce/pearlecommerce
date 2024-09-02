@@ -8,7 +8,7 @@ export interface IUser {
   lastName: string;
   email: string;
   password: string;
-  dateOfBirth: Date;
+  dateOfBirth: Date; 
   phone: string;
   address: {
     street: string;
@@ -36,10 +36,13 @@ export interface IUser {
   verificationStatus: boolean;
   lastseen: Date;
   active: string;
+  followers: mongoose.Types.ObjectId[];
+  following: mongoose.Types.ObjectId[];
 }
 
 export interface IUserDoc extends IUser, Document {
   isPasswordMatch(password: string): Promise<boolean>;
+ 
 }
 
 export interface IUserModel extends Model<IUserDoc> {

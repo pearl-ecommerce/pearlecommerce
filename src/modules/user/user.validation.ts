@@ -32,7 +32,11 @@ const createUserBody: Record<keyof NewCreatedUser, any> = {
   }).required(),
   role: Joi.string().required().valid('user', 'admin', 'seller'),
    lastseen: Joi.date(),
-      active: Joi.string(),
+  active: Joi.string(),
+ followers: Joi.string().custom(objectId),
+  following: Joi.string().custom(objectId),
+
+
 };
 
 export const createUser = {
@@ -50,6 +54,10 @@ export const getUsers = {
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
+   followers: Joi.string().custom(objectId),
+  following: Joi.string().custom(objectId),
+
+
   }),
 };
 
@@ -79,6 +87,9 @@ export const updateUser = {
         country: Joi.string(),
         postalCode: Joi.string(),
         active: Joi.string(),
+        followers: Joi.string().custom(objectId),
+        following: Joi.string().custom(objectId),
+
       }),
       nin: Joi.string().length(11),
       itemToSell: Joi.string().valid('electronics', 'clothing', 'food', 'furniture', 'other'),

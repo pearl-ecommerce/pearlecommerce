@@ -15,7 +15,8 @@ router
   .get(auth('getUsers'), validate(userValidation.getUser), userController.getUser)
   .patch(auth('manageUsers'), validate(userValidation.updateUser), userController.updateUser)
   .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
-
+  router.post('/:productId/like', auth(), userController.followUser);
+  router.post('/:productId/unlike', auth(), userController.unfollowUser);
 export default router;
 
 /**

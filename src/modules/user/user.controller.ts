@@ -68,3 +68,28 @@ export const deleteUser = catchAsync(async (req: Request, res: Response) => {
     await userService.deleteUserById(new mongoose.Types.ObjectId(req.params['userId']));
  res.status(httpStatus.OK).send({ message: 'User deleted successfully' });  }
 });
+
+//follow a user
+export const followUser = catchAsync(async (req: Request, res: Response) => {
+const { userId, targetUserId } = req.body;
+
+  if (typeof userId === 'string') {
+    const follow = await userService.followUser(userId, targetUserId);
+    res.status(200).send({ message: 'User followed', follow });
+  } else {
+    res.status(400).send({ message: 'Invalid User ID' });
+  }
+});
+
+// Unfollow a user
+export const unfollowUser = catchAsync(async (req: Request, res: Response) => {
+  const { userId, targetUserId } = req.body;
+
+  if (typeof userId === 'string') {
+    const follower = await userService.unfollowUser(userId, targetUserId);
+    res.status(200).send({ message: 'User unfollowed', follower });
+  } else {
+    res.status(400).send({ message: 'Invalid user ID' });
+  }
+});
+

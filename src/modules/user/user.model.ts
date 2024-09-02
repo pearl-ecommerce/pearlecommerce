@@ -94,6 +94,19 @@ const userSchema = new Schema<IUserDoc>(
       type: Boolean,
       default: false,
     },
+      followers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    following: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    
      lastseen: {
         type: Date,
         default: Date.now, // Sets the default to the current date and time
