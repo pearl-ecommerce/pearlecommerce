@@ -7,13 +7,15 @@ const createProductBody: Record<keyof NewProduct, any> = {
   description: Joi.string().required(),
   price: Joi.number().required().min(0),
   category: Joi.string().required(),
-  storeId: Joi.string().custom(objectId).required(),
+  storeId: Joi.string().custom(objectId),
   imageUrl: Joi.string().uri().required(),
   stock: Joi.number().integer().min(0).required(),
   brand: Joi.string().required(),
   subCategory: Joi.string(),
   subsubcategory: Joi.string(),
   likes: Joi.string(),
+  userId: Joi.string().custom(objectId),
+
 };
 
 export const createProduct = {

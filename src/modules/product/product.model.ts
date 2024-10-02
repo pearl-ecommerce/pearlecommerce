@@ -38,6 +38,11 @@ const productSchema = new Schema<IProductDoc>(
       ref: 'Store',
       required: true,
     },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Store',
+      required: true,
+    },
     imageUrl: {
       type: String,
       required: true,

@@ -67,4 +67,4 @@ export const becomeSellerAndCreateStore = catchAsync(async (req: Request, res: R
   const { user, store } = await storeService.createStoreAndUpdateUser(userId, storeData);
 
   res.status(httpStatus.CREATED).send({ user, store });
-});
+}); 

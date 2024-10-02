@@ -7,6 +7,8 @@ import storeRoute from './store.route';
 import categoriesRoute from './categories.route';
 import paymentRoute from './payment.route';
 import orderRoute from './order.route';
+import notificationRoute from './notification.route';
+
 
 import config from '../../config/config';
 
@@ -50,6 +52,10 @@ const defaultIRoute: IRoute[] = [
     path: '/docs',
     route: docsRoute,
   },
+  {
+    path: '/notification',
+    route: notificationRoute,
+  }
 
 
 ];

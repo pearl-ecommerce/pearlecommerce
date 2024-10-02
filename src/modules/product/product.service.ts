@@ -1,20 +1,38 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import Product from './product.model';
+import Store from '../store/store.model';
+import User from '../user/user.model';
 import ApiError from '../errors/ApiError';
 import { IOptions, QueryResult } from '../paginate/paginate';
 import { IProductDoc, NewProduct, UpdateProductBody } from './product.interfaces';
 
-export const createProduct = async (productBody: NewProduct): Promise<IProductDoc> => {
-  // check for KYC
-   
-  return Product.create(productBody);
+export const createProduct = async (userId: mongoose.Types.ObjectId, productData: NewProduct): Promise<IProductDoc> => {
+  // Check if user exists in the database
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User really not found'); 
+  }
+ 
+  // Check if user has a store by verifying storeId
+  const store = await Store.findOne({ ownerId: userId });
+  if (!store) {
+    throw new ApiError(httpStatus.CONFLICT, 'User does not have a store');
+  }
+
+  // Attach storeId to the product data
+  productData.storeId = store._id;
+
+  // If all checks pass, create the product
+  return Product.create(productData);
 };
 
 export const queryProducts = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
   const products = await Product.paginate(filter, options);
   return products;
 };
+
+
 
 export const getProductById = async (id: mongoose.Types.ObjectId): Promise<IProductDoc | null> => Product.findById(id);
 

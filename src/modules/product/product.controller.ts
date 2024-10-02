@@ -6,18 +6,48 @@ import ApiError from '../errors/ApiError';
 import pick from '../utils/pick';
 import { IOptions } from '../paginate/paginate';
 import * as productService from './product.service';
+//import path from 'path';
 
+// Create product with image upload handling (with field name 'imageUrl' for file)
 export const createProduct = catchAsync(async (req: Request, res: Response) => {
-  const product = await productService.createProduct(req.body);
-  res.status(httpStatus.CREATED).send(product);
+  console.log('Request body:', req.body);  // Log the form-data fields
+  console.log('Uploaded file:', req.file);  // Log the uploaded file (imageUrl)
+
+  const userId = req.body.userId;  // Extract userId from the body
+
+  // Check if a file is uploaded with the field name 'imageUrl'
+  const imagePath = req.file ? req.file.path : null;
+
+  // Prepare the product data by combining form-data and file path
+  const productData = {
+    ...req.body,
+    imageUrl: imagePath  // Attach the uploaded file path to product data
+  };
+
+  // Call the service to save the product
+  const product = await productService.createProduct(userId, productData);
+
+  // Respond with the created product
+  res.status(httpStatus.CREATED).json(product);
 });
 
+// Get all products or filter by name, category, brand, etc.
 export const getProducts = catchAsync(async (req: Request, res: Response) => {
-  const filter = pick(req.query, ['name', 'category', 'storeId']);
-  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
+  // Pick the query parameters you want to allow for filtering
+  const filter = pick(req.query, ['name', 'category', 'storeId', 'brand', 'subCategory', 'size', 'subsubcategory', 'price']);
+  // Pick options for pagination, sorting, etc.
+  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await productService.queryProducts(filter, options);
-  res.send(result);
+  res.status(httpStatus.OK).send(result);
 });
+
+
+// export const getProducts = catchAsync(async (req: Request, res: Response) => {
+//   const filter = pick(req.query, ['name', 'category', 'storeId']);
+//   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
+//   const result = await productService.queryProducts(filter, options);
+//   res.send(result);
+// });
 
 export const getProduct = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['productId'] === 'string') {

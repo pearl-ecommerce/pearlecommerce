@@ -10,7 +10,9 @@ const registerBody: Record<keyof NewRegisteredUser, any> = {
   phone: Joi.string(),
   password: Joi.string().required().custom(password),
    lastseen: Joi.date(),
-      active: Joi.string(),
+  active: Joi.string(),
+  followers: Joi.array().items(Joi.string()).default([]),   // Add this
+  following: Joi.array().items(Joi.string()).default([]),   // Add this
 };
 
 export const register = {

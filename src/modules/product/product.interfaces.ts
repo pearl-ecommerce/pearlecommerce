@@ -9,6 +9,7 @@ export interface IProduct {
   subCategory: string;
   subsubcategory: string;
   storeId: mongoose.Types.ObjectId; 
+  userId: mongoose.Types.ObjectId; 
   imageUrl: string;
   stock: number;
   brand: string;
