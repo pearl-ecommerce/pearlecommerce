@@ -1,17 +1,13 @@
-import express from 'express';
-//import express, { Router } from 'express';
-
+import express, { Router } from 'express';
 import { validate } from '../../modules/validate';
 import { auth } from '../../modules/auth';
 import { productController, productValidation } from '../../modules/product';
-import upload  from '../../modules/product/multerConfig';
-// const router: Router = express.Router();
-const router = express.Router();
+const router: Router = express.Router();
 
 router
     .route('/')
-    //.post(auth('manageProducts'), productController.createProduct)
-         .post(auth('manageProducts'), validate(productValidation.createProduct), upload.array('images', 5), productController.createProduct)
+    
+    .post(auth('manageProducts'), validate(productValidation.createProduct), productController.createProduct)
 
    router.get('/getProducts', validate(productValidation.getProducts), productController.getProducts);
 
