@@ -32,8 +32,6 @@ export const queryProducts = async (filter: Record<string, any>, options: IOptio
   return products;
 };
 
-
-
 export const getProductById = async (id: mongoose.Types.ObjectId): Promise<IProductDoc | null> => Product.findById(id);
 
 export const updateProductById = async (

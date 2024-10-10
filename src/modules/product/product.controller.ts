@@ -28,22 +28,34 @@ export const createProduct = catchAsync(async (req: Request, res: Response) => {
 });
 
 // Get all products or filter by name, category, brand, etc.
+
 export const getProducts = catchAsync(async (req: Request, res: Response) => {
   // Pick the query parameters you want to allow for filtering
-  const filter = pick(req.query, ['name', 'category', 'storeId', 'brand', 'subCategory', 'size', 'subsubcategory', 'price']);
+  const filter = pick(req.query, ['name', 'category', 'storeId', 'brand', 'subCategory', 'size', 'c', 'price']);
+  
+  // Apply case-insensitive search to certain fields (like 'name', 'category', etc.)
+  if (filter.name) {
+    filter.name = { $regex: new RegExp(filter.name, 'i') };  // Case-insensitive
+  }
+  if (filter.category) {
+    filter.category = { $regex: new RegExp(filter.category, 'i') };  // Case-insensitive
+  }
+  if (filter.brand) {
+    filter.brand = { $regex: new RegExp(filter.brand, 'i') };  // Case-insensitive
+  }
+   if (filter.subsubcategory) {
+    filter.subsubcategory = { $regex: new RegExp(filter.subsubcategory, 'i') };  // Case-insensitive
+  }
+   if (filter.subCategory) {
+    filter.subCategory = { $regex: new RegExp(filter.subCategory, 'i') };  // Case-insensitive
+  }
   // Pick options for pagination, sorting, etc.
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page']);
+  
   const result = await productService.queryProducts(filter, options);
+  
   res.status(httpStatus.OK).send(result);
 });
-
-
-// export const getProducts = catchAsync(async (req: Request, res: Response) => {
-//   const filter = pick(req.query, ['name', 'category', 'storeId']);
-//   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
-//   const result = await productService.queryProducts(filter, options);
-//   res.send(result);
-// });
 
 export const getProduct = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['productId'] === 'string') {
