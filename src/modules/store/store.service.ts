@@ -53,43 +53,16 @@ export const createStoreAndUpdateUser = async (userId: mongoose.Types.ObjectId, 
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
-
  // Check if the user already has a store
   const hasStore = await getStoresByOwnerId(userId);
   console.log('hasStore:', hasStore);  // This will log the stores owned by the user
-  
+
   if (hasStore.length > 0) {
     throw new ApiError(httpStatus.CONFLICT, 'User already has a store');
   }
-
- // Create the store
-  // const store = await Store.create({
-  //   ...storeData,
-  //   ownerId: userId,
-  // });
-
   const store = await Store.create(storeData);
   // Update user role
   user.role = 'seller';
   await user.save();
-
   return { user, store };
 };
-// export const createStoreAndUpdateUser = async (userId: mongoose.Types.ObjectId, storeData: NewStore) => {
-//   const user = await User.findById(userId);
-//   if (!user) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-//   }
-//   
-//   // Create the store
-//   const store = await Store.create({
-//     ...storeData,
-//     ownerId: userId
-//   });
-
-//   // Update user role
-//   user.role = 'seller';
-//   await user.save();
-
-//   return { user, store };
-// };

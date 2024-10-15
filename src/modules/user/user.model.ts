@@ -84,7 +84,7 @@ const userSchema = new Schema<IUserDoc>(
     role: {
       type: String,
       enum: roles,
-      default: 'user',
+      default: 'seller',
     },
     isEmailVerified: {
       type: Boolean,

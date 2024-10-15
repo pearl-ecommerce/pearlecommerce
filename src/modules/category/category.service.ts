@@ -36,7 +36,7 @@ export const updateCategories = async (
 export const deleteCategories = async (CategoryId: mongoose.Types.ObjectId): Promise<ICategoryDoc | null> => {
   const Categories = await getCategoryId(CategoryId);
   if (!Categories) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Categories not found');
   }
   await Categories.remove();
   return Categories;
