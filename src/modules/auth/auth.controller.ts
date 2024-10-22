@@ -8,25 +8,18 @@ import { emailService } from '../email';
 import { sendSuccessResponse, sendErrorResponse } from '../utils/response';
 
 
-// export const register = catchAsync(async (req: Request, res: Response) => {
 
-//   const user = await userService.registerUser(req.body);
-//   const tokens = await tokenService.generateAuthTokens(user);
-//       sendSuccessResponse(res, httpStatus.CREATED, "user successfully Signed up", { user, tokens });
-
-//  // res.status(httpStatus.CREATED).send({ user, tokens });
-// });
 export const register = catchAsync(async (req: Request, res: Response) => {
   const user = await userService.registerUser(req.body);
   const tokens = await tokenService.generateAuthTokens(user);   
-
-
   // Define a response object with status and message
   const response = {
     status: true,
     message: 'User registered successfully',
     data: { user, tokens } // Include user and tokens as data
   };
+  await emailService.sendSuccessfulRegistration(req.body.email, tokens.access.token, req.body.firstName);
+  await emailService.sendAccountCreated(req.body.email, req.body.firstName);
 
   res.status(httpStatus.CREATED).json(response);
 });
@@ -36,6 +29,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   const user = await authService.loginUserWithEmailAndPassword(email, password);
   const tokens = await tokenService.generateAuthTokens(user);
   const message = "login successful";
+   await emailService.sendLoginEmail(req.body.email);
   res.status(200).send({user, tokens,message });
 });
 
@@ -48,7 +42,7 @@ export const refreshTokens = catchAsync(async (req: Request, res: Response) => {
   const userWithTokens = await authService.refreshAuth(req.body.refreshToken);
   res.send({ ...userWithTokens });
 });
-
+ 
 export const forgotPassword = catchAsync(async (req: Request, res: Response) => {
    console.log('Request Body:', req.body); // Log the request body
   const resetPasswordToken = await tokenService.generateResetPasswordToken(req.body.email);

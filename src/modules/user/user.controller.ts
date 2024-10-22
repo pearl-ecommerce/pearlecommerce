@@ -24,32 +24,33 @@ export const getUsers = catchAsync(async (req: Request, res: Response) => {
   res.send(result);
 });
 
-// export const getUser = catchAsync(async (req: Request, res: Response) => {
-//   if (typeof req.params['userId'] === 'string') {
-//     const user = await userService.getUserById(new mongoose.Types.ObjectId(req.params['userId']));
-//     if (!user) {
-//       throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-//     }
-//     res.send(user);
-//   }
-// });
 
 export const getUser = catchAsync(async (req: Request, res: Response) => {
-  const { userId, email } = req.params;
-
-  let user;
-  if (userId && typeof userId === 'string') {
-    user = await userService.getUserById(new mongoose.Types.ObjectId(userId));
-  } else if (email && typeof email === 'string') {
-    user = await userService.getUserByEmail(email);
-  }
-
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  }
-
-  res.send(user);
+  const { id } = req.user
+    const user = await userService.getUserById(new mongoose.Types.ObjectId(id));
+    if (!user) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+    }
+    res.send(user);
+  
 });
+
+// export const getUser = catchAsync(async (req: Request, res: Response) => {
+//   const { userId, email } = req.params;
+
+//   let user;
+//   if (userId && typeof userId === 'string') {
+//     user = await userService.getUserById(new mongoose.Types.ObjectId(userId));
+//   } else if (email && typeof email === 'string') {
+//     user = await userService.getUserByEmail(email);
+//   }
+
+//   if (!user) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+//   }
+
+//   res.send(user);
+// });
 
 export const updateUser = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['userId'] === 'string') {

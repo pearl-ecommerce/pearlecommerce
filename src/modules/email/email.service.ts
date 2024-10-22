@@ -124,3 +124,31 @@ export const sendAccountCreated = async (to: string, name: string): Promise<void
   <p><strong>Team</strong></p></div>`;
   await sendEmail(to, subject, text, html);
 };
+/**
+ * send email anything a user login 
+ */
+
+
+export const sendLoginEmail = async (to: string,): Promise<void> => {
+  const subject = 'Welcome! You’ve Successfully Logged In';
+  const text = `Hi ,
+
+Welcome back! We're glad to see you logged into your account successfully.
+
+If you have any questions or run into any issues, feel free to reach out to us. We’re here to help!
+
+Warm regards,
+The Team`;
+  
+  const html = `
+    <div style="margin:30px; padding:30px; border:1px solid black; border-radius: 20px 10px; font-family: Arial, sans-serif; color: #333;">
+      <h4><strong>Hi </strong></h4>
+      <p>Welcome back! We're glad to see you logged into your account successfully.</p>
+      <p>If you have any questions or run into any issues, feel free to reach out to us. We’re here to help!</p>
+      <p>Warm regards,</p>
+      <p><strong>The Team</strong></p>
+    </div>`;
+    
+  await sendEmail(to, subject, text, html);
+};
+

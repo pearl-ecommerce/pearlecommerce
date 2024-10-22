@@ -1,7 +1,6 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import Product from './product.model';
-import Store from '../store/store.model';
 import User from '../user/user.model';
 import ApiError from '../errors/ApiError';
 import { IOptions, QueryResult } from '../paginate/paginate';
@@ -13,15 +12,9 @@ export const createProduct = async (userId: mongoose.Types.ObjectId, productData
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User really not found'); 
   }
- 
-  // Check if user has a store by verifying storeId
-  const store = await Store.findOne({ ownerId: userId });
-  if (!store) {
-    throw new ApiError(httpStatus.CONFLICT, 'User does not have a store');
-  }
+  
+  // CHECK IF USER HAS NIN
 
-  // Attach storeId to the product data
-  productData.storeId = store._id;
 
   // If all checks pass, create the product
   return Product.create(productData);
