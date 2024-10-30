@@ -46,6 +46,18 @@ const userSchema = new Schema<IUserDoc>(
       },
       private: true, // used by the toJSON plugin
     },
+     imageUrl: {
+      type: String,
+      
+    },
+   description: {
+      type: String,
+      required: true,
+    },
+     discount: {
+      type: String,
+      required: true,
+    },
     phone: {
       type: String,
       minlength: 11,
@@ -106,6 +118,7 @@ const userSchema = new Schema<IUserDoc>(
         ref: 'User',
       },
     ],
+
     
      lastseen: {
         type: Date,

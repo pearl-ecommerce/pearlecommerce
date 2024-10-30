@@ -72,10 +72,10 @@ export const deleteUser = catchAsync(async (req: Request, res: Response) => {
 
 //follow a user
 export const followUser = catchAsync(async (req: Request, res: Response) => {
-const { userId, targetUserId } = req.body;
+const { userId, followUserId } = req.body;
 
   if (typeof userId === 'string') {
-    const follow = await userService.followUser(userId, targetUserId);
+    const follow = await userService.followUser(userId, followUserId);
     res.status(200).send({ message: 'User followed', follow });
   } else {
     res.status(400).send({ message: 'Invalid User ID' });
@@ -84,13 +84,28 @@ const { userId, targetUserId } = req.body;
 
 // Unfollow a user
 export const unfollowUser = catchAsync(async (req: Request, res: Response) => {
-  const { userId, targetUserId } = req.body;
+  const { userId, unfollowUserId } = req.body;
 
   if (typeof userId === 'string') {
-    const follower = await userService.unfollowUser(userId, targetUserId);
+    const follower = await userService.unfollowUser(userId, unfollowUserId);
     res.status(200).send({ message: 'User unfollowed', follower });
   } else {
     res.status(400).send({ message: 'Invalid user ID' });
   }
 });
+
+//get follower and following
+// export const followers = async (req: Request, res: Response) => {
+//     const userId  = req.body.userId;
+//   if (typeof userId === 'string') { 
+//     const result = await userService.getUserFollowersAndFollowing(userId);
+//      res.status(httpStatus.OK).json({
+//       status: 'success',
+//       data: result,
+//     });
+//   } else {
+//         res.status(400).send({ message: 'Invalid user ID' });
+
+//   }
+// };
 

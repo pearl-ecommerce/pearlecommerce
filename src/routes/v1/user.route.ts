@@ -9,15 +9,18 @@ router
   .route('/')
   .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
   .get(auth('getUsers'), validate(userValidation.getUsers), userController.getUsers)
-  .get(auth('profile'), validate(userValidation.getUser), userController.getUser);
+  .get(auth('profile'), validate(userValidation.getUser), userController.getUser)
+  .post(auth('follow'), userController.followUser)
+  .post(auth('unfollow'), userController.unfollowUser)
+  // .get(auth('followers'), userController.followers);
+
 
 router
   .route('/:userId')
   .get(auth('getUsers'), validate(userValidation.getUser), userController.getUser)
   .patch(auth('manageUsers'), validate(userValidation.updateUser), userController.updateUser)
   .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
-  router.post('/:productId/like', auth(), userController.followUser);
-  router.post('/:productId/unlike', auth(), userController.unfollowUser);
+ 
 export default router;
 
 /**

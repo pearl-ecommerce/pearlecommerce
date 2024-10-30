@@ -91,20 +91,20 @@ export const deleteUserById = async (userId: mongoose.Types.ObjectId): Promise<I
   await user.remove();
   return user;
 };
-export const followUser = async (userId: string, targetUserId: string) => {
+export const followUser = async (userId: string, followUserId: string) => {
   const user = await User.findById(userId);
-  const targetUser = await User.findById(targetUserId);
+  const targetUser = await User.findById(followUserId);
 
   if (!user || !targetUser) {
     throw new Error('User not found');
   }
 
   const userIdStr = new mongoose.Types.ObjectId(userId).toString();
-  const targetUserIdStr = new mongoose.Types.ObjectId(targetUserId).toString();
+  const targetUserIdStr = new mongoose.Types.ObjectId(followUserId).toString();
 
   // Check if the user is already following the target user
   if (!user.following.map(id => id.toString()).includes(targetUserIdStr)) {
-    user.following.push(new mongoose.Types.ObjectId(targetUserId));
+    user.following.push(new mongoose.Types.ObjectId(followUserId));
     await user.save();
   }
 
@@ -116,16 +116,16 @@ export const followUser = async (userId: string, targetUserId: string) => {
 
   return targetUser;
 };
-export const unfollowUser = async (userId: string, targetUserId: string) => {
+export const unfollowUser = async (userId: string, unfollowUserId: string) => {
   const user = await User.findById(userId);
-  const targetUser = await User.findById(targetUserId);
+  const targetUser = await User.findById(unfollowUserId);
 
   if (!user || !targetUser) {
     throw new Error('User not found');
   }
 
   const userIdStr = new mongoose.Types.ObjectId(userId).toString();
-  const targetUserIdStr = new mongoose.Types.ObjectId(targetUserId).toString();
+  const targetUserIdStr = new mongoose.Types.ObjectId(unfollowUserId).toString();
 
   user.following = user.following.filter(id => id.toString() !== targetUserIdStr);
   await user.save();
@@ -135,6 +135,42 @@ export const unfollowUser = async (userId: string, targetUserId: string) => {
 
   return targetUser;
 };
+
+// export const getUserFollowersAndFollowing = async (userId: string): Promise<IUserDoc | null> => {
+//   try {
+//     const user = await User.findById(userId)
+//       .populate({
+//         path: 'followers',
+//         select: 'firstName lastName',
+//       })
+//       .populate({
+//         path: 'following',
+//         select: 'firstName lastName',
+//       });
+
+//     if (!user) {
+//       throw new Error('User not found');
+//     }
+
+//     // Map the followers and following arrays
+//     const followers = user.followers.map((follower) => ({
+//       id: follower._id.toString(),
+//       firstName: follower.firstName,
+//       lastName: follower.lastName,
+//     }));
+
+//     const following = user.following.map((followingUser) => ({
+//       id: followingUser._id.toString(),
+//       firstName: followingUser.firstName,
+//       lastName: followingUser.lastName,
+//     }));
+
+//      return { followers, following };
+//   } catch (error) {
+//     console.error(error);
+//     throw new Error('Could not fetch followers and following');
+//   }
+// };
 
 export const oauthSignup = async (userReq: any) => {
   const { firstName,

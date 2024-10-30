@@ -10,6 +10,8 @@ export interface IUser {
   password: string;
   dateOfBirth: Date; 
   phone: string;
+  description: string;
+  discount: string;
   address: {
     street: string;
     city: string;
@@ -38,6 +40,7 @@ export interface IUser {
   active: string;
   followers: mongoose.Types.ObjectId[];
   following: mongoose.Types.ObjectId[];
+  imageUrl: string;
 }
 
 export interface IUserDoc extends IUser, Document {
