@@ -2,6 +2,7 @@ import express, { Router } from 'express';
 import { validate } from '../../modules/validate';
 import { authValidation, authController, auth } from '../../modules/auth';
 import { productController, productValidation } from '../../modules/product';
+import { userController, userValidation } from '../../modules/user';
 
 const router: Router = express.Router();
 
@@ -16,6 +17,10 @@ router.post('/verify-email', validate(authValidation.verifyEmail), authControlle
 router.post('/searchProducts', validate(productValidation.searchProduct), productController.searchProduct);
 
 
+router.post('/profile', auth(), validate(userValidation.getUser), userController.getUser);
+router.post('/follow', auth(), userController.followUser);
+router.post('/unfollow', auth(), userController.unfollowUser);
+//router.post('/followers', auth(), userController.followers);
 
 export default router;
 

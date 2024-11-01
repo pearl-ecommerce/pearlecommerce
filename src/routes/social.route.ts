@@ -2,6 +2,7 @@ import express, { Router } from 'express';
 import passport from 'passport';
 import { authController } from '../modules/auth';
 
+
 const router: Router = express.Router();
 
 
@@ -12,5 +13,7 @@ router.get('/google/signup', passport.authenticate('google', {
 
 
 router.get('/auth/google/redirect', passport.authenticate('google'), authController.oauthSignin);
+
+ 
 
 export default router;

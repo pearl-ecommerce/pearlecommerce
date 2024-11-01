@@ -52,11 +52,9 @@ const userSchema = new Schema<IUserDoc>(
     },
    description: {
       type: String,
-      required: true,
     },
      discount: {
       type: String,
-      required: true,
     },
     phone: {
       type: String,

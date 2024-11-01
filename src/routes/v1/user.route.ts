@@ -8,11 +8,8 @@ const router: Router = express.Router();
 router
   .route('/')
   .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
-  .get(auth('getUsers'), validate(userValidation.getUsers), userController.getUsers)
-  .get(auth('profile'), validate(userValidation.getUser), userController.getUser)
-  .post(auth('follow'), userController.followUser)
-  .post(auth('unfollow'), userController.unfollowUser)
-  // .get(auth('followers'), userController.followers);
+  .get(auth('getUsers'), validate(userValidation.getUsers), userController.getUsers);
+ 
 
 
 router
