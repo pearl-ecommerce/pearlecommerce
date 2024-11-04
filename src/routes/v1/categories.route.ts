@@ -5,10 +5,10 @@ import { categoryController, categoryValidation } from '../../modules/category';
 
 const router: Router = express.Router();
 
-router
-    .route('/')
-    .post(auth('manageCategories'), validate(categoryValidation.createCategory), categoryController.createCategories)
-    .get(auth('getCategories'), validate(categoryValidation.getCategory), categoryController.getCategories);
+// router
+//     .route('/')
+//     .post(auth('manageCategories'), validate(categoryValidation.createCategory), categoryController.createCategories)
+//     .get(validate(categoryValidation.getCategory), categoryController.getCategories);
     router
   .route('/')
   .post(categoryController.createCategories) // Removed auth middleware
