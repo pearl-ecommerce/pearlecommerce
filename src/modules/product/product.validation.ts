@@ -8,13 +8,17 @@ const createProductBody: Record<keyof NewProduct, any> = {
   price: Joi.number().required().min(0),
   category: Joi.string().required(),
   storeId: Joi.string().custom(objectId),
-  imageUrl: Joi.string().uri().required(),
+  imageUrl: Joi.array().items(Joi.string().uri()).required(),
   stock: Joi.number().integer().min(0).required(),
   brand: Joi.string().required(),
   subCategory: Joi.string(),
   subsubcategory: Joi.string(),
   likes: Joi.string(),
   userId: Joi.string().custom(objectId),
+  condition: Joi.string().required(),
+  size: Joi.string().required(),
+  color: Joi.string().required(),
+
 
 };
 
@@ -35,6 +39,9 @@ export const getProducts = {
     page: Joi.number().integer(),
     brand: Joi.string(),
     likes: Joi.string(),
+    condition: Joi.string(),
+    size: Joi.string(),
+    color: Joi.string(),
 
 
   }),
@@ -58,11 +65,13 @@ export const updateProduct = {
       category: Joi.string(),
       subCategory: Joi.string(),
       subsubcategory: Joi.string(),
-      imageUrl: Joi.string().uri(),
+      imageUrl: Joi.array().items(Joi.string().uri()),
       stock: Joi.number().integer().min(0),
       brand: Joi.string(),
       likes: Joi.string(),
-
+      condition: Joi.string(),
+      size: Joi.string(),
+      color: Joi.string(),
     })
     .min(1),
 };

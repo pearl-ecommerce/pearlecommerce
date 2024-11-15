@@ -144,3 +144,15 @@ const userId = req.body;
     res.status(400).send({ message: 'Invalid user ID' });
   }
 });
+
+
+export const userProducts = catchAsync(async (req: Request, res: Response) => {
+  if (typeof req.params['userId'] === 'string') {
+    const product = await productService.userProducts(req.params['userId']);
+    if (!product) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
+    }
+    res.send(product);
+  }
+});
+

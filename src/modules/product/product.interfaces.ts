@@ -10,10 +10,13 @@ export interface IProduct {
   subsubcategory: string;
   storeId: mongoose.Types.ObjectId; 
   userId: mongoose.Types.ObjectId; 
-  imageUrl: string;
+  imageUrl: string[];
   stock: number;
   brand: string;
-  likes:mongoose.Types.ObjectId[]; // Array of user IDs who liked the product
+  likes: mongoose.Types.ObjectId[]; // Array of user IDs who liked the product
+  condition: string;
+  size: string;
+  color: string;
 }
 
 export interface IProductDoc extends IProduct, Document { }

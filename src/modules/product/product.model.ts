@@ -14,6 +14,24 @@ const productSchema = new Schema<IProductDoc>(
       type: String,
       required: true,
     },
+    condition: {
+      type: String,
+      required: true,
+        enum: [
+    "New with Tags",
+    "New without Tags",
+    "Gently Used",
+    "Used",
+    "Satisfactory"
+  ],
+    },
+    size: {
+      type: String,
+      required: true,
+    },
+    color: {
+      type: String,
+    },
     price: {
       type: Number,
       required: true,
@@ -44,7 +62,7 @@ const productSchema = new Schema<IProductDoc>(
       required: true,
     },
     imageUrl: {
-      type: String,
+      type: [String],
       required: true,
     },
     brand: {

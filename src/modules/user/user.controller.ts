@@ -95,17 +95,17 @@ export const unfollowUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 //get follower and following
-// export const followers = async (req: Request, res: Response) => {
-//     const userId  = req.body.userId;
-//   if (typeof userId === 'string') { 
-//     const result = await userService.getUserFollowersAndFollowing(userId);
-//      res.status(httpStatus.OK).json({
-//       status: 'success',
-//       data: result,
-//     });
-//   } else {
-//         res.status(400).send({ message: 'Invalid user ID' });
+export const followers = async (req: Request, res: Response) => {
+    const userId  = req.body.userId;
+  if (typeof userId === 'string') { 
+    const result = await userService.getUserFollowersAndFollowing(userId);
+     res.status(httpStatus.OK).json({
+      status: 'success',
+      data: result,
+    });
+  } else {
+        res.status(400).send({ message: 'Invalid user ID' });
 
-//   }
-// };
+  }
+};
 

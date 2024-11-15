@@ -6,6 +6,7 @@ import ApiError from '../errors/ApiError';
 import { IOptions, QueryResult } from '../paginate/paginate';
 import { IProductDoc, NewProduct, UpdateProductBody } from './product.interfaces';
 
+
 export const createProduct = async (userId: mongoose.Types.ObjectId, productData: NewProduct): Promise<IProductDoc> => {
   // Check if user exists in the database
   const user = await User.findById(userId);
@@ -24,8 +25,9 @@ export const queryProducts = async (filter: Record<string, any>, options: IOptio
   const products = await Product.paginate(filter, options);
   return products;
 };
-
+ 
 export const getProductById = async (id: mongoose.Types.ObjectId): Promise<IProductDoc | null> => Product.findById(id);
+
 
 export const updateProductById = async (
   productId: mongoose.Types.ObjectId,
@@ -96,5 +98,11 @@ export const unlikeProduct = async (productId: string, userId: string) => {
 export const getLikedProductsByUserId = async (userId: string) => {
   // Fetch products liked by the user
   const products = await Product.find({ likes: userId });
+  return products;
+};
+
+export const userProducts = async (userId: string) => {
+  // Fetch products liked by the user
+  const products = await Product.find({ userId });
   return products;
 };

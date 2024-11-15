@@ -14,7 +14,7 @@ const userSchema = new Schema<IUserDoc>(
       trim: true,
     },
     middleName: {
-      type: String,
+      type: String, 
       trim: true,
     },
     lastName: {

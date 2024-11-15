@@ -20,7 +20,7 @@ router.post('/searchProducts', validate(productValidation.searchProduct), produc
 router.post('/profile', auth(), validate(userValidation.getUser), userController.getUser);
 router.post('/follow', auth(), userController.followUser);
 router.post('/unfollow', auth(), userController.unfollowUser);
-//router.post('/followers', auth(), userController.followers);
+router.post('/followers', auth(), userController.followers);
 
 export default router;
 

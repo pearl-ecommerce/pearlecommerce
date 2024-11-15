@@ -90,7 +90,7 @@ export const deleteUserById = async (userId: mongoose.Types.ObjectId): Promise<I
   }
   await user.remove();
   return user;
-};
+}; 
 export const followUser = async (userId: string, followUserId: string) => {
   const user = await User.findById(userId);
   const targetUser = await User.findById(followUserId);
@@ -141,36 +141,58 @@ export const unfollowUser = async (userId: string, unfollowUserId: string) => {
 //     const user = await User.findById(userId)
 //       .populate({
 //         path: 'followers',
-//         select: 'firstName lastName',
+//         select: 'firstName',
 //       })
 //       .populate({
 //         path: 'following',
-//         select: 'firstName lastName',
+//         select: 'firstName',
 //       });
 
 //     if (!user) {
 //       throw new Error('User not found');
 //     }
+    // Map the followers and following arrays
+  //   const followers = user.followers.map((follower) => ({
+  //     id: follower._id.toString(),
+  //     firstName: follower.firstName,
+  //     // lastName: follower.lastName,
+  //   }));
 
-//     // Map the followers and following arrays
-//     const followers = user.followers.map((follower) => ({
-//       id: follower._id.toString(),
-//       firstName: follower.firstName,
-//       lastName: follower.lastName,
-//     }));
+  //   const following = user.following.map((followingUser) => ({
+  //     id: followingUser._id.toString(),
+  //     firstName: followingUser.firstName,
+  //     // lastName: followingUser.lastName,
+  //   }));
 
-//     const following = user.following.map((followingUser) => ({
-//       id: followingUser._id.toString(),
-//       firstName: followingUser.firstName,
-//       lastName: followingUser.lastName,
-//     }));
+  //    return { followers, following };
+  // } catch (error) {
+  //   console.error(error);
+  //   throw new Error('Could not fetch followers and following');
+  // }
+//};
+export const getUserFollowersAndFollowing = async (userId: string): Promise<IUserDoc | null> => {
+  try {
+    const user = await User.findById(userId)
+      .populate({
+        path: 'followers',
+        select: 'firstName',
+      })
+      .populate({
+        path: 'following',
+        select: 'firstName',
+      });
 
-//      return { followers, following };
-//   } catch (error) {
-//     console.error(error);
-//     throw new Error('Could not fetch followers and following');
-//   }
-// };
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user;
+  } catch (error) {
+    console.error('Error fetching followers and following:', error);
+    throw new Error('Failed to retrieve followers and following');
+  }
+};
+
 
 export const oauthSignup = async (userReq: any) => {
   const { firstName,
