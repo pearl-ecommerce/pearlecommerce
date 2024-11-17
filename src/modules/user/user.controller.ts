@@ -7,8 +7,11 @@ import pick from '../utils/pick';
 import { IOptions } from '../paginate/paginate';
 import * as userService from './user.service';
 
+// create admin
 export const createUser = catchAsync(async (req: Request, res: Response) => {
-  const user = await userService.createUser(req.body);
+  const currentUserId = req.body.userId;
+  
+  const user = await userService.createUser(req.body,currentUserId);
    const response = {
     status: true,
     message: 'User created successfully',
@@ -108,4 +111,33 @@ export const followers = async (req: Request, res: Response) => {
 
   }
 };
+
+export const deactivate = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.query;
+
+  // Ensure userId is a string
+  if (typeof userId === 'string') {
+    const user = await userService.deactivateUser(userId);
+    res.status(200).send({ message: 'User deactivated', user });
+  } else {
+    res.status(400).send({ message: 'Invalid query parameter: userId must be a string' });
+  }
+});
+
+
+export const activate = async (req: Request, res: Response) => {
+  const { userId } = req.query;
+
+  // Ensure userId is a string
+  if (typeof userId === 'string') {
+    const result = await userService.activateUser(userId);
+    res.status(httpStatus.OK).json({
+      status: 'success',
+      data: result,
+    });
+  } else {
+    res.status(400).send({ message: 'Invalid query parameter: userId must be a string' });
+  }
+};
+
 

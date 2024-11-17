@@ -5,6 +5,7 @@ import toJSON from '../toJSON/toJSON';
 import paginate from '../paginate/paginate';
 import { roles } from '../../config/roles';
 import { IUserDoc, IUserModel } from './user.interfaces';
+import { boolean } from 'joi';
 
 const userSchema = new Schema<IUserDoc>(
   {
@@ -122,10 +123,10 @@ const userSchema = new Schema<IUserDoc>(
         type: Date,
         default: Date.now, // Sets the default to the current date and time
     },
-      active: {
-        type: String,
-        default: 'yes', // Sets the default to the current date and time
-    },
+     active: {
+    type: Boolean, 
+    default: true, 
+},
   },
   {
     timestamps: true,

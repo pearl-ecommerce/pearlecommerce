@@ -10,12 +10,26 @@ import { NewCreatedUser, UpdateUserBody, IUserDoc, NewRegisteredUser } from './u
  * @param {NewCreatedUser} userBody
  * @returns {Promise<IUserDoc>}
  */
-export const createUser = async (userBody: NewCreatedUser): Promise<IUserDoc> => {
+export const createUser = async (userBody: NewCreatedUser, currentUserId: string | null): Promise<IUserDoc> => {
+  // Check if currentUserId is provided and if the user has an admin role
+  if (!currentUserId) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'User ID is required');
+  }
+  const currentUser = await User.findById(currentUserId); // Fetch the current user's details from the database
+  if (!currentUser) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  if (currentUser.role !== 'admin') {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Only admins can create users');
+  }
+  // Check if the email is already taken
   if (await User.isEmailTaken(userBody.email)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
+  // Create the new user
   return User.create(userBody);
 };
+
 
 /**
  * Register a user
@@ -136,40 +150,6 @@ export const unfollowUser = async (userId: string, unfollowUserId: string) => {
   return targetUser;
 };
 
-// export const getUserFollowersAndFollowing = async (userId: string): Promise<IUserDoc | null> => {
-//   try {
-//     const user = await User.findById(userId)
-//       .populate({
-//         path: 'followers',
-//         select: 'firstName',
-//       })
-//       .populate({
-//         path: 'following',
-//         select: 'firstName',
-//       });
-
-//     if (!user) {
-//       throw new Error('User not found');
-//     }
-    // Map the followers and following arrays
-  //   const followers = user.followers.map((follower) => ({
-  //     id: follower._id.toString(),
-  //     firstName: follower.firstName,
-  //     // lastName: follower.lastName,
-  //   }));
-
-  //   const following = user.following.map((followingUser) => ({
-  //     id: followingUser._id.toString(),
-  //     firstName: followingUser.firstName,
-  //     // lastName: followingUser.lastName,
-  //   }));
-
-  //    return { followers, following };
-  // } catch (error) {
-  //   console.error(error);
-  //   throw new Error('Could not fetch followers and following');
-  // }
-//};
 export const getUserFollowersAndFollowing = async (userId: string): Promise<IUserDoc | null> => {
   try {
     const user = await User.findById(userId)
@@ -181,11 +161,9 @@ export const getUserFollowersAndFollowing = async (userId: string): Promise<IUse
         path: 'following',
         select: 'firstName',
       });
-
     if (!user) {
       throw new Error('User not found');
     }
-
     return user;
   } catch (error) {
     console.error('Error fetching followers and following:', error);
@@ -193,13 +171,40 @@ export const getUserFollowersAndFollowing = async (userId: string): Promise<IUse
   }
 };
 
+export const deactivateUser = async (userId: string): Promise<IUserDoc> => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new Error('User not found');
+  }
+  if (user.active === false) {
+    throw new Error('User is already deactivated');
+  }
+  user.active = false;
+  await user.save();
+  return user;
+};
+
+
+export const activateUser = async (userId: string): Promise<IUserDoc> => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new Error('User not found');
+  }
+  if (user.active === true) {
+    throw new Error('User is already active');
+  }
+  user.active = true; 
+  await user.save();
+  return user;
+};
+
+ 
 
 export const oauthSignup = async (userReq: any) => {
   const { firstName,
     lastName,
     email,
     role } = userReq
-
   let user;
   // const { _json: details } = userReq;
   // const firstName = details.first_name || details.given_name;
@@ -208,11 +213,9 @@ export const oauthSignup = async (userReq: any) => {
 
   let userDetails = await User.findOne({ email })
 
-
   if (userDetails) {
     return userDetails
   }
-
   user = new User({
     firstName,
     lastName,
@@ -221,9 +224,6 @@ export const oauthSignup = async (userReq: any) => {
     platform: "google",
   
   });
-
-  
-
   return await User.create(user);
 
 }

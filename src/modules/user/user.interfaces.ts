@@ -37,7 +37,7 @@ export interface IUser {
   isEmailVerified: boolean;
   verificationStatus: boolean;
   lastseen: Date;
-  active: string;
+  active: boolean;
   followers: mongoose.Types.ObjectId[];
   following: mongoose.Types.ObjectId[];
   imageUrl: string;

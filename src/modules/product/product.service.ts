@@ -13,7 +13,7 @@ export const createProduct = async (userId: mongoose.Types.ObjectId, productData
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User really not found'); 
   }
-  
+
   // CHECK IF USER HAS NIN
 
 

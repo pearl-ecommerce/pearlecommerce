@@ -35,7 +35,7 @@ const createUserBody: Record<keyof NewCreatedUser, any> = {
   }).required(),
   role: Joi.string().required().valid('user', 'admin', 'seller'),
    lastseen: Joi.date(),
-  active: Joi.string(),
+   active: Joi.boolean().default(true), 
  followers: Joi.string().custom(objectId),
   following: Joi.string().custom(objectId),
 
@@ -92,7 +92,7 @@ export const updateUser = {
         state: Joi.string(),
         country: Joi.string(),
         postalCode: Joi.string(),
-        active: Joi.string(),
+        active: Joi.boolean().default(true),
         followers: Joi.string().custom(objectId),
         following: Joi.string().custom(objectId),
 

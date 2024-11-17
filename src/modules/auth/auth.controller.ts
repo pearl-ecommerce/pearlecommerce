@@ -33,6 +33,16 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   res.status(200).send({user, tokens,message });
 });
 
+export const adminlogin = catchAsync(async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  const admin = await authService.loginAdminWithEmailAndPassword(email, password);
+  const tokens = await tokenService.generateAuthTokens(admin);
+  const message = "admin-login successful";
+   await emailService.sendLoginEmail(req.body.email);
+  res.status(200).send({admin, tokens,message });
+});
+
+
 export const logout = catchAsync(async (req: Request, res: Response) => {
   await authService.logout(req.body.refreshToken);
   res.status(httpStatus.NO_CONTENT).send();

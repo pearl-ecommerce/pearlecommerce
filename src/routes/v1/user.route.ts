@@ -16,6 +16,8 @@ router
   .patch(auth('manageUsers'), validate(userValidation.updateUser), userController.updateUser)
   .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
  
+router.post('/activate', auth(), userController.activate);
+router.post('/deactivate', auth(), userController.deactivate);
 export default router;
 
 /**

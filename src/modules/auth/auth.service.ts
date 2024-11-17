@@ -18,11 +18,24 @@ export const loginUserWithEmailAndPassword = async (email: string, password: str
   if (!user || !(await user.isPasswordMatch(password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
   }
-   user.lastseen = new Date();
+   user.lastseen = new Date(); 
   await user.save();
   return user;
 };
- 
+
+export const loginAdminWithEmailAndPassword = async (email: string, password: string): Promise<IUserDoc> => {
+  const admin = await getUserByEmail(email);
+  if (!admin || !(await admin.isPasswordMatch(password))) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
+  }
+  if (admin.role !== 'admin') {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Only admins can log in');
+  }
+  admin.lastseen = new Date();
+  await admin.save();
+  return admin;
+};
+
 /**
  * Logout
  * @param {string} refreshToken
