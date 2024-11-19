@@ -27,6 +27,14 @@ export const getUsers = catchAsync(async (req: Request, res: Response) => {
   res.send(result);
 });
 
+export const adminuser = catchAsync(async (req: Request, res: Response) => {
+  const filter = pick(req.query, ['name', 'role','userId']);
+  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
+  const result = await userService.adminUsers(filter, options);
+  res.send(result);
+});
+
+
 
 export const getUser = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.user

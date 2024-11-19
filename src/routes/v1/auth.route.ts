@@ -22,6 +22,7 @@ router.post('/profile', auth(), validate(userValidation.getUser), userController
 router.post('/follow', auth(), userController.followUser);
 router.post('/unfollow', auth(), userController.unfollowUser);
 router.post('/followers', auth(), userController.followers);
+router.post('/adminuser', auth(), validate(userValidation.getUser), userController.adminuser);
 
 export default router;
 

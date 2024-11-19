@@ -54,6 +54,11 @@ export const queryUsers = async (filter: Record<string, any>, options: IOptions)
   return users;
 };
 
+export const adminUsers = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
+  const adminFilter = { ...filter, role: 'admin' }; // Ensure role is admin
+  const users = await User.paginate(adminFilter, options);
+  return users;
+};
 
 /**
  * Get user by id
