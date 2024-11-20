@@ -103,7 +103,7 @@ export const getLikedProductsByUserId = async (userId: string) => {
 
 export const userProducts = async (userId: mongoose.Types.ObjectId): Promise<IProductDoc[]> => {
  
-  const products = await Product.find({ userId }); // Replace 'likedBy' with the correct field in your schema
+  const products = await Product.find({ userId: userId }); // Replace 'likedBy' with the correct field in your schema
   return products;
 };
 
