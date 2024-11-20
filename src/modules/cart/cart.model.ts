@@ -14,17 +14,17 @@ const cartSchema = new Schema<ICartDoc>(
   
     price: {
       type: Number,
-      required: true,
+     
       min: 0,
     },
     quantity: {
       type: Number,
-      required: true,
+     
       min: 1,
     },
     imageUrl: {
       type: [String],
-      required: true,
+      
     },
     size: {
       type: String,
@@ -44,12 +44,12 @@ const cartSchema = new Schema<ICartDoc>(
    
     totalPrice: {
       type: Number,
-      required: true,
+      
       default: 0, // Initial total price is zero
     },
     currency: {
       type: String,
-      required: true,
+     
       default: 'USD', // Default currency
     },
   },

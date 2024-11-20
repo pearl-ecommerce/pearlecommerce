@@ -5,10 +5,10 @@ import { NewCart } from './cart.interfaces';
 const createCartBody: Record<keyof NewCart, any> = {
   userId: Joi.string().custom(objectId).required(),
   productId: Joi.string().custom(objectId).required(),
-  quantity: Joi.number().integer().min(1).required(),
-  totalPrice: Joi.number().min(0).required(),
-  currency: Joi.string().required(), // 
-  price: Joi.number().min(0).required(),
+  quantity: Joi.number().integer().min(1),
+  totalPrice: Joi.number().min(0),
+  currency: Joi.string(), // 
+  price: Joi.number().min(0),
   imageUrl: Joi.array().items(Joi.string()),
   size: Joi.string(),
   color: Joi.string(),
@@ -26,8 +26,8 @@ export const getCarts = {
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
-    currency: Joi.string().required(), 
-    price: Joi.number().min(0).required(),
+    currency: Joi.string(), 
+    price: Joi.number().min(0),
 
   }),
 };
