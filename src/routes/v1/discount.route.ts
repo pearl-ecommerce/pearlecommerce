@@ -17,4 +17,5 @@ router
     .patch(auth('manageDiscount'), validate(discountValidation.updateDiscount), discountController.updateDiscount)
     .delete(auth('manageDiscount'), validate(discountValidation.deleteDiscount), discountController.deleteDiscount);
 
+
 export default router;

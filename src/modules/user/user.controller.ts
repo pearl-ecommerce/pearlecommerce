@@ -46,22 +46,6 @@ export const getUser = catchAsync(async (req: Request, res: Response) => {
   
 });
 
-// export const getUser = catchAsync(async (req: Request, res: Response) => {
-//   const { userId, email } = req.params;
-
-//   let user;
-//   if (userId && typeof userId === 'string') {
-//     user = await userService.getUserById(new mongoose.Types.ObjectId(userId));
-//   } else if (email && typeof email === 'string') {
-//     user = await userService.getUserByEmail(email);
-//   }
-
-//   if (!user) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-//   }
-
-//   res.send(user);
-// });
 
 export const updateUser = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['userId'] === 'string') {
@@ -139,6 +123,24 @@ export const activate = async (req: Request, res: Response) => {
   // Ensure userId is a string
   if (typeof userId === 'string') {
     const result = await userService.activateUser(userId);
+    res.status(httpStatus.OK).json({
+      status: 'success',
+      data: result,
+    });
+  } else {
+    res.status(400).send({ message: 'Invalid query parameter: userId must be a string' });
+  }
+};
+
+
+
+export const userDiscountProducts = async (req: Request, res: Response) => {
+  const { userId } = req.body.userId;
+  const { discount } = req.body.discount;
+
+  // Ensure userId is a string
+  if (typeof userId === 'string') {
+    const result = await userService.userDiscountProducts(userId, discount);
     res.status(httpStatus.OK).json({
       status: 'success',
       data: result,

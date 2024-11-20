@@ -202,6 +202,15 @@ export const activateUser = async (userId: string): Promise<IUserDoc> => {
   await user.save();
   return user;
 };
+export const userDiscountProducts = async (userId: string, discount: string): Promise<IUserDoc> => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new Error('User not found');
+  }
+  user.discount = discount; 
+  await user.save();
+  return user;
+};
 
  
 
@@ -211,13 +220,7 @@ export const oauthSignup = async (userReq: any) => {
     email,
     role } = userReq
   let user;
-  // const { _json: details } = userReq;
-  // const firstName = details.first_name || details.given_name;
-  // const lastName = details.last_name || details.family_name;
-  // const { email } = details;
-
   let userDetails = await User.findOne({ email })
-
   if (userDetails) {
     return userDetails
   }
