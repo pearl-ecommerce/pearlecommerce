@@ -58,7 +58,7 @@ const productSchema = new Schema<IProductDoc>(
     },
     userId: {
       type: Schema.Types.ObjectId,
-      ref: 'Store',
+      ref: 'User',
       required: true,
     },
     imageUrl: {
