@@ -5,6 +5,16 @@ import { IDiscountDoc, IDiscountModel } from './discount.interfaces';
 
 const discountSchema = new Schema<IDiscountDoc>(
   {
+     name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+        userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     discount: {
       type: String,
       required: true,

@@ -1,10 +1,12 @@
-import { Model, Document } from 'mongoose';
+import mongoose, { Model, Document } from 'mongoose';
 import { QueryResult } from '../paginate/paginate';
 
 // Core interface for Discount schema fields
 export interface IDiscount {
   discount: string;
- 
+  name: string;
+  userId: mongoose.Types.ObjectId; 
+
 }
 
 // Extending the Discount schema interface with Mongoose Document properties

@@ -5,6 +5,8 @@ import { NewDiscount } from './discount.interfaces';
 // Define the validation schema for creating a discount record
 const createDiscountBody: Record<keyof NewDiscount, any> = {
   discount: Joi.string().required(),
+  name: Joi.string(),
+    userId: Joi.string().custom(objectId),
 
 };
 
@@ -17,7 +19,9 @@ export const createDiscount = {
 export const getDiscounts = {
   query: Joi.object().keys({
     discount: Joi.string(),
-    
+      name: Joi.string(),
+        userId: Joi.string().custom(objectId),
+
   }),
 };
 
@@ -25,6 +29,7 @@ export const getDiscounts = {
 export const getDiscount = {
   params: Joi.object().keys({
     discountId: Joi.string().custom(objectId).required(), // Changed `pricingId` to `discountId`
+
   }),
 };
 
@@ -32,10 +37,12 @@ export const getDiscount = {
 export const updateDiscount = {
   params: Joi.object().keys({
     discountId: Joi.string().custom(objectId).required(), // Changed `pricingId` to `discountId`
+
   }),
   body: Joi.object()
     .keys({
       discount: Joi.string(),
+
     
     })
     .min(1), // Ensure at least one field is updated
