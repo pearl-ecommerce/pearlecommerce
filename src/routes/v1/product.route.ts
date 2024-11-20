@@ -20,7 +20,6 @@ router
 
 router.post('/:productId/like', auth(), productController.likeProduct);
 router.post('/:productId/unlike', auth(), productController.unlikeProduct);
-router.get('/userProducts', auth(), productController.userProducts);
 //router.get('/liked', auth(), productController.getLikedProducts);
 //router.get('/:productId/likes', productController.getTotalLikes);
 

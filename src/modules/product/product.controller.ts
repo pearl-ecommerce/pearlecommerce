@@ -145,15 +145,25 @@ const userId = req.body;
   }
 });
 
-
 export const userProducts = catchAsync(async (req: Request, res: Response) => {
-  if (typeof req.params['userId'] === 'string') {
-    const product = await productService.userProducts(new mongoose.Types.ObjectId(req.params['userId']));
+  // Check if `userId` is provided as a string in the request parameters
+  const userId = req.body.userId;
+  if (typeof userId === 'string') {
+    console.log("User ID received:", req.params['userId']);
 
-    if (!product) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
+    // Call the service function to fetch products created by the user
+    const products = await productService.userProducts(new mongoose.Types.ObjectId(userId));
+
+    // If no products are found, throw a 404 error
+    if (!products || products.length === 0) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'No products found for the specified user');
     }
-    res.send(product);
+
+    // Send the list of products as a response
+    res.status(httpStatus.OK).send(products);
+  } else {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid or missing user ID');
   }
 });
+
 

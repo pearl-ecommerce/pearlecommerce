@@ -8,7 +8,7 @@ const allRoles = {
     'manageDiscount','getCarts'
   ],
   admin: ['manageSellers', 'adminlogin', 'adminuser', 'profile', 'logout', 'manageUsers', 'getUsers', 'activate', 'deactivate',
-    'manageCart','getCarts','removecart', 'managePricing','getPricing','manageDiscount','getCarts'
+    'manageCart','getCarts','removecart', 'managePricing','getPricing','manageDiscount','getCarts',"userProducts"
   ],
   seller: ['getProducts', 'searchProducts', 'manageProducts', 'getUsers', 'manageSellers', 'getStores', 'manageSellers', 'manageUsers',
     'manageCategories', 'getCategories', 'managePayments', 'getPayments', 'managePayments',

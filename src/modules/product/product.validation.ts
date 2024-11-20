@@ -42,6 +42,8 @@ export const getProducts = {
     condition: Joi.string(),
     size: Joi.string(),
     color: Joi.string(),
+    userId: Joi.string().custom(objectId),
+
 
 
   }),
