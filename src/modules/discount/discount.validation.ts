@@ -28,7 +28,7 @@ export const getDiscounts = {
 // Validation for retrieving a single discount record by ID
 export const getDiscount = {
   params: Joi.object().keys({
-    discountId: Joi.string().custom(objectId).required(), // Changed `pricingId` to `discountId`
+    discountId: Joi.string().custom(objectId), // Changed `pricingId` to `discountId`
 
   }),
 };
