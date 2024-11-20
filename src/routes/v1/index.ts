@@ -8,6 +8,8 @@ import categoriesRoute from './categories.route';
 import paymentRoute from './payment.route';
 import orderRoute from './order.route';
 import notificationRoute from './notification.route';
+import cartRoute from './cart.route';
+import pricingRoute from './pricing.route';
 
 
 import config from '../../config/config';
@@ -55,6 +57,14 @@ const defaultIRoute: IRoute[] = [
   {
     path: '/notification',
     route: notificationRoute,
+  },
+   {
+    path: '/pricing',
+    route: pricingRoute,
+  },
+    {
+    path: '/cart',
+    route: cartRoute,
   }
 
 
