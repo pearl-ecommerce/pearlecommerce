@@ -148,7 +148,8 @@ const userId = req.body;
 
 export const userProducts = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['userId'] === 'string') {
-    const product = await productService.userProducts(req.params['userId']);
+    const product = await productService.userProducts(new mongoose.Types.ObjectId(req.params['userId']));
+
     if (!product) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
     }
