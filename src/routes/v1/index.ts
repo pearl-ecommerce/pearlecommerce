@@ -10,6 +10,7 @@ import orderRoute from './order.route';
 import notificationRoute from './notification.route';
 import cartRoute from './cart.route';
 import pricingRoute from './pricing.route';
+import discountRoute from './discount.route';
 
 
 import config from '../../config/config';
@@ -65,8 +66,11 @@ const defaultIRoute: IRoute[] = [
     {
     path: '/cart',
     route: cartRoute,
+  },
+   {
+    path: '/discount',
+    route: discountRoute,
   }
-
 
 ];
 
