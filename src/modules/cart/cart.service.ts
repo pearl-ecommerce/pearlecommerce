@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Cart from './cart.model';
+import User from '../user/user.model';
 import Product from '../product/product.model';
 import ApiError from '../errors/ApiError';
 import httpStatus from 'http-status';
@@ -25,11 +26,31 @@ export const addItem = async (userId: string, productId: string, cartData: NewCa
 // Get cart by cartID
 export const getCartByUserId = async (id: mongoose.Types.ObjectId): Promise<ICartDoc | null> => Cart.findById(id);
 
-export const getCarts = async (userId: string) => { 
-  const objectId = new mongoose.Types.ObjectId(userId);
-  return await Cart.find({ userId: objectId }).populate('items.productId');
-};
 
+export const getCarts = async (userId: string) => {
+  const objectId = new mongoose.Types.ObjectId(userId);
+
+  // Fetch all cart records for the user
+  const carts = await Cart.find({ userId: objectId }).populate('productId');
+
+  // Fetch discount from the user's profile
+  const user = await User.findById(objectId);
+  const discount = user?.discount ? parseFloat(user.discount) : 0; // Ensure discount is a number
+
+  // Apply discount to the carts
+  const updatedCarts = carts.map(cart => {
+    const originalPrice = cart.price; // Price from the cart
+    const discountedPrice = originalPrice - (originalPrice * discount) / 100; // Apply discount
+
+    return {
+      ...cart.toObject(), // Convert Mongoose document to plain object
+      originalPrice,
+      discountedPrice,
+    };
+  });
+
+  return updatedCarts;
+};
 
 // Update item quantity in the cart
 // export const updateItemQuantityplus = async (cartId: string, productId: string) => {

@@ -19,6 +19,8 @@ export interface IProduct {
   color: string;
 }
 
+
+
 export interface IProductDoc extends IProduct, Document { }
 
 export interface IProductModel extends Model<IProductDoc> {

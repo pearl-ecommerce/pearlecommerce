@@ -22,7 +22,7 @@ router.post('/profile', auth(), validate(userValidation.getUser), userController
 router.post('/follow', auth(), userController.followUser);
 router.post('/unfollow', auth(), userController.unfollowUser);
 router.post('/followers', auth(), userController.followers);
-router.post('/adminuser', auth(), validate(userValidation.getUser), userController.adminuser);
+router.get('/adminuser', auth(), validate(userValidation.getUser), userController.adminuser);
 router.get('/getauserproduct', productController.userProducts);
 router.post('/addDiscountToUser', userController.userDiscountProducts);
 

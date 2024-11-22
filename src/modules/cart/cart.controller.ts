@@ -33,9 +33,13 @@ export const getCarts = catchAsync(async (req: Request, res: Response) => {
   }
   res.status(httpStatus.OK).send({
     status: true,
+     message: 'Carts retrieved successfully',
     data: cart,
   });
 });
+
+
+
 
 
 // Update item quantity in the cart plus quantity
