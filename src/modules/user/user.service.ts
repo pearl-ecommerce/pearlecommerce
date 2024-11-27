@@ -203,7 +203,9 @@ export const activateUser = async (userId: string): Promise<IUserDoc> => {
   return user;
 };
 export const userDiscountProducts = async (userId: string, discount: string): Promise<IUserDoc> => {
-  const user = await User.findById(userId);
+  
+    const userIdStr = new mongoose.Types.ObjectId(userId).toString();
+const user = await User.findById(userIdStr);
   if (!user) {
     throw new Error('User not found');
   }
@@ -211,8 +213,6 @@ export const userDiscountProducts = async (userId: string, discount: string): Pr
   await user.save();
   return user;
 };
-
- 
 
 export const oauthSignup = async (userReq: any) => {
   const { firstName,
