@@ -202,7 +202,7 @@ export const activateUser = async (userId: string): Promise<IUserDoc> => {
   await user.save();
   return user;
 };
-export const userDiscountProducts = async (userId: string, discount: string): Promise<IUserDoc> => {
+export const userDiscountProducts = async (userId: string, discount: string)=> {
   
     const userIdStr = new mongoose.Types.ObjectId(userId).toString();
 const user = await User.findById(userIdStr);
