@@ -202,15 +202,17 @@ export const activateUser = async (userId: string): Promise<IUserDoc> => {
   await user.save();
   return user;
 };
-export const userDiscountProducts = async (userId: string, discount: string)=> {
-  
-    const userIdStr = new mongoose.Types.ObjectId(userId).toString();
-const user = await User.findById(userIdStr);
+
+export const userDiscountProducts = async (userId:string, discount: string): Promise<IUserDoc | null> => {
+    const user = await User.findById(userId);
+
   if (!user) {
     throw new Error('User not found');
-  }
-  user.discount = discount; 
+  } 
+  user.discount = discount;
+
   await user.save();
+  console.log("User updated successfully:", user);
   return user;
 };
 

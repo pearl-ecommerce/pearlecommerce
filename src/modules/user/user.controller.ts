@@ -134,19 +134,13 @@ export const activate = async (req: Request, res: Response) => {
 
 
 
-export const userDiscountProducts = async (req: Request, res: Response) => {
+export const userDiscountProducts = catchAsync(async (req: Request, res: Response) => {
   const { userId, discount } = req.body;
 
-  // Ensure userId is a string
   if (typeof userId === 'string') {
     const result = await userService.userDiscountProducts(userId, discount);
-    res.status(httpStatus.OK).json({
-      status: 'success',
-      data: result,
-    });
+    res.status(200).send({ message: 'User discount added', result });
   } else {
-    res.status(400).send({ message: 'Invalid query parameter: userId must be a string' });
+    res.status(400).send({ message: 'Invalid User ID' });
   }
-};
-
-
+});
