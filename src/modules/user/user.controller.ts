@@ -135,8 +135,7 @@ export const activate = async (req: Request, res: Response) => {
 
 
 export const userDiscountProducts = async (req: Request, res: Response) => {
-  const { userId } = req.body.userId;
-  const { discount } = req.body.discount;
+  const { userId, discount } = req.body;
 
   // Ensure userId is a string
   if (typeof userId === 'string') {
