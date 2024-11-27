@@ -5,7 +5,7 @@ const allRoles = {
     'become-seller', 'follow', 'unfollow', 'followers', 'userProducts', 'adminlogin',
     'manageCart', 'getCarts', 'removecart',
     'managePricing', 'getPricing',
-    'manageDiscount','getCarts','getDiscount'
+    'manageDiscount','getCarts','getDiscount','addDiscountToUser'
   ],
   admin: ['manageSellers', 'adminlogin', 'adminuser', 'profile', 'logout', 'manageUsers', 'getUsers', 'activate', 'deactivate',
     'manageCart','getCarts','removecart', 'managePricing','getPricing','manageDiscount','getCarts',"userProducts",'manageProducts',
@@ -13,15 +13,14 @@ const allRoles = {
     'manageCategories', 'getCategories', 'managePayments', 'getPayments', 'managePayments',
     'manageOrder', 'getOrders', 'manageSellers', 'verify-and-create-order',
     'become-seller', 'follow', 'unfollow', 'followers', 'userProducts', 'adminlogin',
-    'manageCart', 'getCarts', 'removecart',
-    'managePricing', 'getPricing',
-    'manageDiscount','getCarts','getDiscount'
+    'manageCart', 'getCarts', 'removecart', 'managePricing', 'getPricing',
+    'manageDiscount','getCarts','getDiscount','addDiscountToUser'
   ],
   seller: ['getProducts', 'searchProducts', 'manageProducts', 'getUsers', 'manageSellers', 'getStores', 'manageSellers', 'manageUsers',
     'manageCategories', 'getCategories', 'managePayments', 'getPayments', 'managePayments',
     'manageOrder', 'getOrders', 'manageSellers', 'verify-and-create-order',
     'become-seller', 'follow', 'unfollow', 'followers', 'userProducts', 'adminlogin',
-    'manageCart','getCarts','removecart','managePricing','getPricing','manageDiscount','getCarts','getDiscount'
+    'manageCart','getCarts','removecart','managePricing','getPricing','manageDiscount','getCarts','getDiscount','addDiscountToUser'
   ]
 };
 
