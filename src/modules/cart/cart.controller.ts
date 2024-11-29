@@ -87,7 +87,7 @@ export const removeItemFromCart = catchAsync(async (req: Request, res: Response)
 
     res.status(httpStatus.OK).send({
     status: true,
-    message: 'Cart deleted successfully',
+    message: 'Cart removed',
   });
 });
 
