@@ -147,7 +147,7 @@ const userId = req.body;
 
 export const userProducts = catchAsync(async (req: Request, res: Response) => {
   // Check if `userId` is provided as a string in the request parameters
-  const userId = req.body.userId;
+  const userId = req.body;
   if (typeof userId === 'string') {
     console.log("User ID received:", req.params['userId']);
 

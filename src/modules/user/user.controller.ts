@@ -35,7 +35,6 @@ export const adminuser = catchAsync(async (req: Request, res: Response) => {
 });
 
 
-
 export const getUser = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.user
     const user = await userService.getUserById(new mongoose.Types.ObjectId(id));
@@ -55,7 +54,7 @@ export const updateUser = catchAsync(async (req: Request, res: Response) => {
     message: 'User profile updated successfully',
     data: user, // Include user and tokens as data
   };
-    res.send(response);
+    res.send(response); 
   }
 });
 
@@ -100,7 +99,6 @@ export const followers = async (req: Request, res: Response) => {
     });
   } else {
         res.status(400).send({ message: 'Invalid user ID' });
-
   }
 };
 
@@ -131,7 +129,6 @@ export const activate = async (req: Request, res: Response) => {
     res.status(400).send({ message: 'Invalid query parameter: userId must be a string' });
   }
 };
-
 
 
 export const userDiscountProducts = catchAsync(async (req: Request, res: Response) => {
