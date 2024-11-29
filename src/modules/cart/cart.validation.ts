@@ -21,7 +21,7 @@ export const createCart = {
 
 export const getCarts = {
   query: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+    cartId: Joi.string().custom(objectId),
     productId: Joi.string().custom(objectId),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
@@ -59,7 +59,7 @@ export const deleteCart = {
 
 export const removeCart = {
   query: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+    cartId: Joi.string().custom(objectId),
     productId: Joi.string().custom(objectId),
   }),
 };
