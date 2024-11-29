@@ -148,8 +148,8 @@ const userId = req.body;
 export const userProducts = catchAsync(async (req: Request, res: Response) => {
   // Check if `userId` is provided as a string in the request parameters
   // const userId = req.body;
-  const userId = req.body;
-  if (req.body.userId == 'string') {
+  const userId = req.body.userId;
+  if (typeof req.params['userId'] == 'string') {
     console.log("User ID received:", req.params['userId']);
 
     // Call the service function to fetch products created by the user
