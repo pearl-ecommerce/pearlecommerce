@@ -97,9 +97,19 @@ export const getCarts = async (userId: string) => {
 
 // Remove item from the cart
 
-export const removeItem = async (cartId: string) => {
-  const cart = await Cart.findById(cartId);
-  if (!cart) {
+// export const removeItem = async (cartId: string) => {
+//   const cart = await Cart.findById(cartId);
+//   if (!cart) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found');
+//   }
+//   // Remove the cart
+//   await Cart.findByIdAndDelete(cartId);
+// };
+
+export const removeItem = async (cartId: mongoose.Types.ObjectId) => {
+ 
+  const cart = await Cart.findById(cartId); // Replace 'likedBy' with the correct field in your schema
+   if (!cart) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found');
   }
   // Remove the cart

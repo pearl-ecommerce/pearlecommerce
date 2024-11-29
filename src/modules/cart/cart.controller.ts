@@ -39,9 +39,6 @@ export const getCarts = catchAsync(async (req: Request, res: Response) => {
 });
 
 
-
-
-
 // Update item quantity in the cart plus quantity
 // export const updateItemQuantityplus = catchAsync(async (req: Request, res: Response) => {
 //   const { userId, productId } = req.body;
@@ -62,16 +59,33 @@ export const getCarts = catchAsync(async (req: Request, res: Response) => {
 
 
 // Remove item from the cart
+// export const removeItemFromCart = catchAsync(async (req: Request, res: Response) => {
+//   const { cartId } = req.query; // Extract cartId from query params
+
+//   if (!mongoose.Types.ObjectId.isValid(cartId as string)) {
+//     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid cartId');
+//   }
+//   // Call the service to delete the cart
+//   await cartService.removeItem(cartId as string);
+
+//   res.status(httpStatus.OK).send({
+//     status: true,
+//     message: 'Cart deleted successfully',
+//   });
+// });
+
 export const removeItemFromCart = catchAsync(async (req: Request, res: Response) => {
-  const { cartId } = req.query; // Extract cartId from query params
+  // Extract `userId` from query parameters
+  const cartId = req.query['cartId'] as string;
 
-  if (!mongoose.Types.ObjectId.isValid(cartId as string)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid cartId');
+  // Check if `userId` is valid
+  if (!cartId || !mongoose.Types.ObjectId.isValid(cartId)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid or missing user ID');
   }
-  // Call the service to delete the cart
-  await cartService.removeItem(cartId as string);
+  // Fetch products associated with the `userId`
+   await cartService.removeItem(new mongoose.Types.ObjectId(cartId));
 
-  res.status(httpStatus.OK).send({
+    res.status(httpStatus.OK).send({
     status: true,
     message: 'Cart deleted successfully',
   });

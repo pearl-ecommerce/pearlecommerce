@@ -17,6 +17,6 @@ router
 //   .patch(auth('manageCart'), validate(cartValidation.updateCart), cartController.updateItemQuantityplus)
   .delete(auth('manageCart'), validate(cartValidation.deleteCart), cartController.clearCart);
 
-router.get('/removecart', validate(cartValidation.removeCart), cartController.removeItemFromCart);
+router.post('/removecart', validate(cartValidation.removeCart), cartController.removeItemFromCart);
 
 export default router;
