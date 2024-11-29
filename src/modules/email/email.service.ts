@@ -41,7 +41,7 @@ export const sendResetPasswordEmail = async (to: string, token: string): Promise
   const subject = 'Reset password';
   // replace this url with the link to the reset password page of your front-end app
   // const resetPasswordUrl = `http://link-to-app/reset-password?token=${token}`;
-   const resetPasswordUrl = `http://161.35.114.79/v1/auth/reset-password?token=${token}`;
+   const resetPasswordUrl = `www.reselii.com/v1/auth/reset-password?token=${token}`;
   // const resetPasswordUrl = `http://localhost:3000/v1/auth/reset-password?token=${token}`;
   const text = `Hi,
   To reset your password, click on this link: ${resetPasswordUrl}
@@ -64,7 +64,7 @@ export const sendResetPasswordEmail = async (to: string, token: string): Promise
 export const sendVerificationEmail = async (to: string, token: string, name: string): Promise<void> => {
   const subject = 'Email Verification';
   // replace this url with the link to the email verification page of your front-end app
-  const verificationEmailUrl = `http://161.35.114.79/v1/auth/verifyEmail?token=${token}`;
+  const verificationEmailUrl = `https://161.35.114.79/v1/auth/verifyEmail?token=${token}`;
   const text = `Hi ${name},
   To verify your email, click on this link: ${verificationEmailUrl}
   If you did not create an account, then ignore this email.`;
@@ -84,7 +84,7 @@ export const sendVerificationEmail = async (to: string, token: string, name: str
 export const sendSuccessfulRegistration = async (to: string, token: string, name: string): Promise<void> => {
   const subject = 'Email Verification';
   // replace this url with the link to the email verification page of your front-end app
-  const verificationEmailUrl = `http://161.35.114.79/v1/auth/verifyEmail?token=${token}`;
+  const verificationEmailUrl = `https://161.35.114.79/v1/auth/verifyEmail?token=${token}`;
   const text = `Hi ${name},
   Congratulations! Your account has been created. 
   You are almost there. Complete the final step by verifying your email at: ${verificationEmailUrl}
@@ -109,7 +109,7 @@ export const sendSuccessfulRegistration = async (to: string, token: string, name
 export const sendAccountCreated = async (to: string, name: string): Promise<void> => {
   const subject = 'Account Created Successfully';
   // replace this url with the link to the email verification page of your front-end app
-  const loginUrl = 'http://161.35.114.79/v1/auth/login';
+  const loginUrl = 'https://161.35.114.79/v1/auth/login';
   const text = `Hi ${name},
   Congratulations! Your account has been created successfully. 
   You can now login at: ${loginUrl}

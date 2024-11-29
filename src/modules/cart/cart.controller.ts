@@ -58,38 +58,40 @@ export const getCarts = catchAsync(async (req: Request, res: Response) => {
 // Update item quantity in the cart minus the quantity
 
 
-// Remove item from the cart
 // export const removeItemFromCart = catchAsync(async (req: Request, res: Response) => {
-//   const { cartId } = req.query; // Extract cartId from query params
+//   // Extract `userId` from query parameters
+//   const cartId = req.body['cartId'] as string;
 
-//   if (!mongoose.Types.ObjectId.isValid(cartId as string)) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid cartId');
+//   // Check if `userId` is valid
+//   if (!cartId || !mongoose.Types.ObjectId.isValid(cartId)) {
+//     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid or missing user ID');
 //   }
-//   // Call the service to delete the cart
-//   await cartService.removeItem(cartId as string);
+//   // Fetch products associated with the `userId`
+//    await cartService.removeItem(new mongoose.Types.ObjectId(cartId));
 
-//   res.status(httpStatus.OK).send({
+//     res.status(httpStatus.OK).send({
 //     status: true,
-//     message: 'Cart deleted successfully',
+//     message: 'Cart removed',
 //   });
 // });
 
 export const removeItemFromCart = catchAsync(async (req: Request, res: Response) => {
-  // Extract `userId` from query parameters
-  const cartId = req.query['cartId'] as string;
+  const { productId, userId } = req.body;
 
-  // Check if `userId` is valid
-  if (!cartId || !mongoose.Types.ObjectId.isValid(cartId)) {
+  if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid or missing product ID');
+  }
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid or missing user ID');
   }
-  // Fetch products associated with the `userId`
-   await cartService.removeItem(new mongoose.Types.ObjectId(cartId));
-
-    res.status(httpStatus.OK).send({
+  await cartService.removeItem(userId, productId);
+ 
+  res.status(httpStatus.OK).send({
     status: true,
-    message: 'Cart removed',
+    message: 'Item removed from cart',
   });
 });
+
 
 // Clear the cart
 export const clearCart = catchAsync(async (req: Request, res: Response) => {
