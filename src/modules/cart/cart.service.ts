@@ -117,13 +117,17 @@ export const getCarts = async (userId: string) => {
 // };
 export const removeItem = async (productId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) => {
   // Find and delete the cart associated with the userId and productId
-  const cart = await Cart.findOneAndDelete({ productId:productId, userId:userId });
+// Convert strings to ObjectIds
+  const productObjectId = new mongoose.Types.ObjectId(productId);
+  const userObjectId = new mongoose.Types.ObjectId(userId);
+
+  const cart = await Cart.findOneAndDelete({ productId: productObjectId, userId: userObjectId });
 
   if (!cart) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found for the given user and product');
   }
 
-  return { message: 'Cart item removed successfully', cart };
+  return { message: 'Cart item removed successfully' };
 };
 // Clear cart
 export const clearCart = async (userId: string) => {
