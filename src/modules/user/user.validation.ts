@@ -20,8 +20,8 @@ const createUserBody: Record<keyof NewCreatedUser, any> = {
     country: Joi.string().required(),
     postalCode: Joi.string().required(),
   }).required(),
-  nin: Joi.string().required().length(11), // Assuming NIN is 11 digits
-  itemToSell: Joi.string().required().valid('electronics', 'clothing', 'food', 'furniture', 'other'),
+  nin: Joi.string().length(11), // Assuming NIN is 11 digits
+  itemToSell: Joi.string().valid('electronics', 'clothing', 'food', 'furniture', 'other'),
   businessName: Joi.string().allow(null, ''),
   socialMediaLinks: Joi.object({
     facebook: Joi.string().uri().allow(null, ''),
