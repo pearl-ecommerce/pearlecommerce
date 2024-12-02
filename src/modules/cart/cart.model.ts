@@ -39,7 +39,6 @@ const cartSchema = new Schema<ICartDoc>(
       type: Schema.Types.ObjectId,
       ref: 'User', // Links the cart to a specific user
       required: true,
-      unique: true, // Ensures one cart per user
     },
    
     totalPrice: {
