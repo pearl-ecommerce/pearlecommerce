@@ -14,9 +14,9 @@ export const addItem = async (userId: string, productId: string, cartData: NewCa
     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
   }
   // Check if a cart exists with the same userId and productId
-  const existingCart = await Cart.findOne({ userId, 'productId': productId });
+  const existingCart = await Cart.findOne({ userId, productId });
   if (existingCart) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Product already exists in cart');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Product already exists in the cart for this user');
   }
   // Create a new cart for the userId and the new product
   const cart = await Cart.create(cartData);
