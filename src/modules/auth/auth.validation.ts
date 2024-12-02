@@ -15,7 +15,9 @@ const registerBody: Record<keyof NewRegisteredUser, any> = {
    lastseen: Joi.date(),
   active: Joi.string(),
   followers: Joi.array().items(Joi.string()).default([]),   // Add this
-  following: Joi.array().items(Joi.string()).default([]),   // Add this
+  following: Joi.array().items(Joi.string()).default([]),
+  userId: Joi.string(),
+// Add this
 };
 
 export const register = {
