@@ -97,7 +97,8 @@ export const removeItemFromCart = catchAsync(async (req: Request, res: Response)
 export const clearCart = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.query; // Extract userId from query parameters
 
-  if (!mongoose.Types.ObjectId.isValid(userId as string)) {
+  // Ensure userId is a valid string before validation
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId as string)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid userId');
   }
 
@@ -105,4 +106,4 @@ export const clearCart = catchAsync(async (req: Request, res: Response) => {
   await cartService.clearCart(userId as string);
 
   res.status(httpStatus.NO_CONTENT).send();
-});
+});;

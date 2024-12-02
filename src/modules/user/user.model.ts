@@ -96,6 +96,10 @@ const userSchema = new Schema<IUserDoc>(
       enum: roles,
       default: 'seller',
     },
+  userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
     isEmailVerified: {
       type: Boolean,
       default: false,
@@ -120,7 +124,6 @@ const userSchema = new Schema<IUserDoc>(
         ref: 'User',
       },
     ],
-
     
      lastseen: {
         type: Date,

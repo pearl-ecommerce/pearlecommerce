@@ -38,7 +38,7 @@ const cartSchema = new Schema<ICartDoc>(
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User', // Links the cart to a specific user
-      required: true,
+    
     },
    
     totalPrice: {
@@ -67,3 +67,5 @@ cartSchema.plugin(paginate);
 const Cart = model<ICartDoc, ICartModel>('Cart', cartSchema);
 
 export default Cart;
+
+

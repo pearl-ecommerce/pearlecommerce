@@ -38,6 +38,7 @@ const createUserBody: Record<keyof NewCreatedUser, any> = {
    active: Joi.boolean().default(true), 
  followers: Joi.string().custom(objectId),
   following: Joi.string().custom(objectId),
+  userId: Joi.string().custom(objectId),
 
 
 };
@@ -59,7 +60,7 @@ export const getUsers = {
     page: Joi.number().integer(),
    followers: Joi.string().custom(objectId),
   following: Joi.string().custom(objectId),
-
+  userId: Joi.string().custom(objectId),
 
   }),
 };
