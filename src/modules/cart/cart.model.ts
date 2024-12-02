@@ -56,6 +56,8 @@ const cartSchema = new Schema<ICartDoc>(
     timestamps: true, // Adds createdAt and updatedAt fields
   }
 );
+cartSchema.index({ userId: 1, productId: 1 }, { unique: true });
+
 
 // Add plugins for toJSON and pagination
 cartSchema.plugin(toJSON);

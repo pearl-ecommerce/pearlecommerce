@@ -8,20 +8,38 @@ import { ICartDoc, NewCart } from './cart.interfaces';
 
 
 // Add item to the cart
-export const addItem = async (userId: string, productId: string, cartData: NewCart):Promise<ICartDoc> => {
+// export const addItem = async (userId: string, productId: string, cartData: NewCart):Promise<ICartDoc> => {
+//   const product = await Product.findById(productId);
+//   if (!product) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
+//   }
+//   // Check if a cart exists with the same userId and productId
+//   const existingCart = await Cart.findOne({ userId, productId });
+//   if (existingCart) {
+//     throw new ApiError(httpStatus.BAD_REQUEST, 'Product already exists in the cart for this user');
+//   }
+//   // Create a new cart for the userId and the new product
+//   const cart = await Cart.create(cartData);
+//   return cart;
+// };
+
+export const addItem = async (userId: string, productId: string, cartData: NewCart): Promise<ICartDoc> => {
   const product = await Product.findById(productId);
   if (!product) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
   }
-  // Check if a cart exists with the same userId and productId
+
+  // Check if the product is already in the user's cart
   const existingCart = await Cart.findOne({ userId, productId });
   if (existingCart) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Product already exists in the cart for this user');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Product already exists in the cart');
   }
-  // Create a new cart for the userId and the new product
-  const cart = await Cart.create(cartData);
+
+  // Create a new cart item
+  const cart = await Cart.create({ ...cartData, userId, productId });
   return cart;
 };
+
 
 // Get cart by cartID
 export const getCartByUserId = async (id: mongoose.Types.ObjectId): Promise<ICartDoc | null> => Cart.findById(id);
