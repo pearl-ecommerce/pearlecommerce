@@ -40,8 +40,8 @@ export interface IUser {
   active: boolean;
   followers: mongoose.Types.ObjectId[];
   following: mongoose.Types.ObjectId[];
-  userId: mongoose.Types.ObjectId; 
   imageUrl: string;
+  userId?: string;
 }
 
 export interface IUserDoc extends IUser, Document {
