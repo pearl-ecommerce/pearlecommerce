@@ -143,7 +143,7 @@ export const removeItem = async (productId: mongoose.Types.ObjectId, userId: mon
   return { message: 'Cart item removed successfully' };
 };
 // Clear cart
-export const clearCart = async (userId: mongoose.Types.ObjectId) => {
+export const clearCart = async (userId: string) => {
   // Delete all carts associated with the userId
   await Cart.deleteMany({ userId });
 };
