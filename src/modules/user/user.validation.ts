@@ -30,8 +30,8 @@ const createUserBody: Record<keyof NewCreatedUser, any> = {
     linkedin: Joi.string().uri().allow(null, ''),
   }),
   bankAccount: Joi.object({
-    accountNumber: Joi.string().required().length(10), // Assuming account number is 10 digits
-    bankName: Joi.string().required(),
+    accountNumber: Joi.string().length(10), // Assuming account number is 10 digits
+    bankName: Joi.string(),
   }).required(),
   role: Joi.string().required().valid('user', 'admin', 'seller'),
    lastseen: Joi.date(),

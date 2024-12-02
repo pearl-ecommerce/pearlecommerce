@@ -14,7 +14,7 @@ export const addItem = async (userId: string, productId: string, cartData: NewCa
     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
   }
   // Check if a cart exists with the same userId and productId
-  const existingCart = await Cart.findOne({ userId, 'items.productId': productId });
+  const existingCart = await Cart.findOne({ userId, 'productId': productId });
   if (existingCart) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Product already exists in cart');
   }
@@ -120,13 +120,10 @@ export const removeItem = async (productId: mongoose.Types.ObjectId, userId: mon
 // Convert strings to ObjectIds
   const productObjectId = new mongoose.Types.ObjectId(productId);
   const userObjectId = new mongoose.Types.ObjectId(userId);
-
   const cart = await Cart.findOneAndDelete({ productId: productObjectId, userId: userObjectId });
-
   if (!cart) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found for the given user and product');
   }
-
   return { message: 'Cart item removed successfully' };
 };
 // Clear cart
