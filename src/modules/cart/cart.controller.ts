@@ -23,8 +23,8 @@ export const createCart = catchAsync(async (req: Request, res: Response) => {
 
 // Get user's cart
 export const getCarts = catchAsync(async (req: Request, res: Response) => {
-  const { userId } = req.params;
-  if (!userId || typeof userId !== 'string') {
+  const { userId } = req.body;
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid or missing userId');
   }
   const cart = await cartService.getCarts(userId);
