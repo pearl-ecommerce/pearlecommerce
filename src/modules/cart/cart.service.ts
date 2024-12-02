@@ -28,13 +28,11 @@ export const addItem = async (userId: string, productId: string, cartData: NewCa
   if (!product) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
   }
-
   // Check if the product is already in the user's cart
   const existingCart = await Cart.findOne({ userId, productId });
   if (existingCart) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Product already exists in the cart');
   }
-
   // Create a new cart item
   const cart = await Cart.create({ ...cartData, userId, productId });
   return cart;

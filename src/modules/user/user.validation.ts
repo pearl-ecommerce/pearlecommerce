@@ -14,12 +14,12 @@ const createUserBody: Record<keyof NewCreatedUser, any> = {
   description: Joi.string(),
   discount: Joi.string(),
   address: Joi.object({
-    street: Joi.string().required(),
-    city: Joi.string().required(),
-    state: Joi.string().required(),
-    country: Joi.string().required(),
-    postalCode: Joi.string().required(),
-  }).required(),
+    street: Joi.string(),
+    city: Joi.string(),
+    state: Joi.string(),
+    country: Joi.string(),
+    postalCode: Joi.string(),
+  }),
   nin: Joi.string().length(11), // Assuming NIN is 11 digits
   itemToSell: Joi.string().valid('electronics', 'clothing', 'food', 'furniture', 'other'),
   businessName: Joi.string().allow(null, ''),
@@ -32,7 +32,7 @@ const createUserBody: Record<keyof NewCreatedUser, any> = {
   bankAccount: Joi.object({
     accountNumber: Joi.string().length(10), // Assuming account number is 10 digits
     bankName: Joi.string(),
-  }).required(),
+  }),
   role: Joi.string().required().valid('user', 'admin', 'seller'),
    lastseen: Joi.date(),
    active: Joi.boolean().default(true), 
