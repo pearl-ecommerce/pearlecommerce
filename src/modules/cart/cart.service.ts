@@ -106,16 +106,25 @@ export const getCarts = async (userId: string) => {
 //   await Cart.findByIdAndDelete(cartId);
 // };
 
+// export const removeItem = async (productId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) => {
+//   // Find the cart associated with the userId and containing the productId
+//   const cart = await Cart.findOne({ userId, "products.productId": productId });
+//   if (!cart) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found or product not in the cart');
+//   }
+//   // Delete the cart
+//   await Cart.deleteOne({ _id: cart._id });
+// };
 export const removeItem = async (productId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) => {
-  // Find the cart associated with the userId and containing the productId
-  const cart = await Cart.findOne({ userId, "products.productId": productId });
-  if (!cart) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found or product not in the cart');
-  }
-  // Delete the cart
-  await Cart.deleteOne({ _id: cart._id });
-};
+  // Find and delete the cart associated with the userId and productId
+  const cart = await Cart.findOneAndDelete({ userId, productId });
 
+  if (!cart) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found for the given user and product');
+  }
+
+  return { message: 'Cart item removed successfully', cart };
+};
 // Clear cart
 export const clearCart = async (userId: string) => {
   // Delete all carts associated with the userId
