@@ -8,7 +8,7 @@ import categoriesRoute from './categories.route';
 import paymentRoute from './payment.route';
 import orderRoute from './order.route';
 import notificationRoute from './notification.route';
-import cartRoute from './cart.route';
+import bundleRoute from './bundle.route';
 import pricingRoute from './pricing.route';
 import discountRoute from './discount.route';
 
@@ -64,8 +64,8 @@ const defaultIRoute: IRoute[] = [
     route: pricingRoute,
   },
     {
-    path: '/cart',
-    route: cartRoute,
+    path: '/bundle',
+    route: bundleRoute,
   },
    {
     path: '/discount',

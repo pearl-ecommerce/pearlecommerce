@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import catchAsync from '../utils/catchAsync';
 import ApiError from '../errors/ApiError';
-import * as cartService from './cart.service';
+import * as cartService from './bundle.service';
 
 // Add item to the cart
 // export const createCart = catchAsync(async (req: Request, res: Response) => {
@@ -21,7 +21,7 @@ import * as cartService from './cart.service';
 //   });
 // });
 
-export const createCart = catchAsync(async (req: Request, res: Response) => {
+export const createBundle = catchAsync(async (req: Request, res: Response) => {
   const { userId, productId, quantity, price } = req.body;
 
   // Validate userId and productId
@@ -47,7 +47,7 @@ export const createCart = catchAsync(async (req: Request, res: Response) => {
 });
 
 // Get user's cart
-export const getCarts = catchAsync(async (req: Request, res: Response) => {
+export const getBundles = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.body;
   if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid or missing userId');
@@ -65,7 +65,7 @@ export const getCarts = catchAsync(async (req: Request, res: Response) => {
 
 
 
-export const allgetCarts = catchAsync(async (_req: Request, res: Response) => {
+export const allgetBundles = catchAsync(async (_req: Request, res: Response) => {
   const carts = await cartService.allgetCarts();
 
   if (!carts || carts.length === 0) {
@@ -78,43 +78,9 @@ export const allgetCarts = catchAsync(async (_req: Request, res: Response) => {
     data: carts,
   });
 });
-// Update item quantity in the cart plus quantity
-// export const updateItemQuantityplus = catchAsync(async (req: Request, res: Response) => {
-//   const { userId, productId } = req.body;
-
-//   if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(productId)) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid userId or productId');
-//   }
-
-//   const cart = await cartService.updateItemQuantityplus(userId, productId);
-//   res.status(httpStatus.OK).send({
-//     status: true,
-//     message: 'Item quantity updated successfully',
-//     data: cart,
-//   });
-// });
-
-// Update item quantity in the cart minus the quantity
 
 
-// export const removeItemFromCart = catchAsync(async (req: Request, res: Response) => {
-//   // Extract `userId` from query parameters
-//   const cartId = req.body['cartId'] as string;
-
-//   // Check if `userId` is valid
-//   if (!cartId || !mongoose.Types.ObjectId.isValid(cartId)) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid or missing user ID');
-//   }
-//   // Fetch products associated with the `userId`
-//    await cartService.removeItem(new mongoose.Types.ObjectId(cartId));
-
-//     res.status(httpStatus.OK).send({
-//     status: true,
-//     message: 'Cart removed',
-//   });
-// });
-
-export const removeItemFromCart = catchAsync(async (req: Request, res: Response) => {
+export const removeItemFromBundle = catchAsync(async (req: Request, res: Response) => {
   const { productId, userId } = req.body;
 
   if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
@@ -133,7 +99,7 @@ export const removeItemFromCart = catchAsync(async (req: Request, res: Response)
 
 
 // Clear the cart
-export const clearCart = catchAsync(async (req: Request, res: Response) => {
+export const clearBundle = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.body;
 
   if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {

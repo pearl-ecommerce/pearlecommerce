@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
-import Cart from './cart.model';
+import Cart from './bundle.model';
 import User from '../user/user.model';
 import Product from '../product/product.model';
 import ApiError from '../errors/ApiError';
 import httpStatus from 'http-status';
 // import { ICartDoc, NewCart } from './cart.interfaces';
-import { ICartDoc } from './cart.interfaces';
+import { ICartDoc } from './bundle.interfaces';
 
 
 

@@ -4,7 +4,7 @@ import { QueryResult } from '../paginate/paginate';
 // Define the structure for a single cart item
 
 // Define the cart document interface
-export interface ICart {
+export interface IBundle {
 userId: mongoose.Types.ObjectId;
   productId: mongoose.Types.ObjectId;
   quantity: number;
@@ -16,13 +16,13 @@ userId: mongoose.Types.ObjectId;
   color: string | null;
 }
 
-export interface ICartDoc extends ICart, Document {}
+export interface IBundleDoc extends IBundle, Document {}
 
 // Define the cart model interface
-export interface ICartModel extends Model<ICartDoc> {
+export interface IBundleModel extends Model<IBundleDoc> {
   paginate(filter: Record<string, any>, options: Record<string, any>): Promise<QueryResult>;
 }
 
-export type UpdateCartBody = Partial<ICart>;
+export type UpdateBundleBody = Partial<IBundle>;
 
-export type NewCart = ICart;
+export type NewBundle = IBundle;

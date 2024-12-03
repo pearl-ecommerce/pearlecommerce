@@ -1,26 +1,26 @@
 import { Schema, model } from 'mongoose';
 import toJSON from '../toJSON/toJSON';
 import paginate from '../paginate/paginate';
-import { ICartDoc, ICartModel } from './cart.interfaces';
+import { IBundleDoc, IBundleModel } from './bundle.interfaces';
 
 // Define schema for cart items 
-const cartSchema = new Schema<ICartDoc>(
+const bundleSchema = new Schema<IBundleDoc>(
   {
     
     productId: {
       type: Schema.Types.ObjectId,
       ref: 'Product',
-      required: true,
+      
     },
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      
     },
     price: {
       type: Number,
       min: 0,
-      required: true,
+      
     },
     quantity: {
       type: Number,
@@ -56,12 +56,12 @@ const cartSchema = new Schema<ICartDoc>(
 
 
 // Add plugins for toJSON and pagination
-cartSchema.plugin(toJSON);
-cartSchema.plugin(paginate);
+bundleSchema.plugin(toJSON);
+bundleSchema.plugin(paginate);
 
 // Create and export the Cart model
-const Cart = model<ICartDoc, ICartModel>('Cart', cartSchema);
+const Bundle = model<IBundleDoc, IBundleModel>('Bundle', bundleSchema);
 
-export default Cart;
+export default Bundle;
 
 
