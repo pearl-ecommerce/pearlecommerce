@@ -23,7 +23,7 @@ import { ICartDoc, NewCart } from './cart.interfaces';
 //   return cart;
 // };
 
-export const addItem = async (userId: string, productId: string, cartData: NewCart): Promise<ICartDoc> => {
+export const addItem = async (userId: string, productId: string): Promise<ICartDoc> => {
   const product = await Product.findById(productId);
   if (!product) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
@@ -34,7 +34,8 @@ export const addItem = async (userId: string, productId: string, cartData: NewCa
     throw new ApiError(httpStatus.BAD_REQUEST, 'Product already exists in the cart');
   }
   // Create a new cart item
-  const cart = await Cart.create({ ...cartData });
+  // const cart = await Cart.create({ ...cartData });
+  const cart = await Cart.create({ userId, productId });
   return cart;
 };
 

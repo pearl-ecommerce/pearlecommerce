@@ -23,6 +23,7 @@ export const getCarts = {
   query: Joi.object().keys({
     cartId: Joi.string().custom(objectId),
     productId: Joi.string().custom(objectId),
+    userId: Joi.string().custom(objectId),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),

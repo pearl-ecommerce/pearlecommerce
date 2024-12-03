@@ -13,7 +13,7 @@ export const createCart = catchAsync(async (req: Request, res: Response) => {
   if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(productId)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid userId or productId');
   }
-  const cart = await cartService.addItem(userId, productId, req.body);
+  const cart = await cartService.addItem(userId, productId);
   res.status(httpStatus.OK).send({
     status: true,
     message: 'Item added to cart successfully',
