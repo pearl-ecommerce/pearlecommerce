@@ -52,7 +52,7 @@ const cartSchema = new Schema<ICartDoc>(
   }
  
 );
-cartSchema.index({ userId: 1, productId: 1 }, { unique: true });
+// cartSchema.index({ userId: 1, productId: 1 }, { unique: true });
 
 
 // Add plugins for toJSON and pagination

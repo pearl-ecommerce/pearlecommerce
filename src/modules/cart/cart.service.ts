@@ -144,6 +144,9 @@ export const removeItem = async (productId: mongoose.Types.ObjectId, userId: mon
 // Convert strings to ObjectIds
   const productObjectId = new mongoose.Types.ObjectId(productId);
   const userObjectId = new mongoose.Types.ObjectId(userId);
+console.log('Product ObjectId:', productObjectId);
+console.log('User ObjectId:', userObjectId);
+
   const cart = await Cart.findOneAndDelete({ productId: productObjectId, userId: userObjectId });
   if (!cart) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found for the given user and product');
