@@ -52,7 +52,7 @@ export const getBundles = catchAsync(async (req: Request, res: Response) => {
   if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid or missing userId');
   }
-  const cart = await cartService.getCarts(userId);
+  const cart = await cartService.getBundles(userId);
   if (!cart) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found');
   }
@@ -66,7 +66,7 @@ export const getBundles = catchAsync(async (req: Request, res: Response) => {
 
 
 export const allgetBundles = catchAsync(async (_req: Request, res: Response) => {
-  const carts = await cartService.allgetCarts();
+  const carts = await cartService.allGetBundles();
 
   if (!carts || carts.length === 0) {
     throw new ApiError(httpStatus.NOT_FOUND, 'No carts found');
@@ -107,7 +107,7 @@ export const clearBundle = catchAsync(async (req: Request, res: Response) => {
   }
 
   // Call the service with the userId as a string
-  await cartService.clearCart(userId);
+  await cartService.clearBundle(userId);
 
   res.status(httpStatus.NO_CONTENT).send();
 });
