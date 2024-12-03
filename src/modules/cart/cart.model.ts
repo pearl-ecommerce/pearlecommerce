@@ -8,7 +8,7 @@ const cartSchema = new Schema<ICartDoc>(
   {
     productId: {
       type: Schema.Types.ObjectId,
-      ref: 'Product', // Links to the product model
+      ref: 'Product', 
       required: true,
     },
   
@@ -37,7 +37,7 @@ const cartSchema = new Schema<ICartDoc>(
   
     userId: {
       type: Schema.Types.ObjectId,
-      ref: 'User', // Links the cart to a specific user
+      ref: 'User', 
     
     },
    
@@ -49,7 +49,7 @@ const cartSchema = new Schema<ICartDoc>(
     currency: {
       type: String,
      
-      default: 'USD', // Default currency
+      default: 'NG', // Default currency
     },
   },
   {

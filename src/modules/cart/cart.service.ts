@@ -34,7 +34,7 @@ export const addItem = async (userId: string, productId: string, cartData: NewCa
     throw new ApiError(httpStatus.BAD_REQUEST, 'Product already exists in the cart');
   }
   // Create a new cart item
-  const cart = await Cart.create({ ...cartData, userId, productId });
+  const cart = await Cart.create({ ...cartData });
   return cart;
 };
 

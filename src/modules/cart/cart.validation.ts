@@ -3,7 +3,7 @@ import { objectId } from '../validate/custom.validation';
 import { NewCart } from './cart.interfaces';
 
 const createCartBody: Record<keyof NewCart, any> = {
-  userId: Joi.string().custom(objectId).required(),
+  userId: Joi.string().custom(objectId),
   productId: Joi.string().custom(objectId).required(),
   quantity: Joi.number().integer().min(1),
   totalPrice: Joi.number().min(0),
@@ -34,7 +34,7 @@ export const getCarts = {
 
 export const getCart = {
   params: Joi.object().keys({
-    cartId: Joi.string().custom(objectId).required(),
+    userId: Joi.string().custom(objectId).required(),
   }),
 };
 
@@ -53,13 +53,13 @@ export const updateCart = {
 
 export const deleteCart = {
   params: Joi.object().keys({
-    cartId: Joi.string().custom(objectId).required(),
+    userId: Joi.string().custom(objectId).required(),
   }),
 };
 
 export const removeCart = {
   query: Joi.object().keys({
-    cartId: Joi.string().custom(objectId),
+    userId: Joi.string().custom(objectId),
     productId: Joi.string().custom(objectId),
   }),
 };
