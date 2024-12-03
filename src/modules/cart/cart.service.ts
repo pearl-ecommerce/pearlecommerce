@@ -4,40 +4,41 @@ import User from '../user/user.model';
 import Product from '../product/product.model';
 import ApiError from '../errors/ApiError';
 import httpStatus from 'http-status';
-import { ICartDoc, NewCart } from './cart.interfaces';
+// import { ICartDoc, NewCart } from './cart.interfaces';
+import { ICartDoc } from './cart.interfaces';
 
 
-// Add item to the cart
-// export const addItem = async (userId: string, productId: string, cartData: NewCart):Promise<ICartDoc> => {
-//   const product = await Product.findById(productId);
-//   if (!product) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
-//   }
-//   // Check if a cart exists with the same userId and productId
-//   const existingCart = await Cart.findOne({ userId, productId });
-//   if (existingCart) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'Product already exists in the cart for this user');
-//   }
-//   // Create a new cart for the userId and the new product
-//   const cart = await Cart.create(cartData);
-//   return cart;
-// };
 
-export const addItem = async (userId: string, productId: string): Promise<ICartDoc> => {
+export const addItem = async (userId: string, productId: string,  quantity: number,): Promise<ICartDoc> => {
   const product = await Product.findById(productId);
   if (!product) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
   }
-  // Check if the product is already in the user's cart
-  const existingCart = await Cart.findOne({ userId, productId });
+   // Step 2: Calculate the total price
+  const price = product.price;
+  const totalPrice = price * quantity;
+
+    const existingCart = await Cart.findOne({ userId, productId });
+
   if (existingCart) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Product already exists in the cart');
+    // Product already exists in cart, update quantity and totalPrice
+    existingCart.quantity += quantity;
+    existingCart.totalPrice = existingCart.quantity * price;
+    await existingCart.save();
+    return existingCart;
+  } else {
+    // Product does not exist in the cart, create a new entry
+    const newCart = await Cart.create({
+      userId,
+      productId,
+      quantity,
+      price,
+      totalPrice,
+    });
+    return newCart;
   }
-  // Create a new cart item
-  // const cart = await Cart.create({ ...cartData });
-  const cart = await Cart.create({ userId, productId });
-  return cart;
 };
+
 
 
 // Get cart by cartID
@@ -67,6 +68,12 @@ export const getCarts = async (userId: string) => {
   });
 
   return updatedCarts;
+};
+
+
+export const allgetCarts = async (): Promise<ICartDoc[]> => {
+  const carts = await Cart.find(); // Populate related product details if needed
+  return carts;
 };
 
 // Update item quantity in the cart

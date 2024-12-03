@@ -6,25 +6,29 @@ import { ICartDoc, ICartModel } from './cart.interfaces';
 // Define schema for cart items 
 const cartSchema = new Schema<ICartDoc>(
   {
+    
     productId: {
       type: Schema.Types.ObjectId,
-      ref: 'Product', 
+      ref: 'Product',
       required: true,
     },
-  
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     price: {
       type: Number,
-     
       min: 0,
+      required: true,
     },
     quantity: {
       type: Number,
-     
       min: 1,
+      required: true,
     },
     imageUrl: {
       type: [String],
-      
     },
     size: {
       type: String,
@@ -34,27 +38,19 @@ const cartSchema = new Schema<ICartDoc>(
       type: String,
       default: null,
     },
-  
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: 'User', 
-    
-    },
-   
     totalPrice: {
       type: Number,
-      
-      default: 0, // Initial total price is zero
+      default: 0,
     },
     currency: {
       type: String,
-     
-      default: 'NG', // Default currency
+      default: 'NG',
     },
   },
   {
-    timestamps: true, // Adds createdAt and updatedAt fields
+    timestamps: true,
   }
+ 
 );
 cartSchema.index({ userId: 1, productId: 1 }, { unique: true });
 

@@ -11,6 +11,8 @@ router
 
 router.get('/getCarts', validate(cartValidation.getCarts), cartController.getCarts);
 
+router.get('/allgetCarts', validate(cartValidation.getCarts), cartController.allgetCarts);
+
 router
   .route('/:cartId')
 //   .get(validate(cartValidation.getCart), cartController.getCart)

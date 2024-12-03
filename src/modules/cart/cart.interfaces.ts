@@ -5,15 +5,15 @@ import { QueryResult } from '../paginate/paginate';
 
 // Define the cart document interface
 export interface ICart {
-   productId: mongoose.Types.ObjectId; // Reference to the product 
-  price: number; 
-  quantity: number; 
-  imageUrl: string[]; 
-  size?: string; 
-  color?: string; 
-  userId: mongoose.Types.ObjectId; 
-  totalPrice: number; 
-  currency: string; 
+userId: mongoose.Types.ObjectId;
+  productId: mongoose.Types.ObjectId;
+  quantity: number;
+  price: number;
+  totalPrice: number;
+  currency: string;
+  imageUrl: string[];
+  size: string | null;
+  color: string | null;
 }
 
 export interface ICartDoc extends ICart, Document {}
