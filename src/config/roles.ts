@@ -3,7 +3,7 @@ const allRoles = {
     'manageCategories', 'getCategories', 'managePayments', 'getPayments', 'managePayments',
     'manageOrder', 'getOrders', 'manageSellers', 'verify-and-create-order',
     'become-seller', 'follow', 'unfollow', 'followers', 'userProducts', 'adminlogin',
-    'manageCart', 'getCarts', 'removecart',
+    'manageBundle', 'getBundles', 'removebundle','allgetBundles',
     'managePricing', 'getPricing',
     'manageDiscount','getCarts','getDiscount','addDiscountToUser'
   ],
@@ -14,13 +14,16 @@ const allRoles = {
     'manageOrder', 'getOrders', 'manageSellers', 'verify-and-create-order',
     'become-seller', 'follow', 'unfollow', 'followers', 'userProducts', 'adminlogin',
     'manageCart', 'getCarts', 'removecart', 'managePricing', 'getPricing',
-    'manageDiscount','getCarts','getDiscount','addDiscountToUser'
+    'manageDiscount', 'getCarts', 'getDiscount', 'addDiscountToUser',
+        'manageBundle', 'getBundles', 'removebundle','allgetBundles',
+
   ],
   seller: ['getProducts', 'searchProducts', 'manageProducts', 'getUsers', 'manageSellers', 'getStores', 'manageSellers', 'manageUsers',
     'manageCategories', 'getCategories', 'managePayments', 'getPayments', 'managePayments',
     'manageOrder', 'getOrders', 'manageSellers', 'verify-and-create-order',
     'become-seller', 'follow', 'unfollow', 'followers', 'userProducts', 'adminlogin',
-    'manageCart','getCarts','removecart','managePricing','getPricing','manageDiscount','getCarts','getDiscount','addDiscountToUser'
+    'manageCart','getCarts','removecart','managePricing','getPricing','manageDiscount','getCarts','getDiscount','addDiscountToUser','manageBundle', 'getBundles', 'removebundle','allgetBundles',
+
   ]
 };
 
