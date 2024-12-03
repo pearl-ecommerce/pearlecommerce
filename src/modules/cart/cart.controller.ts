@@ -65,7 +65,7 @@ export const getCarts = catchAsync(async (req: Request, res: Response) => {
 
 
 
-export const allgetCarts = catchAsync(async (req: Request, res: Response) => {
+export const allgetCarts = catchAsync(async (_req: Request, res: Response) => {
   const carts = await cartService.allgetCarts();
 
   if (!carts || carts.length === 0) {
