@@ -140,14 +140,11 @@ export const allgetCarts = async (): Promise<ICartDoc[]> => {
 //   await Cart.deleteOne({ _id: cart._id });
 // };
 export const removeItem = async (productId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) => {
-  // Find and delete the cart associated with the userId and productId
-// Convert strings to ObjectIds
-  const productObjectId = new mongoose.Types.ObjectId(productId);
-  const userObjectId = new mongoose.Types.ObjectId(userId);
-console.log('Product ObjectId:', productObjectId);
-console.log('User ObjectId:', userObjectId);
 
-  const cart = await Cart.findOneAndDelete({ productId: productObjectId, userId: userObjectId });
+console.log('Product ObjectId:', productId);
+console.log('User ObjectId:', userId);
+const cart = await Cart.findOneAndDelete({ userId, productId });
+ 
   if (!cart) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found for the given user and product');
   }
