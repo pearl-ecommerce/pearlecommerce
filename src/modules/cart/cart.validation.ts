@@ -34,13 +34,13 @@ export const getCarts = {
 
 export const getCart = {
   params: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+    cartId: Joi.string().custom(objectId).required(),
   }),
 };
 
 export const updateCart = {
   params: Joi.object().keys({
-    cartId: Joi.string().custom(objectId),
+    cartId: Joi.string().custom(objectId).required(),
   }),
   body: Joi.object()
     .keys({
@@ -53,13 +53,13 @@ export const updateCart = {
 
 export const deleteCart = {
   params: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+    cartId: Joi.string().custom(objectId).required(),
   }),
 };
 
 export const removeCart = {
   query: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+    cartId: Joi.string().custom(objectId),
     productId: Joi.string().custom(objectId),
   }),
 };
