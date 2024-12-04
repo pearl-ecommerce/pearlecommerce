@@ -5,12 +5,7 @@ import { IOrderDoc, IOrderModel } from './order.interfaces';
 
 const orderSchema = new Schema<IOrderDoc>(
   {
-    orderId: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-    },
+   
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -42,7 +37,7 @@ const orderSchema = new Schema<IOrderDoc>(
     paymentMethod: {
       type: String,
       enum: ['card', 'paypal', 'bank_transfer'],
-      required: true,
+      
     },
     paymentStatus: {
       type: String,

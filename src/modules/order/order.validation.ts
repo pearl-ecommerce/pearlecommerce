@@ -11,13 +11,12 @@ const orderItemSchema: Joi.SchemaMap<IOrderItem> = {
 
 // Define the schema for creating an order
 const createOrderBody: Record<keyof NewOrder, any> = {
-  orderId: Joi.string().required(),
   userId: Joi.string().custom(objectId).required(),
   items: Joi.array().items(Joi.object(orderItemSchema)).required(),
   amount: Joi.number().precision(2).required(),
   email: Joi.string(),
-  paymentMethod: Joi.string().valid('card', 'paypal', 'bank_transfer').required(),
-  paymentStatus: Joi.string().valid('pending', 'completed', 'failed').required(),
+  paymentMethod: Joi.string().valid('card', 'paypal', 'bank_transfer'),
+  paymentStatus: Joi.string().valid('pending', 'completed', 'failed'),
   shippingAddress: Joi.string().required(),
   billingAddress: Joi.object({
     address: Joi.string().required(),

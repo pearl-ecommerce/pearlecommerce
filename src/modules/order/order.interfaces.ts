@@ -8,7 +8,6 @@ export interface IOrderItem {
 }
 
 export interface IOrder {
-  orderId: string;
   userId: mongoose.Types.ObjectId;
   items: IOrderItem[];
   amount: number;

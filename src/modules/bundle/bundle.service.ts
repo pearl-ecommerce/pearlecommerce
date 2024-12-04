@@ -72,7 +72,7 @@ export const allGetBundles = async (): Promise<IBundleDoc[]> => {
 export const removeItem = async (productId: string, userId: string): Promise<IBundleDoc> => {
   console.log('Product ObjectId:', productId);
   console.log('User ObjectId:', userId);
-  const bundle = await Bundle.findOneAndDelete({ userId, productId });
+  const bundle = await Bundle.findOneAndDelete({ userId, productId });// this does not delete the
 
   if (!bundle) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Bundle not found for the given user and product');
