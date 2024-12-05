@@ -18,5 +18,6 @@ router
   .delete(auth('manageBundle'), validate(bundleValidation.deleteBundle), bundleController.clearBundle);
 
 router.post('/removebundle', validate(bundleValidation.removeBundle), bundleController.removeItemFromBundle);
+router.post('/removebundlebyid', validate(bundleValidation.removeBundle), bundleController.removeItemFromBundlebyid);
 
 export default router;

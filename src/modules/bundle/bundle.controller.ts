@@ -98,6 +98,20 @@ export const removeItemFromBundle = catchAsync(async (req: Request, res: Respons
 });
 
 
+export const removeItemFromBundlebyid = catchAsync(async (req: Request, res: Response) => {
+  const { bundleId } = req.body;
+
+  if (!bundleId || !mongoose.Types.ObjectId.isValid(bundleId)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid or missing product ID');
+  }
+ 
+  await cartService.removeItembyid(bundleId);
+ 
+  res.status(httpStatus.OK).send({
+    status: true,
+    message: 'Item removed from cart',
+  });
+});
 // Clear the cart
 export const clearBundle = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.body;
@@ -105,9 +119,11 @@ export const clearBundle = catchAsync(async (req: Request, res: Response) => {
   if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid userId');
   }
-
   // Call the service with the userId as a string
   await cartService.clearBundle(userId);
 
-  res.status(httpStatus.NO_CONTENT).send();
+  res.status(httpStatus.OK).send({
+    status: true,
+    message: 'cart item cleared',
+  });
 });

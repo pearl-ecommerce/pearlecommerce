@@ -13,6 +13,7 @@ export const addItem = async (userId: string, productId: string, quantity: numbe
   }
   // Step 2: Calculate the total price
   const price = product.price;
+  const imageUrl = product.imageUrl;
   const totalPrice = price * quantity;
 
   const existingBundle = await Bundle.findOne({ userId, productId });
@@ -31,6 +32,7 @@ export const addItem = async (userId: string, productId: string, quantity: numbe
       quantity,
       price,
       totalPrice,
+      imageUrl,
     });
     return newBundle;
   }
@@ -79,9 +81,22 @@ export const removeItem = async (productId: string, userId: string): Promise<IBu
   }
   return bundle;
 };
+export const removeItembyid = async ( bundleId: string): Promise<IBundleDoc> => {
+ 
+  const bundle = await Bundle.findOneAndDelete({ bundleId, });// this does not delete the
+
+  if (!bundle) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Bundle not found for the given user and product');
+  }
+  return bundle;
+};
 
 // Clear bundle
 export const clearBundle = async (userId: string) => {
   // Delete all bundles associated with the userId
-  await Bundle.deleteMany({ userId });
+  const bundle = await Bundle.deleteMany({ userId });
+   if (!bundle) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Bundle not found for the given user and product');
+  }
+  return bundle;
 };
