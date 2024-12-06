@@ -22,11 +22,11 @@ export const getCategoryWithSubcategories = async (filter: Record<string, any>, 
 
 export const updateCategories = async (
   CategoryId: mongoose.Types.ObjectId,
-  updateBody: UpdateCategoryBody
+  updateBody: UpdateCategoryBody 
 ): Promise<ICategoryDoc | null> => {
   const Categories = await getCategoryId(CategoryId);
   if (!Categories) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Categories not found');
   }
   Object.assign(Categories, updateBody);
   await Categories.save();
