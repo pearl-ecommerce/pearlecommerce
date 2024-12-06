@@ -14,7 +14,7 @@ const PAYSTACK_BASE_URL = 'https://api.paystack.co';
 const paystackInitiatePayment = async (amount: number, email: string) => {
   try {
     const response = await axios.post(
-      `${PAYSTACK_BASE_URL}/transaction/initialize`,
+      `https://api.paystack.co/transaction/initialize`,
       {
         amount: amount * 100, // Paystack expects the amount in kobo
         email,
@@ -24,7 +24,7 @@ const paystackInitiatePayment = async (amount: number, email: string) => {
       },
       {
         headers: {
-          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+          Authorization: `Bearer sk_test_9dfacbeaefe4e9254d1f7ae6ab149bec0270857e`,
           'Content-Type': 'application/json',
         },
       }
