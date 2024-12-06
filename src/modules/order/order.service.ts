@@ -19,7 +19,7 @@ const paystackInitiatePayment = async (amount: number, email: string) => {
         amount: amount * 100, // Paystack expects the amount in kobo
         email,
           // callback_url: 'http://localhost:3000/v1/order/verify-payment', // Replace with your callback URL
-          callback_url: 'www.reselii.com/v1/order/verify-payment',
+          callback_url: 'www.reselii.com/v1/order/verify-and-create-order',
         
       },
       {
