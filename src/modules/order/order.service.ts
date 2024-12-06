@@ -13,11 +13,14 @@ const PAYSTACK_BASE_URL = 'https://api.paystack.co';
 // Function to initiate payment with Paystack
 const paystackInitiatePayment = async (amount: number, email: string) => {
   try {
+     console.log('amount:', amount);
+    console.log('email:', email);
     const response = await axios.post(
       `https://api.paystack.co/transaction/initialize`,
       {
         amount: amount * 100, // Paystack expects the amount in kobo
         email,
+      
           // callback_url: 'http://localhost:3000/v1/order/verify-payment', // Replace with your callback URL
           callback_url: 'www.reselii.com/v1/order/verify-and-create-order',
         
@@ -31,7 +34,7 @@ const paystackInitiatePayment = async (amount: number, email: string) => {
     );
     return response.data;
   } catch (error) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Payment initiation failed');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Payments initiation failed');
   }
 };
 
