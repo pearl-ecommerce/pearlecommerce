@@ -7,7 +7,7 @@ import { IOrderDoc, NewOrder, UpdateOrderBody } from './order.interfaces';
 import User from '../user/user.model';
 import axios from 'axios'; // You might need to install axios for HTTP requests
 
-const PAYSTACK_SECRET_KEY = 'your-paystack-secret-key'; // Replace with your actual Paystack secret key
+const PAYSTACK_SECRET_KEY = 'sk_test_9dfacbeaefe4e9254d1f7ae6ab149bec0270857e'; // Replace with your actual Paystack secret key
 const PAYSTACK_BASE_URL = 'https://api.paystack.co';
 
 // Function to initiate payment with Paystack
@@ -19,7 +19,7 @@ const paystackInitiatePayment = async (amount: number, email: string) => {
         amount: amount * 100, // Paystack expects the amount in kobo
         email,
           // callback_url: 'http://localhost:3000/v1/order/verify-payment', // Replace with your callback URL
-          callback_url: 'https://161.35.114.79/v1/order/verify-payment',
+          callback_url: 'www.reselii.com/v1/order/verify-payment',
         
       },
       {
