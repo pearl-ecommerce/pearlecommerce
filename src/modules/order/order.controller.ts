@@ -22,7 +22,7 @@ export const createOrder = catchAsync(async (req: Request, res: Response) => {
 export const verifyAndCreateOrder = catchAsync(async (req: Request, res: Response) => {
   const { reference } = req.query;
   const orderBody = req.body;
-
+  console.log('orderbody', orderBody);
   // Verify payment and create order if successful
   const order = await orderService.verifyAndCreateOrder(orderBody, reference as string);
 
