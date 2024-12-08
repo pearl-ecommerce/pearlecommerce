@@ -31,7 +31,7 @@ export const verifyAndCreateOrder = catchAsync(async (req: Request, res: Respons
   });
 });
 export const getOrders = catchAsync(async (req: Request, res: Response) => {
-  const filter = pick(req.query, ['name', 'ownerId']);
+  const filter = pick(req.query, ['name', 'userId']);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
   const result = await orderService.queryOrders(filter, options);
   res.send(result);
