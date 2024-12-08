@@ -23,6 +23,11 @@ const createOrderBody: Record<keyof NewOrder, any> = {
     state: Joi.string().required(),
     country: Joi.string().required(),
   }).required(),
+      paymentDetails: Joi.object ({
+      transactionId: Joi.string(),
+      amount: Joi.number(), // Stored in NGN (converted from kobo)
+      paidAt: Joi.date(),
+    }),
   orderStatus: Joi.string().valid('processing', 'shipped', 'delivered', 'canceled').required(),
   deliveryDate: Joi.date().optional(),
   trackingNumber: Joi.string().optional(),

@@ -44,6 +44,11 @@ const orderSchema = new Schema<IOrderDoc>(
       enum: ['pending', 'completed', 'failed'],
       default: 'pending',
     },
+      paymentDetails: {
+      transactionId: { type: String },
+      amount: { type: Number }, // Stored in NGN (converted from kobo)
+      paidAt: { type: Date },
+    },
     shippingAddress: {
       type: String,
       required: true,

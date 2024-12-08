@@ -21,6 +21,11 @@ export interface IOrder {
     state: string;
     country: string;
   };
+  paymentDetails: {
+    transactionId: String;
+    amount: Number;
+    paidAt: Date;
+  };
   orderStatus: 'processing' | 'shipped' | 'delivered' | 'canceled';
   deliveryDate?: Date;
   trackingNumber?: string;

@@ -39,39 +39,79 @@ const paystackInitiatePayment = async (amount: number, email: string) => {
 };
 
 // Function to verify payment with Paystack
-const verifyPayment = async (reference: string) => {
+export const verifyAndUpdateOrder = async (reference: string) => {
   try {
-    const response = await axios.get(
-      `${PAYSTACK_BASE_URL}/transaction/verify/${reference}`,
-      {
-        headers: {
-          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-        },
-      }
-    );
-    return response.data;
+    // Step 1: Verify payment with Paystack
+    const response = await axios.get(`${PAYSTACK_BASE_URL}/transaction/verify/${reference}`, {
+      headers: {
+        Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+      },
+    });
+
+    const { status, data } = response.data;
+
+    if (!status || data.status !== 'success') {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Payment verification failed');
+    }
+    // Step 2: Find the order with the corresponding reference
+    const order = await Order.findOne({ reference });
+    if (!order) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
+    }
+    // Step 3: Update the order with payment details
+    order.paymentStatus = 'completed';
+    order.paymentDetails = {
+      transactionId: data.id,
+      amount: data.amount / 100, // Convert from kobo to NGN
+      paidAt: data.paid_at,
+    };
+    await order.save();
+    return order;
   } catch (error) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Payment verification failed');
   }
 };
-
+ 
 // Service to initiate payment and create order
 export const createOrder = async (orderBody: NewOrder): Promise<any> => {
-  const { amount, email } = orderBody;
-  const paymentInitiation = await paystackInitiatePayment(amount, email);
-  return paymentInitiation;
+  try {
+    const { amount, email } = orderBody;
+
+    // Step 1: Initiate payment
+    const paymentInitiation = await paystackInitiatePayment(amount, email);
+
+    if (!paymentInitiation?.data?.reference || !paymentInitiation?.data?.authorization_url) {
+      throw new Error('Failed to initiate payment');
+    }
+    // Step 2: Create a new order with 'pending' status
+    const newOrder = await Order.create({
+      ...orderBody,
+      reference: paymentInitiation.data.reference,
+      paymentStatus: 'pending', // Default status
+      paymentUrl: paymentInitiation.data.authorization_url,
+    });
+
+    // Step 3: Return the new order and payment URL
+    return {
+      orderId: newOrder.id,
+      paymentUrl: paymentInitiation.data.authorization_url,
+      message: 'Payment initiated successfully',
+    };
+  } catch (error) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create order');
+  }
 };
+;
 
 // Service to verify payment and create order
-export const verifyAndCreateOrder = async (orderBody: NewOrder, reference: string): Promise<IOrderDoc> => {
-  const paymentVerification = await verifyPayment(reference);
+// export const verifyAndCreateOrder = async (reference: string) => {
+//   const paymentVerification = await verifyPayment(reference);
 
-  if (paymentVerification.data.status !== 'success') {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Payment failed. Please try again.');
-  }
+//   if (paymentVerification.data.status !== 'success') {
+//     throw new ApiError(httpStatus.BAD_REQUEST, 'Payment failed. Please try again.');
+//   }
 
-  return Order.create(orderBody);
-};
+// };
 
 export const queryOrders = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
   const orders = await Order.paginate(filter, options);
