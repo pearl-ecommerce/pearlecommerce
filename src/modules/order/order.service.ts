@@ -107,10 +107,12 @@ import User from '../user/user.model';
 export const createOrder = async (orderBody: NewOrder): Promise<any> => {
   // const { amount, email } = orderBody;
   // Step 1: Create a new order with 'pending' status
-  Order.create({
-    ...orderBody,
+ 
+   const newBundle = await Order.create({
+     ...orderBody,
     paymentStatus: 'pending', // Default status
-  });
+    });
+    return newBundle;
   // try {
   //   // Step 2: Initiate payment with Paystack
   //   const paymentInitiation = await paystackInitiatePayment(amount, email);

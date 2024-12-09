@@ -30,7 +30,7 @@ export const addItem = async (userId: string, productId: string, quantity: numbe
       userId,
       productId,
       quantity,
-      price,
+      price, 
       totalPrice,
       imageUrl,
     });
