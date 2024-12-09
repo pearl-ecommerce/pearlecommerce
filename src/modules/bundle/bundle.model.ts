@@ -10,7 +10,7 @@ const bundleSchema = new Schema<IBundleDoc>(
     productId: {
       type: Schema.Types.ObjectId,
       ref: 'Product',
-      
+       
     },
     userId: {
       type: Schema.Types.ObjectId,

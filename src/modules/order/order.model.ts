@@ -5,18 +5,18 @@ import { IOrderDoc, IOrderModel } from './order.interfaces';
 
 const orderSchema = new Schema<IOrderDoc>(
   {
-   
+  
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+     
     },
     items: [
       {
         productId: {
           type: Schema.Types.ObjectId,
           ref: 'Product',
-          required: true,
+          
         },
         quantity: {
           type: Number,
@@ -56,7 +56,6 @@ const orderSchema = new Schema<IOrderDoc>(
     billingAddress: {
       address: {
         type: String,
-        required: true,
       },
       state: {
         type: String,
@@ -85,15 +84,16 @@ const orderSchema = new Schema<IOrderDoc>(
       type: String,
     },
   },
-  {
+ {
     timestamps: true,
+    collection: 'ordersItem', // Explicitly specify the collection name
   }
 );
 
-// add plugin that converts mongoose to JSON
+// Add plugin that converts Mongoose documents to JSON
 orderSchema.plugin(toJSON);
 orderSchema.plugin(paginate);
 
-const Order = model<IOrderDoc, IOrderModel>('Order', orderSchema);
+const OrdersItem = model<IOrderDoc, IOrderModel>('OrdersItem', orderSchema);
 
-export default Order;
+export default OrdersItem;

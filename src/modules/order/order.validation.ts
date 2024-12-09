@@ -4,14 +4,14 @@ import { NewOrder, IOrderItem } from './order.interfaces';
 
 // Define the schema for individual order items
 const orderItemSchema: Joi.SchemaMap<IOrderItem> = {
-  productId: Joi.string().custom(objectId).required(),
+  productId: Joi.string().custom(objectId),
   quantity: Joi.number().integer().min(1).required(),
   price: Joi.number().precision(2).required(),
 };
 
 // Define the schema for creating an order
 const createOrderBody: Record<keyof NewOrder, any> = {
-  userId: Joi.string().custom(objectId).required(),
+  userId: Joi.string().custom(objectId),
   items: Joi.array().items(Joi.object(orderItemSchema)).required(),
   amount: Joi.number().precision(2).required(),
   email: Joi.string(),
@@ -93,7 +93,7 @@ export const deleteOrder = {
 export const becomeSellerAndCreateOrder = {
   body: Joi.object().keys({
     orderId: Joi.string().required(),
-    userId: Joi.string().custom(objectId).required(),
+    userId: Joi.string().custom(objectId),
     items: Joi.array().items(Joi.object(orderItemSchema)).required(),
     amount: Joi.number().precision(2).required(),
     paymentMethod: Joi.string().valid('card', 'paypal', 'bank_transfer').required(),
