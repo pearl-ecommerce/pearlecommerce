@@ -77,7 +77,7 @@ export const updateProduct = catchAsync(async (req: Request, res: Response) => {
 export const deleteProduct = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['productId'] === 'string') {
     await productService.deleteProductById(new mongoose.Types.ObjectId(req.params['productId']));
-    res.status(httpStatus.OK).send({ message: 'Product deleted successfully' });  
+    res.status(httpStatus.OK).send({ message: 'Product deleted successfully' });   
   }
 });
 

@@ -73,48 +73,70 @@ export const verifyAndUpdateOrder = async (reference: string) => {
 };
  
 // Service to initiate payment and create order
+// export const createOrder = async (orderBody: NewOrder): Promise<any> => {
+//   const { amount, email } = orderBody;
+  
+//    const newOrder = await Order.create({
+//     ...orderBody,
+//     paymentStatus: 'pending', // Default status
+//   });
+
+//     // Step 1: Initiate payment
+//     const paymentInitiation = await paystackInitiatePayment(amount, email);
+//     if (!paymentInitiation?.data?.reference || !paymentInitiation?.data?.authorization_url) {
+//       throw new Error('Failed to initiate payment');
+//     }
+//   // Step 2: Create a new order with 'pending' status
+//   if (paymentInitiation) {
+//         const newOrder = await Order.create({
+//       ...orderBody,
+//       reference: paymentInitiation.data.reference,
+//       paymentStatus: 'pending', // Default status
+//       paymentUrl: paymentInitiation.data.authorization_url,
+//     });
+//     // Step 3: Return the new order and payment URL
+//     return {
+//       orderId: newOrder.id,
+//       paymentUrl: paymentInitiation.data.authorization_url,
+//       message: 'Payment initiated successfully',
+//     };
+//   } else {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'order not created');
+//   }
+// };
 export const createOrder = async (orderBody: NewOrder): Promise<any> => {
+  const { amount, email } = orderBody;
 
-    const { amount, email } = orderBody;
+  // Step 1: Create a new order with 'pending' status
+  const newOrder = await Order.create({
+    ...orderBody,
+    paymentStatus: 'pending', // Default status
+  });
 
-    // Step 1: Initiate payment
+  try {
+    // Step 2: Initiate payment with Paystack
     const paymentInitiation = await paystackInitiatePayment(amount, email);
 
     if (!paymentInitiation?.data?.reference || !paymentInitiation?.data?.authorization_url) {
       throw new Error('Failed to initiate payment');
     }
-  // Step 2: Create a new order with 'pending' status
-  if (paymentInitiation) {
-        const newOrder = await Order.create({
-      ...orderBody,
-      reference: paymentInitiation.data.reference,
-      paymentStatus: 'pending', // Default status
-      paymentUrl: paymentInitiation.data.authorization_url,
-    });
 
-    // Step 3: Return the new order and payment URL
+    // Step 3: Update the order with the payment reference and URL
+    newOrder.reference = paymentInitiation.data.reference;
+    await newOrder.save();
+
+    // Step 4: Return the order ID and payment URL
     return {
       orderId: newOrder.id,
       paymentUrl: paymentInitiation.data.authorization_url,
       message: 'Payment initiated successfully',
     };
-  } else {
-    throw new ApiError(httpStatus.NOT_FOUND, 'order not created');
+  } catch (error) {
+    // If payment initiation fails, remove the created order
+    await Order.findByIdAndDelete(newOrder.id);
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Payment initiation failed');
   }
-
-  
 };
-;
-
-// Service to verify payment and create order
-// export const verifyAndCreateOrder = async (reference: string) => {
-//   const paymentVerification = await verifyPayment(reference);
-
-//   if (paymentVerification.data.status !== 'success') {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'Payment failed. Please try again.');
-//   }
-
-// };
 
 export const queryOrders = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
   const orders = await Order.paginate(filter, options);
