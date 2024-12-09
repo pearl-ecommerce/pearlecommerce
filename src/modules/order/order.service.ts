@@ -39,6 +39,7 @@ const paystackInitiatePayment = async (amount: number, email: string) => {
 
 // Function to verify payment with Paystack
 export const verifyAndUpdateOrder = async (reference: string) => {
+  console.log('reference number', reference);
   try {
     // Step 1: Verify payment with Paystack
     const response = await axios.get(`${PAYSTACK_BASE_URL}/transaction/verify/${reference}`, {
