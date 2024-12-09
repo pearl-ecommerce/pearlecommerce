@@ -73,10 +73,7 @@ const userSchema = new Schema<IUserDoc>(
     nin: {
       type: String,
     },
-    itemToSell: {
-      type: String,
-      enum: ['watch', 'clothing', 'shoes', 'other'], // Add more categories as needed
-    },
+
     businessName: {
       type: String,
       sparse: true, // This allows null values and only enforces uniqueness on non-null values

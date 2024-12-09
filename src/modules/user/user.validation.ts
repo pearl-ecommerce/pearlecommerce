@@ -9,7 +9,7 @@ const createUserBody: Record<keyof NewCreatedUser, any> = {
   email: Joi.string().required().email(),
   password: Joi.string().required().custom(password),
   phone: Joi.string(),
-  dateOfBirth: Joi.date().max('now').iso().required(),
+  dateOfBirth: Joi.date().max('now').iso(),
   imageUrl: Joi.string(),
   description: Joi.string(),
   discount: Joi.string(),
@@ -21,7 +21,6 @@ const createUserBody: Record<keyof NewCreatedUser, any> = {
     postalCode: Joi.string(),
   }),
   nin: Joi.string().length(11), // Assuming NIN is 11 digits
-  itemToSell: Joi.string().valid('electronics', 'clothing', 'food', 'furniture', 'other'),
   businessName: Joi.string().allow(null, ''),
   socialMediaLinks: Joi.object({
     facebook: Joi.string().uri().allow(null, ''),

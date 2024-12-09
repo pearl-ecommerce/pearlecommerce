@@ -20,7 +20,6 @@ export interface IUser {
     postalCode: string;
   };
   nin: string; // National Identification Number
-  itemToSell: 'watch' | 'clothing' | 'shoes' | 'other';
   businessName?: string;
   socialMediaLinks: {
     facebook?: string;
