@@ -80,9 +80,9 @@ export const createOrder = async (orderBody: NewOrder): Promise<any> => {
     // Step 1: Initiate payment
     const paymentInitiation = await paystackInitiatePayment(amount, email);
 
-    if (!paymentInitiation?.data?.reference || !paymentInitiation?.data?.authorization_url) {
-      throw new Error('Failed to initiate payment');
-    }
+    // if (!paymentInitiation?.data?.reference || !paymentInitiation?.data?.authorization_url) {
+    //   throw new Error('Failed to initiate payment');
+    // }
     // Step 2: Create a new order with 'pending' status
     const newOrder = await Order.create({
       ...orderBody,
