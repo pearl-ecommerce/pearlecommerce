@@ -17,6 +17,6 @@ router
     .patch(auth('manageSellers'), validate(orderValidation.updateOrder), orderController.updateOrder)
     .delete(auth('manageSellers'), validate(orderValidation.deleteOrder), orderController.deleteOrder);
 
-router.post('/verify-and-create-order', orderController.verifyAndCreateOrder);
+// router.post('/verify-and-create-order', orderController.verifyAndCreateOrder);
 
 export default router;

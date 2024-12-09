@@ -19,17 +19,17 @@ export const createOrder = catchAsync(async (req: Request, res: Response) => {
 });
 
 // Controller to verify payment and create the order
-export const verifyAndCreateOrder = catchAsync(async (req: Request, res: Response) => {
-  const { reference } = req.query;
-  if (!reference) {
-   res.status(httpStatus.BAD_REQUEST).send({ message: 'Reference is required' });
-  }
-  const updatedOrder = await orderService.verifyAndUpdateOrder(reference as string);
-  res.status(httpStatus.OK).json({
-    message: 'Payment verified and order updated successfully',
-    order: updatedOrder,
-  });
-});
+// export const verifyAndCreateOrder = catchAsync(async (req: Request, res: Response) => {
+//   const { reference } = req.query;
+//   if (!reference) {
+//    res.status(httpStatus.BAD_REQUEST).send({ message: 'Reference is required' });
+//   }
+//   const updatedOrder = await orderService.verifyAndUpdateOrder(reference as string);
+//   res.status(httpStatus.OK).json({
+//     message: 'Payment verified and order updated successfully',
+//     order: updatedOrder,
+//   });
+// });
 export const getOrders = catchAsync(async (req: Request, res: Response) => {
   const filter = pick(req.query, ['name', 'userId']);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
