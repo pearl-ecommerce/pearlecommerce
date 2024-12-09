@@ -98,7 +98,7 @@ export const becomeSellerAndCreateOrder = {
     amount: Joi.number().precision(2).required(),
     paymentMethod: Joi.string().valid('card', 'paypal', 'bank_transfer').required(),
     paymentStatus: Joi.string().valid('pending', 'completed', 'failed').required(),
-    shippingAddress: Joi.string().required(),
+    shippingAddress: Joi.string(),
     billingAddress: Joi.object({
       address: Joi.string().required(),
       state: Joi.string().required(),
