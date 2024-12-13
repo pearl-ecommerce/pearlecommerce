@@ -12,6 +12,8 @@ const createBundleBody: Record<keyof NewBundle, any> = {
   imageUrl: Joi.array().items(Joi.string()),
   size: Joi.string(),
   color: Joi.string(),
+  sellerId: Joi.string(),
+
 };
 
 export const createBundle = {
@@ -28,6 +30,8 @@ export const getBundles = {
     page: Joi.number().integer(),
     currency: Joi.string(), 
     price: Joi.number().min(0),
+      sellerId: Joi.string(),
+
   }),
 };
 

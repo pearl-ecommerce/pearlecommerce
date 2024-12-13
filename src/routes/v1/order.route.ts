@@ -18,5 +18,6 @@ router
     .delete(auth('manageSellers'), validate(orderValidation.deleteOrder), orderController.deleteOrder);
 
 router.post('/verify-and-create-order', orderController.verifyAndCreateOrder);
+router.post('/getallsales', validate(orderController.getOrder), orderController.getallsales);
 
 export default router;

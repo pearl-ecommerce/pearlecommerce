@@ -14,6 +14,7 @@ userId: mongoose.Types.ObjectId;
   imageUrl: string[];
   size: string | null;
   color: string | null;
+  sellerId: mongoose.Types.ObjectId;
 }
 
 export interface IBundleDoc extends IBundle, Document {}

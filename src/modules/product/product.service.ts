@@ -16,7 +16,6 @@ export const createProduct = async (userId: mongoose.Types.ObjectId, productData
 
   // CHECK IF USER HAS NIN
 
-
   // If all checks pass, create the product
   return Product.create(productData);
 };

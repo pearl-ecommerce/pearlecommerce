@@ -33,12 +33,20 @@ export const verifyAndCreateOrder = catchAsync(async (req: Request, res: Respons
 
 
 export const getOrders = catchAsync(async (req: Request, res: Response) => {
-  const filter = pick(req.query, ['name', 'userId']);
+  const filter = pick(req.query, ['name', 'userId','sellerId']);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
   const result = await orderService.queryOrders(filter, options);
   res.send(result);
 });
 
+
+
+export const getallsales = catchAsync(async (req: Request, res: Response) => {
+  const filter = pick(req.query, ['name', 'Id']);
+  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
+  const result = await orderService.queryOrders(filter, options);
+  res.send(result);
+});
 export const getOrder = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['orderId'] === 'string') {
     const order = await orderService.getOrderById(new mongoose.Types.ObjectId(req.params['orderId']));

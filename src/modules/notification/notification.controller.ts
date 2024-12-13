@@ -7,6 +7,10 @@ import pick from '../utils/pick';
 import { IOptions } from '../paginate/paginate';
 import * as notificationService from './notification.service';
 
+
+// const OneSignalService = require('./OneSignalService');
+
+
 export const sendNotification = catchAsync(async (req: Request, res: Response) => {
   const { token, title, body } = req.body; 
 

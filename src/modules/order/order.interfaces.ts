@@ -9,6 +9,7 @@ export interface IOrderItem {
 
 export interface IOrder {
   userId: mongoose.Types.ObjectId;
+   sellerId: mongoose.Types.ObjectId;
   items: IOrderItem[];
   amount: number;
   email: string;

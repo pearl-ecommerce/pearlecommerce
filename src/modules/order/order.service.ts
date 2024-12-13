@@ -5,6 +5,8 @@ import ApiError from '../errors/ApiError';
 import { IOptions, QueryResult } from '../paginate/paginate';
 import { IOrderDoc, NewOrder, UpdateOrderBody } from './order.interfaces';
 import User from '../user/user.model';
+import Product from '../product/product.model';
+
 import axios from 'axios'; // You might need to install axios for HTTP requests
 
 const PAYSTACK_SECRET_KEY = 'sk_test_9dfacbeaefe4e9254d1f7ae6ab149bec0270857e'; // Replace with your actual Paystack secret key
@@ -104,6 +106,8 @@ export const verifyAndUpdateOrder = async (reference: string) => {
 //     throw new ApiError(httpStatus.NOT_FOUND, 'order not created');
 //   }
 // };
+
+
 export const createOrder = async (orderBody: NewOrder): Promise<any> => {
   const { amount, email } = orderBody;
   // Step 1: Create a new order with 'pending' status

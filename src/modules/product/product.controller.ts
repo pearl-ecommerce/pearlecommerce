@@ -27,6 +27,8 @@ export const createProduct = catchAsync(async (req: Request, res: Response) => {
    res.status(httpStatus.CREATED).send(response);
 });
 
+
+
 // Get all products or filter by name, category, brand, etc.
 
 export const getProducts = catchAsync(async (req: Request, res: Response) => {

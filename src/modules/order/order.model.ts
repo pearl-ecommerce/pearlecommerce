@@ -9,6 +9,10 @@ const orderSchema = new Schema<IOrderDoc>(
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
+    },
+      sellerId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
      
     },
     items: [

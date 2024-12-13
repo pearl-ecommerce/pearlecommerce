@@ -15,6 +15,7 @@ router
     .get(auth('getNotifications'), validate(notificationValidation.getNotification), notificationController.getNotification)
     .patch(auth('manageNotifications'), validate(notificationValidation.updateNotification), notificationController.updateNotification)
     .delete(auth('manageNotifications'), validate(notificationValidation.deleteNotification), notificationController.deleteNotification);
+    
 router.post('/send', auth('sendNotifications'), validate(notificationValidation.sendNotification), notificationController.sendNotification);
 
 export default router; 

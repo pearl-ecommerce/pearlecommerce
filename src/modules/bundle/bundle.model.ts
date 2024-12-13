@@ -17,6 +17,11 @@ const bundleSchema = new Schema<IBundleDoc>(
       ref: 'User',
       
     },
+     sellerId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      
+    },
     price: {
       type: Number,
       min: 0,

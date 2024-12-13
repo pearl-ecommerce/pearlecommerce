@@ -12,6 +12,8 @@ const orderItemSchema: Joi.SchemaMap<IOrderItem> = {
 // Define the schema for creating an order
 const createOrderBody: Record<keyof NewOrder, any> = {
   userId: Joi.string().custom(objectId),
+    sellerId: Joi.string().custom(objectId),
+
   items: Joi.array().items(Joi.object(orderItemSchema)).required(),
   amount: Joi.number().precision(2).required(),
   email: Joi.string(),
@@ -44,6 +46,7 @@ export const getOrders = {
   query: Joi.object().keys({
     orderId: Joi.string(),
     userId: Joi.string().custom(objectId),
+     sellerId: Joi.string().custom(objectId),
     sortBy: Joi.string(),
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
