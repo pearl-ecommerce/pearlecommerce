@@ -5,7 +5,7 @@ import ApiError from '../errors/ApiError';
 import { IOptions, QueryResult } from '../paginate/paginate';
 import { IOrderDoc, NewOrder, UpdateOrderBody } from './order.interfaces';
 import User from '../user/user.model';
-import Product from '../product/product.model';
+// import Product from '../product/product.model';
 
 import axios from 'axios'; // You might need to install axios for HTTP requests
 
