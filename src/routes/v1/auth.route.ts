@@ -25,7 +25,8 @@ router.post('/followers', auth(), userController.followers);
 router.get('/adminuser', auth(), validate(userValidation.getUser), userController.adminuser);
 router.get('/getauserproduct', productController.userProducts);
 router.post('/addDiscountToUser', userController.userDiscountProducts);
-
+router.post('/activate', auth(), userController.activate);
+router.post('/deactivate', auth(), userController.deactivate);
 
 export default router;
 

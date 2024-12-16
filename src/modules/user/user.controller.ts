@@ -116,7 +116,7 @@ export const deactivate = catchAsync(async (req: Request, res: Response) => {
 
 
 export const activate = async (req: Request, res: Response) => {
-  const { userId } = req.query.userId;
+  const { userId } = req.query;
 
   // Ensure userId is a string
   if (typeof userId === 'string') {
