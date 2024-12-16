@@ -104,7 +104,7 @@ export const followers = async (req: Request, res: Response) => {
 
 export const deactivate = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.query;
-
+ 
   // Ensure userId is a string
   if (typeof userId === 'string') {
     const user = await userService.deactivateUser(userId);
@@ -116,7 +116,7 @@ export const deactivate = catchAsync(async (req: Request, res: Response) => {
 
 
 export const activate = async (req: Request, res: Response) => {
-  const { userId } = req.query;
+  const { userId } = req.query.userId;
 
   // Ensure userId is a string
   if (typeof userId === 'string') {

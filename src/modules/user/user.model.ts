@@ -120,7 +120,7 @@ const userSchema = new Schema<IUserDoc>(
         type: Schema.Types.ObjectId,
         ref: 'User',
       },
-    ],
+    ], 
     
      lastseen: {
         type: Date,

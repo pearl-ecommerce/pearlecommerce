@@ -10,6 +10,8 @@ const createBundleBody: Record<keyof NewBundle, any> = {
   currency: Joi.string(), 
   price: Joi.number().min(0),
   imageUrl: Joi.array().items(Joi.string()),
+   description: Joi.string(),
+  name: Joi.string(),
   size: Joi.string(),
   color: Joi.string(),
   sellerId: Joi.string(),

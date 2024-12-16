@@ -16,6 +16,8 @@ export const addItem = async (userId: string, productId: string, quantity: numbe
   const imageUrl = product.imageUrl;
   const totalPrice = price * quantity;
   const sellerId = product.userId;
+  const description = product.description;
+  const name = product.name;
 
   const existingBundle = await Bundle.findOne({ userId, productId });
 
@@ -35,6 +37,8 @@ export const addItem = async (userId: string, productId: string, quantity: numbe
       totalPrice,
       imageUrl,
       sellerId,
+      description,
+      name
     });
     return newBundle;
   }

@@ -12,6 +12,8 @@ userId: mongoose.Types.ObjectId;
   totalPrice: number;
   currency: string;
   imageUrl: string[];
+  description: string;
+  name: string;
   size: string | null;
   color: string | null;
   sellerId: mongoose.Types.ObjectId;

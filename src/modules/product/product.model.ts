@@ -10,7 +10,7 @@ const productSchema = new Schema<IProductDoc>(
       required: true,
       trim: true,
     },
-    description: {
+    description: { 
       type: String,
       required: true,
     },

@@ -31,9 +31,18 @@ const bundleSchema = new Schema<IBundleDoc>(
       type: Number,
       min: 1,
       required: true,
-    },
+    }, 
     imageUrl: {
       type: [String],
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+      name: {
+      type: String,
+      required: true,
+      trim: true,
     },
     size: {
       type: String,

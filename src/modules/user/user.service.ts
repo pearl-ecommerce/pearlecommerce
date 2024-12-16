@@ -29,7 +29,7 @@ export const createUser = async (userBody: NewCreatedUser, currentUserId: string
   // Create the new user
   return User.create(userBody);
 };
-
+ 
 
 /**
  * Register a user

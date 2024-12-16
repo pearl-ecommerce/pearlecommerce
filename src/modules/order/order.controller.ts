@@ -40,7 +40,7 @@ export const getOrders = catchAsync(async (req: Request, res: Response) => {
 });
 
 
-
+ 
 export const getallsales = catchAsync(async (req: Request, res: Response) => {
   const filter = pick(req.query, ['name', 'Id']);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);

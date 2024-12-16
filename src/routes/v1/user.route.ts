@@ -21,7 +21,7 @@ router.post('/deactivate', auth(), userController.deactivate);
 export default router;
 
 /**
- * @swagger
+ * @swagger 
  * tags:
  *   name: Users
  *   description: User management and retrieval

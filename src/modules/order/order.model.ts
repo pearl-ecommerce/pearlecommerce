@@ -22,11 +22,24 @@ const orderSchema = new Schema<IOrderDoc>(
           ref: 'Product',
           
         },
+          imageUrl: {
+      type: [String],
+      required: true,
+    },
+          name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
         quantity: {
           type: Number,
           required: true,
           min: 1,
         },
+        description: {
+      type: String,
+      required: true,
+    },
         price: {
           type: Number,
           required: true,
