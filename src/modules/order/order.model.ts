@@ -28,7 +28,6 @@ const orderSchema = new Schema<IOrderDoc>(
     },
           name: {
       type: String,
-      required: true,
       trim: true,
     },
         quantity: {
@@ -38,7 +37,6 @@ const orderSchema = new Schema<IOrderDoc>(
         },
         description: {
       type: String,
-      required: true,
     },
         price: {
           type: Number,
