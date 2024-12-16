@@ -15,13 +15,19 @@ import { generateAuthTokens, verifyToken } from '../token/token.service';
  */
 export const loginUserWithEmailAndPassword = async (email: string, password: string): Promise<IUserDoc> => {
   const user = await getUserByEmail(email);
+
   if (!user || !(await user.isPasswordMatch(password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
   }
-   user.lastseen = new Date(); 
+  if (!user.active) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Your account has been deactivated');
+  }
+  // Update the last seen timestamp
+  user.lastseen = new Date();
   await user.save();
   return user;
 };
+
 
 export const loginAdminWithEmailAndPassword = async (email: string, password: string): Promise<IUserDoc> => {
   const admin = await getUserByEmail(email);
@@ -30,6 +36,9 @@ export const loginAdminWithEmailAndPassword = async (email: string, password: st
   }
   if (admin.role !== 'admin') {
     throw new ApiError(httpStatus.FORBIDDEN, 'Only admins can log in');
+  }
+    if (!admin.active) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Your account has been deactivated');
   }
   admin.lastseen = new Date();
   await admin.save();
