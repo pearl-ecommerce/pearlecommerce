@@ -145,7 +145,7 @@ const userId = req.body;
   } else {
     res.status(400).send({ message: 'Invalid user ID' });
   }
-});
+}); 
 
 export const userProducts = catchAsync(async (req: Request, res: Response) => {
   // Extract `userId` from query parameters

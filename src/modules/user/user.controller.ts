@@ -101,34 +101,45 @@ export const followers = async (req: Request, res: Response) => {
         res.status(400).send({ message: 'Invalid user ID' });
   }
 };
+export const activate = catchAsync(async (req: Request, res: Response) => {
+  // Extract `userId` from query parameters
+  const userId = req.query['userId'] as string;
+
+  // Check if `userId` is valid
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid or missing user ID');
+  }
+  // Fetch products associated with the `userId`
+  const user = await userService.activateUser(new mongoose.Types.ObjectId(userId));
+
+  // If no products are found, throw a 404 error
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'No user found');
+  }
+  // Send the list of products as a response
+  res.status(200).send({ message: 'User activated', user });
+});
 
 export const deactivate = catchAsync(async (req: Request, res: Response) => {
-  const { userId } = req.query;
- 
-  // Ensure userId is a string
-  if (typeof userId === 'string') {
-    const user = await userService.deactivateUser(userId);
-    res.status(200).send({ message: 'User deactivated', user });
-  } else {
-    res.status(400).send({ message: 'Invalid query parameter: userId must be a string' });
+  // Extract `userId` from query parameters
+  const userId = req.query['userId'] as string;
+
+  // Check if `userId` is valid
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid or missing user ID');
   }
+  // Fetch products associated with the `userId`
+  const user = await userService.deactivateUser(new mongoose.Types.ObjectId(userId));
+
+  // If no products are found, throw a 404 error
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'No user found');
+  }
+  // Send the list of products as a response
+ res.status(200).send({ message: 'User deactivated', user });
 });
 
 
-export const activate = async (req: Request, res: Response) => {
-  const { userId } = req.query;
-
-  // Ensure userId is a string
-  if (typeof userId === 'string') {
-    const result = await userService.activateUser(userId);
-    res.status(httpStatus.OK).json({
-      status: 'success',
-      data: result,
-    });
-  } else {
-    res.status(400).send({ message: 'Invalid query parameter: userId must be a string' });
-  }
-};
 
 
 export const userDiscountProducts = catchAsync(async (req: Request, res: Response) => {

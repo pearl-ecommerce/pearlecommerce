@@ -176,7 +176,7 @@ export const getUserFollowersAndFollowing = async (userId: string): Promise<IUse
   }
 };
 
-export const deactivateUser = async (userId: string): Promise<IUserDoc> => {
+export const deactivateUser = async (userId: mongoose.Types.ObjectId): Promise<IUserDoc> => {
   const user = await User.findById(userId);
   if (!user) {
     throw new Error('User not found');
@@ -190,7 +190,7 @@ export const deactivateUser = async (userId: string): Promise<IUserDoc> => {
 };
 
 
-export const activateUser = async (userId: string): Promise<IUserDoc> => {
+export const activateUser = async (userId: mongoose.Types.ObjectId): Promise<IUserDoc> => {
   const user = await User.findById(userId);
   if (!user) {
     throw new Error('User not found');
