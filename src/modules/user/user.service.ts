@@ -49,8 +49,15 @@ export const registerUser = async (userBody: NewRegisteredUser): Promise<IUserDo
  * @param {Object} options - Query options
  * @returns {Promise<QueryResult>}
  */
+// export const queryUsers = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
+//   const users = await User.paginate(filter, options);
+//   return users;
+// };
 export const queryUsers = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
-  const users = await User.paginate(filter, options);
+  const users = await User.paginate(filter, {
+    ...options,
+    select: '+createdAt +updatedAt', // Ensure timestamps are included
+  });
   return users;
 };
 
