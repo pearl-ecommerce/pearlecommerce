@@ -13,7 +13,7 @@ export const addItem = async (userId: string, productId: string, quantity: numbe
   }
   // Step 2: Calculate the total price
   const price = product.price;
-  const imageUrl = product.imageUrl;
+  const imageUrl = product.imageUrl[0];
   const totalPrice = price * quantity;
   const sellerId = product.userId;
   const description = product.description;
@@ -35,7 +35,7 @@ export const addItem = async (userId: string, productId: string, quantity: numbe
       quantity,
       price, 
       totalPrice,
-      imageUrl,
+      imageUrl, 
       sellerId,
       description,
       name
