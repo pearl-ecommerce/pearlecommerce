@@ -190,7 +190,7 @@ export const deactivateUser = async (userId: mongoose.Types.ObjectId): Promise<I
 };
 
 
-export const activateUser = async (userId: mongoose.Types.ObjectId): Promise<IUserDoc> => {
+export const activateUser = async (userId: string): Promise<IUserDoc> => {
   const user = await User.findById(userId);
   if (!user) {
     throw new Error('User not found');

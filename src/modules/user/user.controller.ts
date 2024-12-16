@@ -102,21 +102,8 @@ export const followers = async (req: Request, res: Response) => {
   }
 };
 export const activate = catchAsync(async (req: Request, res: Response) => {
-  // Extract `userId` from query parameters
   const userId = req.query['userId'] as string;
-
-  // Check if `userId` is valid
-  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid or missing user ID');
-  }
-  // Fetch products associated with the `userId`
-  const user = await userService.activateUser(new mongoose.Types.ObjectId(userId));
-
-  // If no products are found, throw a 404 error
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'No user found');
-  }
-  // Send the list of products as a response
+  const user = await userService.activateUser(userId);
   res.status(200).send({ message: 'User activated', user });
 });
 
@@ -138,9 +125,6 @@ export const deactivate = catchAsync(async (req: Request, res: Response) => {
   // Send the list of products as a response
  res.status(200).send({ message: 'User deactivated', user });
 });
-
-
-
 
 export const userDiscountProducts = catchAsync(async (req: Request, res: Response) => {
   const { userId, discount } = req.body;
