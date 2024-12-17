@@ -1,6 +1,8 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import User from './user.model';
+import Order from '../order/order.model';
+
 import ApiError from '../errors/ApiError';
 import { IOptions, QueryResult } from '../paginate/paginate';
 import { NewCreatedUser, UpdateUserBody, IUserDoc, NewRegisteredUser } from './user.interfaces';
@@ -71,8 +73,37 @@ export const adminUsers = async (filter: Record<string, any>, options: IOptions)
  * @param {mongoose.Types.ObjectId} id
  * @returns {Promise<IUserDoc | null>}
  */
-export const getUserById = async (id: mongoose.Types.ObjectId): Promise<IUserDoc | null> => User.findById(id);
+// export const getUserById = async (id: mongoose.Types.ObjectId): Promise<IUserDoc | null> => User.findById(id);
+export const getUserById = async (id: mongoose.Types.ObjectId): Promise<{ user: IUserDoc | null; totalSales: number }> => {
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return { user: null, totalSales: 0 };
+    }
+    // Calculate total sales from the Orders table
+    const totalSales = await Order.aggregate([
+      {
+        $match: {
+          sellerId: id, // Ensure this matches the field name in your Orders schema
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: '$amount' }, // Ensure 'amount' is the field storing the sales value
+        },
+      },
+    ]);
 
+    return {
+      user,
+      totalSales: totalSales.length > 0 ? totalSales[0].totalAmount : 0,
+    };
+  } catch (error) {
+    console.error('Error fetching user or calculating sales:', error);
+    throw new Error('Unable to fetch user or calculate sales.');
+  }
+};
 /**
  * Get user by email
  * getUserByEmail
@@ -91,7 +122,7 @@ export const updateUserById = async (
   userId: mongoose.Types.ObjectId,
   updateBody: UpdateUserBody
 ): Promise<IUserDoc | null> => {
-  const user = await getUserById(userId);
+const user = await User.findById(userId);  
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
@@ -109,7 +140,7 @@ export const updateUserById = async (
  * @returns {Promise<IUserDoc | null>}
  */
 export const deleteUserById = async (userId: mongoose.Types.ObjectId): Promise<IUserDoc | null> => {
-  const user = await getUserById(userId);
+const user = await User.findById(userId);  
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
