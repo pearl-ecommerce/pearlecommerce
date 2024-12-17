@@ -24,7 +24,9 @@ export const getUsers = catchAsync(async (req: Request, res: Response) => {
   const filter = pick(req.query, ['name', 'role','userId']);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
   const result = await userService.queryUsers(filter, options);
-  res.send(result);
+  const count = await userService.countqueryUsers(filter, options);
+
+  res.send([count,result]);
 });
 
 export const adminuser = catchAsync(async (req: Request, res: Response) => {
@@ -35,14 +37,23 @@ export const adminuser = catchAsync(async (req: Request, res: Response) => {
 });
 
 
+// export const getUser = catchAsync(async (req: Request, res: Response) => {
+//   const { id } = req.user
+//     const user = await userService.getUserById(new mongoose.Types.ObjectId(id));
+//     if (!user) {
+//       throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+//     }
+//     res.send(user);
+// });
+
 export const getUser = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.user
-    const user = await userService.getUserById(new mongoose.Types.ObjectId(id));
+  if (typeof req.params['userId'] === 'string') {
+    const user = await userService.getUserById(new mongoose.Types.ObjectId(req.params['userId']));
     if (!user) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+      throw new ApiError(httpStatus.NOT_FOUND, 'user not found');
     }
     res.send(user);
-  
+  }
 });
 
 
@@ -135,4 +146,12 @@ export const userDiscountProducts = catchAsync(async (req: Request, res: Respons
   } else {
     res.status(400).send({ message: 'Invalid User ID' });
   }
+});
+
+
+export const newcustomer = catchAsync(async (req: Request, res: Response) => {
+  const filter = pick(req.query, ['name', 'role','userId']);
+  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
+  const result = await userService.queryNewUsers(filter, options);
+  res.send(result);
 });

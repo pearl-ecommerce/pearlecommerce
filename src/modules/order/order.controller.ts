@@ -47,6 +47,8 @@ export const getallsales = catchAsync(async (req: Request, res: Response) => {
   const result = await orderService.queryOrders(filter, options);
   res.send(result);
 });
+
+
 export const getOrder = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['orderId'] === 'string') {
     const order = await orderService.getOrderById(new mongoose.Types.ObjectId(req.params['orderId']));
@@ -56,7 +58,7 @@ export const getOrder = catchAsync(async (req: Request, res: Response) => {
     res.send(order);
   }
 });
-
+ 
 export const updateOrder = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['orderId'] === 'string') {
     const order = await orderService.updateOrderById(new mongoose.Types.ObjectId(req.params['orderId']), req.body);
@@ -79,4 +81,21 @@ export const becomeSellerAndCreateOrder = catchAsync(async (req: Request, res: R
   const { user, order } = await orderService.createOrderAndUpdateUser(userId, orderData);
 
   res.status(httpStatus.CREATED).send({ user, order });
+});
+
+
+export const revenue = catchAsync(async (req: Request, res: Response) => {
+  const filter = pick(req.query, ['name', 'userId','sellerId']);
+  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
+  const result = await orderService.queryOrders(filter, options);
+  res.send(result);
+});
+
+
+
+export const profitcompany = catchAsync(async (req: Request, res: Response) => {
+  const filter = pick(req.query, ['name', 'userId','sellerId']);
+  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
+  const result = await orderService.queryOrders(filter, options);
+  res.send(result);
 });

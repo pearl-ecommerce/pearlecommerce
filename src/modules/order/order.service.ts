@@ -145,6 +145,47 @@ export const queryOrders = async (filter: Record<string, any>, options: IOptions
   return orders;
 };
 
+// export const queryUsersWithSales = async (filter: Record<string, any>, options: IOptions): Promise<any> => {
+//   const usersWithSales = await User.aggregate([
+//     // Step 1: Match users based on the provided filter
+//     { $match: filter },
+//     // Step 2: Lookup sales from the OrdersItem collection
+//     {
+//       $lookup: {
+//         from: 'ordersItem', // Collection name for OrdersItem
+//         localField: '_id', // _id in the Users collection
+//         foreignField: 'sellerId', // sellerId in the OrdersItem collection
+//         as: 'sales', // Name of the joined field
+//       },
+//     },
+//     // Step 3: Add fields for totalSales and totalOrders
+//     {
+//       $addFields: {
+//         totalSales: { $sum: '$sales.amount' }, // Sum up the `amount` field in sales
+//         totalOrders: { $size: '$sales' }, // Count the number of sales
+//       },
+//     },
+//     // Step 4: Project the desired fields
+//     {
+//       $project: {
+//         _id: 1,
+//         name: 1,
+//         email: 1,
+//         createdAt: 1,
+//         totalSales: 1,
+//         totalOrders: 1,
+//       },
+//     },
+//     // Step 5: Sort by totalSales in descending order (null values will be sorted last)
+//     { $sort: { totalSales: -1 } },
+//     // Step 6: Apply pagination
+//     { $skip: options.page * options.limit },
+//     { $limit: options.limit },
+//   ]);
+
+//   return usersWithSales;
+// };
+
 export const getOrderById = async (id: mongoose.Types.ObjectId): Promise<IOrderDoc | null> => Order.findById(id);
 
 export const updateOrderById = async (

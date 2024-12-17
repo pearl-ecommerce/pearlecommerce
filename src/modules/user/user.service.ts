@@ -55,8 +55,7 @@ export const registerUser = async (userBody: NewRegisteredUser): Promise<IUserDo
 // };
 export const queryUsers = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
   const users = await User.paginate(filter, {
-    ...options,
-    select: '+createdAt +updatedAt', // Ensure timestamps are included
+    ...options
   });
   return users;
 };
@@ -244,3 +243,19 @@ export const oauthSignup = async (userReq: any) => {
   return await User.create(user);
 
 }
+
+export const queryNewUsers = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
+  const users = await User.paginate(filter, {
+    ...options,
+    select: '+createdAt +updatedAt', // Ensure timestamps are included
+  });
+  return users;
+};
+
+export const countqueryUsers = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
+  const users = await User.paginate(filter, {
+    ...options,
+    select: '+createdAt +updatedAt', // Ensure timestamps are included
+  });
+  return users;
+};
