@@ -24,9 +24,8 @@ export const getUsers = catchAsync(async (req: Request, res: Response) => {
   const filter = pick(req.query, ['name', 'role','userId']);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
   const result = await userService.queryUsers(filter, options);
-  const count = await userService.countqueryUsers(filter, options);
 
-  res.send([count,result]);
+  res.send([result]);
 });
 
 export const adminuser = catchAsync(async (req: Request, res: Response) => {
@@ -35,16 +34,6 @@ export const adminuser = catchAsync(async (req: Request, res: Response) => {
   const result = await userService.adminUsers(filter, options);
   res.send(result);
 });
-
-
-// export const getUser = catchAsync(async (req: Request, res: Response) => {
-//   const { id } = req.user
-//     const user = await userService.getUserById(new mongoose.Types.ObjectId(id));
-//     if (!user) {
-//       throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-//     }
-//     res.send(user);
-// });
 
 export const getUser = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['userId'] === 'string') {
@@ -149,9 +138,21 @@ export const userDiscountProducts = catchAsync(async (req: Request, res: Respons
 });
 
 
-export const newcustomer = catchAsync(async (req: Request, res: Response) => {
-  const filter = pick(req.query, ['name', 'role','userId']);
-  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
-  const result = await userService.queryNewUsers(filter, options);
+export const fetchAnalyticsData = catchAsync(async (req: Request, res: Response) => {
+  // Extract filters and options from query parameters
+  const userFilter = pick(req.query, ['name', 'role', 'userId']);
+  const productFilter = pick(req.query, ['category', 'status', 'productId']); // Adjust fields as necessary
+  const userOptions: IOptions = pick(req.query, ['sortBy', 'limit', 'page']);
+  const productOptions: IOptions = pick(req.query, ['sortBy', 'limit', 'page']); // Separate options for products if needed
+
+  // Call the service with structured input
+  const result = await userService.fetchAnalyticsData(
+    productFilter,
+    userFilter,
+    productOptions,
+    userOptions
+  );
+
+  // Send the result back to the client
   res.send(result);
 });

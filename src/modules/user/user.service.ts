@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import User from './user.model';
 import Order from '../order/order.model';
+import Product from '../product/product.model';
 
 import ApiError from '../errors/ApiError';
 import { IOptions, QueryResult } from '../paginate/paginate';
@@ -283,43 +284,118 @@ export const oauthSignup = async (userReq: any) => {
 
 }
 
-export const queryNewUsers = async (
-  filter: Record<string, any>,
-  options: IOptions
-): Promise<{ users: QueryResult; totalNewUsers: number }> => {
-  // Get the start and end of the current day
-  const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0); // Set time to 00:00:00
-  const endOfDay = new Date();
-  endOfDay.setHours(23, 59, 59, 999); // Set time to 23:59:59
+// export const queryUsersWithCounts = async (
+//   filter: Record<string, any>,
+//   options: IOptions
+// ): Promise<{
+//   users: QueryResult;
+//   totalUsers: number;
+//   totalNewUsers: number;
+// }> => {
+//   try {
+//     // Get the start and end of the current day
+//     const startOfDay = new Date();
+//     startOfDay.setHours(0, 0, 0, 0); // Set time to 00:00:00
+//     const endOfDay = new Date();
+//     endOfDay.setHours(23, 59, 59, 999); // Set time to 23:59:59
 
-  // Add date filter to the provided filter
-  const newUserFilter = {
-    ...filter,
-    createdAt: { $gte: startOfDay, $lte: endOfDay },
-  };
+//     // Add date filter for new users
+//     const newUserFilter = {
+//       ...filter,
+//       createdAt: { $gte: startOfDay, $lte: endOfDay },
+//     };
 
-  // Fetch paginated users added today
-  const users = await User.paginate(newUserFilter, options);
+//     // Fetch paginated users based on the main filter
+//     const users = await User.paginate(filter, {
+//       ...options,
+//       select: '+createdAt +updatedAt', // Ensure timestamps are included
+//     });
 
-  // Count total new users added today
-  const totalNewUsers = await User.countDocuments(newUserFilter);
+//     // Count total users matching the filter
+//     const totalUsers = await User.countDocuments(filter);
 
-  return { users, totalNewUsers };
+//     // Count total new users added today
+//     const totalNewUsers = await User.countDocuments(newUserFilter);
+
+//     return { users, totalUsers, totalNewUsers };
+//   } catch (error) {
+//     throw new Error('Unable to query users and counts.');
+//   }
+// };
+
+export const fetchAnalyticsData = async (
+  productFilter: Record<string, any>,
+  userFilter: Record<string, any>,
+  productOptions: IOptions,
+  userOptions: IOptions
+): Promise<{
+  products: QueryResult;
+  totalProducts: number;
+  totalNewProducts: number;
+  users: QueryResult;
+  totalUsers: number;
+  totalNewUsers: number;
+  totalRevenue: number;
+  totalProfit: number;
+}> => {
+  try {
+    // Get the start and end of the current day
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0); // Set time to 00:00:00
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999); // Set time to 23:59:59
+
+    // Create filters for new products and new users
+    const newProductFilter = {
+      ...productFilter,
+      createdAt: { $gte: startOfDay, $lte: endOfDay },
+    };
+    const newUserFilter = {
+      ...userFilter,
+      createdAt: { $gte: startOfDay, $lte: endOfDay },
+    };
+
+    // Fetch product data
+    const products = await Product.paginate(productFilter, productOptions);
+    const totalProducts = await Product.countDocuments(productFilter);
+    const totalNewProducts = await Product.countDocuments(newProductFilter);
+
+    // Fetch user data
+    const users = await User.paginate(userFilter, {
+      ...userOptions,
+      select: '+createdAt +updatedAt', // Ensure timestamps are included
+    });
+    const totalUsers = await User.countDocuments(userFilter);
+    const totalNewUsers = await User.countDocuments(newUserFilter);
+
+    // Aggregate revenue and profit
+    const result = await Order.aggregate([
+      {
+        $match: productFilter, // Use productFilter for orders if needed
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: '$revenue' }, // Sum up the 'revenue' field
+          totalProfit: { $sum: '$profit' },   // Sum up the 'profit' field
+        },
+      },
+    ]);
+    const totalRevenue = result.length > 0 ? result[0].totalRevenue : 0;
+    const totalProfit = result.length > 0 ? result[0].totalProfit : 0;
+
+    return {
+      products,
+      totalProducts,
+      totalNewProducts,
+      users,
+      totalUsers,
+      totalNewUsers,
+      totalRevenue,
+      totalProfit,
+    };
+  } catch (error) {
+    throw new Error('Unable to fetch analytics data.');
+  }
 };
 
-export const countqueryUsers = async (
-  filter: Record<string, any>,
-  options: IOptions
-): Promise<{ users: QueryResult; totalUsers: number }> => {
-  // Fetch paginated users
-  const users = await User.paginate(filter, {
-    ...options,
-    select: '+createdAt +updatedAt', // Ensure timestamps are included
-  });
-
-  // Count total users matching the filter
-  const totalUsers = await User.countDocuments(filter);
-
-  return { users, totalUsers };
-};

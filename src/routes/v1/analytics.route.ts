@@ -1,20 +1,17 @@
 import express, { Router } from 'express';
 // import { validate } from '../../modules/validate';
 import {  auth } from '../../modules/auth';
-import { productController } from '../../modules/product';
-import { orderController} from '../../modules/order';
+// import { productController } from '../../modules/product';
+// import { orderController} from '../../modules/order';
 import { userController} from '../../modules/user';
 
 // import { userController, userValidation } from '../../modules/user';
 
 const router: Router = express.Router();
 
-router.post('/new-customer', auth(), userController.newcustomer);
-// router.post('/total-customer', auth(), userController.totalcustomer);
-router.post('/revenue', auth(), orderController.revenue);
-router.post('/profit-company', auth(), orderController.profitcompany);
-router.post('/total-product', auth(), productController.totalproduct);
-router.post('/new-product', auth(), productController.newproduct);
+router.post('/fetchAnalyticsData', auth(), userController.fetchAnalyticsData);
+// router.post('/revenue', auth(), orderController.revenue);
+// router.post('/total-product', auth(), productController.totalproduct);
 
 
 

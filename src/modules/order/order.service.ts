@@ -250,59 +250,34 @@ export const createOrderAndUpdateUser = async (userId: mongoose.Types.ObjectId, 
   return { user, order };
 };
 
-// Update the functions with explicit typing
-export const revenue = async (
-  filter: Record<string, any>
-): Promise<{ totalRevenue: number }> => {
-  try {
-    // Aggregate total revenue based on the filter
-    const totalRevenueResult = await Order.aggregate([
-      {
-        $match: filter, // Apply the filter for matching orders
-      },
-      {
-        $group: {
-          _id: null,
-          totalRevenue: { $sum: '$revenue' }, // Sum up the 'revenue' field
-        },
-      },
-    ]);
-    // Extract the total revenue amount
-    const totalRevenue =
-      totalRevenueResult.length > 0 ? totalRevenueResult[0].totalRevenue : 0;
+// export const calculateRevenueAndProfit = async (
+//   filter: Record<string, any>
+// ): Promise<{ totalRevenue: number; totalProfit: number }> => {
+//   try {
+//     // Aggregate total revenue and profit based on the filter
+//     const result = await Order.aggregate([
+//       {
+//         $match: filter, // Apply the filter for matching orders
+//       },
+//       {
+//         $group: {
+//           _id: null,
+//           totalRevenue: { $sum: '$revenue' }, // Sum up the 'revenue' field
+//           totalProfit: { $sum: '$profit' },   // Sum up the 'profit' field
+//         },
+//       },
+//     ]);
 
-    return { totalRevenue };
-  } catch (error) {
-    throw new Error('Unable to calculate revenue.');
-  }
-};
+//     // Extract the total revenue and profit amounts
+//     const totalRevenue = result.length > 0 ? result[0].totalRevenue : 0;
+//     const totalProfit = result.length > 0 ? result[0].totalProfit : 0;
 
+//     return { totalRevenue, totalProfit };
+//   } catch (error) {
+//     throw new Error('Unable to calculate revenue and profit.');
+//   }
+// };
 
-export const profitcompany = async (
-  filter: Record<string, any>
-): Promise<{ profit: number }> => {
-  try {
-    // Aggregate total profit based on the filter
-    const profitResult = await Order.aggregate([
-      {
-        $match: filter, // Apply the filter for matching orders
-      },
-      {
-        $group: {
-          _id: null,
-          totalProfit: { $sum: '$profit' }, // Sum up the 'profit' field
-        },
-      },
-    ]);
-
-    // Extract the total profit amount
-    const profit = profitResult.length > 0 ? profitResult[0].totalProfit : 0;
-
-    return { profit };
-  } catch (error) {
-    throw new Error('Unable to calculate profit.');
-  }
-};
 
 
 

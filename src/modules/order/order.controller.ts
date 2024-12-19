@@ -84,18 +84,8 @@ export const becomeSellerAndCreateOrder = catchAsync(async (req: Request, res: R
 });
 
  
-export const revenue = catchAsync(async (req: Request, res: Response) => {
-  const filter = pick(req.query, ['name', 'userId','sellerId']);
-  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
-  const result = await orderService.queryOrders(filter, options);
-  res.send(result);
-});
-
-
-
-export const profitcompany = catchAsync(async (req: Request, res: Response) => {
-  const filter = pick(req.query, ['name', 'userId','sellerId']);
-  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
-  const result = await orderService.queryOrders(filter, options);
-  res.send(result);
-});
+// export const revenue = catchAsync(async (req: Request, res: Response) => {
+//   const filter = pick(req.query, ['name', 'userId','sellerId']);
+//   const result = await orderService.calculateRevenueAndProfit(filter);
+//   res.send(result);
+// });

@@ -143,41 +143,40 @@ export const userProducts = async (userId: mongoose.Types.ObjectId) => {
   return products;
 };
 
-export const countProducts = async (
-  filter: Record<string, any>,
-  options: IOptions
-): Promise<{ products: QueryResult; totalProducts: number }> => {
-  // Fetch paginated products
-  const products = await Product.paginate(filter, options);
 
-  // Count total products matching the filter
-  const totalProducts = await Product.countDocuments(filter);
+// export const countProductsWithNew = async ( 
+//   filter: Record<string, any>,
+//   options: IOptions
+// ): Promise<{
+//   products: QueryResult;
+//   totalProducts: number;
+//   totalNewProducts: number;
+// }> => {
+//   // Get the start and end of the current day
+//   const startOfDay = new Date();
+//   startOfDay.setHours(0, 0, 0, 0); // Set time to 00:00:00
+//   const endOfDay = new Date();
+//   endOfDay.setHours(23, 59, 59, 999); // Set time to 23:59:59
 
-  return { products, totalProducts };
-};
+//   // Create a filter for new products added today
+//   const newProductFilter = {
+//     ...filter,
+//     createdAt: { $gte: startOfDay, $lte: endOfDay },
+//   };
 
-export const countNewProducts = async (
-  filter: Record<string, any>,
-  options: IOptions
-): Promise<{ products: QueryResult; totalNewProducts: number }> => {
-  // Get the start and end of the current day
-  const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0); // Set time to 00:00:00
-  const endOfDay = new Date();
-  endOfDay.setHours(23, 59, 59, 999); // Set time to 23:59:59
+//   // Fetch paginated products based on the provided filter
+//   const products = await Product.paginate(filter, options);
 
-  // Add date filter to the provided filter
-  const newProductFilter = {
-    ...filter,
-    createdAt: { $gte: startOfDay, $lte: endOfDay },
-  };
+//   // Count total products matching the provided filter
+//   const totalProducts = await Product.countDocuments(filter);
 
-  // Fetch paginated products added today
-  const products = await Product.paginate(newProductFilter, options);
+//   // Count total new products added today
+//   const totalNewProducts = await Product.countDocuments(newProductFilter);
 
-  // Count total new products added today
-  const totalNewProducts = await Product.countDocuments(newProductFilter);
-
-  return { products, totalNewProducts };
-};
+//   return {
+//     products,
+//     totalProducts,
+//     totalNewProducts,
+//   };
+// };
 
