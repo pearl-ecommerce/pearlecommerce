@@ -16,6 +16,8 @@ const createOrderBody: Record<keyof NewOrder, any> = {
 
   items: Joi.array().items(Joi.object(orderItemSchema)).required(),
   amount: Joi.number().precision(2).required(),
+  profit: Joi.number().precision(2),
+  revenue: Joi.number().precision(2),
   email: Joi.string(),
   paymentMethod: Joi.string().valid('card', 'paypal', 'bank_transfer'),
   paymentStatus: Joi.string().valid('pending', 'completed', 'failed'),

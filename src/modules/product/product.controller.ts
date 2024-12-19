@@ -201,7 +201,7 @@ export const totalproduct = catchAsync(async (req: Request, res: Response) => {
   // Pick options for pagination, sorting, etc.
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page']);
   
-  const result = await productService.queryProducts(filter, options);
+  const result = await productService.countProducts(filter, options);
   
   res.status(httpStatus.OK).send(result);
 });

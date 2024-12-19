@@ -38,9 +38,8 @@ const orderSchema = new Schema<IOrderDoc>(
         description: {
       type: String,
     },
-        price: {
+        profit: {
           type: Number,
-          required: true,
         },
       },
     ],
@@ -48,6 +47,12 @@ const orderSchema = new Schema<IOrderDoc>(
       type: Number,
       required: true,
     },
+     profit: {
+      type: Number,
+    },
+    revenue: {
+        type: Number,
+     },
     
     paymentMethod: {
       type: String,

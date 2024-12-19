@@ -12,6 +12,8 @@ export interface IOrder {
    sellerId: mongoose.Types.ObjectId;
   items: IOrderItem[];
   amount: number;
+  profit: number;
+  revenue: number;
   email: string;
   paymentMethod: 'card' | 'paypal' | 'bank_transfer';
   paymentStatus: 'pending' | 'completed' | 'failed';

@@ -83,7 +83,7 @@ export const becomeSellerAndCreateOrder = catchAsync(async (req: Request, res: R
   res.status(httpStatus.CREATED).send({ user, order });
 });
 
-
+ 
 export const revenue = catchAsync(async (req: Request, res: Response) => {
   const filter = pick(req.query, ['name', 'userId','sellerId']);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);

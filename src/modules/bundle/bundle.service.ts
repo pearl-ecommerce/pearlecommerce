@@ -47,6 +47,31 @@ export const addItem = async (userId: string, productId: string, quantity: numbe
 // Get bundle by bundleID
 export const getBundleByUserId = async (id: mongoose.Types.ObjectId): Promise<IBundleDoc | null> => Bundle.findById(id);
 
+// export const getBundles = async (userId: string) => {
+//   const objectId = new mongoose.Types.ObjectId(userId);
+
+//   // Fetch all bundle records for the user
+//   const bundles = await Bundle.find({ userId: objectId }).populate('productId');
+
+//   // Fetch discount from the user's profile
+//   const user = await User.findById(objectId);
+//   const discount = user?.discount ? parseFloat(user.discount) : 0; // Ensure discount is a number
+
+//   // Apply discount to the bundles
+//   const updatedBundles = bundles.map(bundle => {
+//     const originalPrice = bundle.price; // Price from the bundle
+//     const discountedPrice = originalPrice - (originalPrice * discount) / 100; // Apply discount
+
+//     return {
+//       ...bundle.toObject(), // Convert Mongoose document to plain object
+//       originalPrice,
+//       discountedPrice,
+//     };
+//   });
+
+//   return updatedBundles;
+// };
+
 export const getBundles = async (userId: string) => {
   const objectId = new mongoose.Types.ObjectId(userId);
 
@@ -57,10 +82,18 @@ export const getBundles = async (userId: string) => {
   const user = await User.findById(objectId);
   const discount = user?.discount ? parseFloat(user.discount) : 0; // Ensure discount is a number
 
+  // Initialize totals
+  let totalOriginalPrice = 0;
+  let totalDiscountedPrice = 0;
+
   // Apply discount to the bundles
-  const updatedBundles = bundles.map(bundle => {
+  const cartBundles = bundles.map(bundle => {
     const originalPrice = bundle.price; // Price from the bundle
     const discountedPrice = originalPrice - (originalPrice * discount) / 100; // Apply discount
+
+    // Accumulate totals
+    totalOriginalPrice += originalPrice;
+    totalDiscountedPrice += discountedPrice;
 
     return {
       ...bundle.toObject(), // Convert Mongoose document to plain object
@@ -69,8 +102,13 @@ export const getBundles = async (userId: string) => {
     };
   });
 
-  return updatedBundles;
+  return {
+    bundles: cartBundles,
+    totalOriginalPrice,
+    totalDiscountedPrice,
+  };
 };
+
 
 export const allGetBundles = async (): Promise<IBundleDoc[]> => {
   const bundles = await Bundle.find(); // Populate related product details if needed

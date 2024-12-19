@@ -5,9 +5,13 @@ import ApiError from '../errors/ApiError';
 import { IOptions, QueryResult } from '../paginate/paginate';
 import { IOrderDoc, NewOrder, UpdateOrderBody } from './order.interfaces';
 import User from '../user/user.model';
+import Pricing from '../pricing/pricing.model';
+
 // import Product from '../product/product.model';
 
 import axios from 'axios'; // You might need to install axios for HTTP requests
+type OrderType = typeof Order & Document;
+
 
 const PAYSTACK_SECRET_KEY = 'sk_test_9dfacbeaefe4e9254d1f7ae6ab149bec0270857e'; // Replace with your actual Paystack secret key
 const PAYSTACK_BASE_URL = 'https://api.paystack.co';
@@ -73,61 +77,77 @@ export const verifyAndUpdateOrder = async (reference: string) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Payment verification failed');
   }
 };
- 
-// Service to initiate payment and create order
+
 // export const createOrder = async (orderBody: NewOrder): Promise<any> => {
 //   const { amount, email } = orderBody;
-  
-//    const newOrder = await Order.create({
+//   // Step 1: Create a new order with 'pending' status
+//   const newOrder = await Order.create({
 //     ...orderBody,
 //     paymentStatus: 'pending', // Default status
 //   });
-
-//     // Step 1: Initiate payment
+//   try {
+//     // Step 2: Initiate payment with Paystack
 //     const paymentInitiation = await paystackInitiatePayment(amount, email);
+
 //     if (!paymentInitiation?.data?.reference || !paymentInitiation?.data?.authorization_url) {
 //       throw new Error('Failed to initiate payment');
 //     }
-//   // Step 2: Create a new order with 'pending' status
-//   if (paymentInitiation) {
-//         const newOrder = await Order.create({
-//       ...orderBody,
-//       reference: paymentInitiation.data.reference,
-//       paymentStatus: 'pending', // Default status
-//       paymentUrl: paymentInitiation.data.authorization_url,
-//     });
-//     // Step 3: Return the new order and payment URL
+
+//     // Step 3: Update the order with the payment reference and URL
+//     newOrder.reference = paymentInitiation.data.reference;
+//     await newOrder.save();
+
+//     // Step 4: Return the order ID and payment URL
 //     return {
 //       orderId: newOrder.id,
 //       paymentUrl: paymentInitiation.data.authorization_url,
 //       message: 'Payment initiated successfully',
 //     };
-//   } else {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'order not created');
+//   } catch (error) {
+//     // If payment initiation fails, remove the created order
+//     await Order.findByIdAndDelete(newOrder.id);
+//     throw new ApiError(httpStatus.BAD_REQUEST, 'Payment initiation failed');
 //   }
 // };
 
-
 export const createOrder = async (orderBody: NewOrder): Promise<any> => {
   const { amount, email } = orderBody;
-  // Step 1: Create a new order with 'pending' status
+
+  // Step 1: Retrieve the price (percentage) from the Pricing table
+  const pricing = await Pricing.findOne(); // Update this query to get the specific pricing if needed
+  if (!pricing || !pricing.price) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Pricing information not found');
+  }
+
+  const pricePercentage = pricing.price;
+
+  // Step 2: Calculate revenue, amount, and profit
+  const revenue = amount; // Revenue is the full amount
+  const profit = (revenue * pricePercentage) / 100; // Profit is the percentage of the revenue
+  const finalAmount = revenue - profit; // Amount is revenue minus profit
+
+  // Step 3: Create a new order with calculated values
   const newOrder = await Order.create({
     ...orderBody,
     paymentStatus: 'pending', // Default status
+    revenue,
+    amount: finalAmount,
+    profit,
   });
+
   try {
-    // Step 2: Initiate payment with Paystack
+    // Step 4: Initiate payment with Paystack
     const paymentInitiation = await paystackInitiatePayment(amount, email);
 
     if (!paymentInitiation?.data?.reference || !paymentInitiation?.data?.authorization_url) {
       throw new Error('Failed to initiate payment');
     }
 
-    // Step 3: Update the order with the payment reference and URL
+    // Step 5: Update the order with the payment reference and URL
     newOrder.reference = paymentInitiation.data.reference;
     await newOrder.save();
 
-    // Step 4: Return the order ID and payment URL
+    // Step 6: Return the order ID and payment URL
     return {
       orderId: newOrder.id,
       paymentUrl: paymentInitiation.data.authorization_url,
@@ -139,6 +159,7 @@ export const createOrder = async (orderBody: NewOrder): Promise<any> => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Payment initiation failed');
   }
 };
+
 
 export const queryOrders = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
   const orders = await Order.paginate(filter, options);
@@ -228,3 +249,40 @@ export const createOrderAndUpdateUser = async (userId: mongoose.Types.ObjectId, 
 
   return { user, order };
 };
+
+// Update the functions with explicit typing
+// export const revenue = async (
+//   filter: Record<string, any>, 
+//   options: IOptions
+// ): Promise<{ totalRevenue: number; orders: QueryResult }> => {
+//   // Paginate and fetch orders based on the filter and options
+//   const orders: QueryResult = await Order.paginate(filter, options);
+
+//   // Calculate total revenue using the docs array
+//   const totalRevenue = orders.docs.reduce((sum: number, order) => sum + (order.revenue || 0), 0); 
+
+//   // Return the total revenue along with the paginated orders
+//   return {
+//     totalRevenue,
+//     orders,
+//   };
+// };
+
+// export const profitcompany = async (
+//   filter: Record<string, any>, 
+//   options: IOptions
+// ): Promise<{ profit: number; orders: QueryResult }> => {
+//   // Paginate and fetch orders based on the filter and options
+//   const orders: QueryResult = await Order.paginate(filter, options);
+
+//   // Calculate profit using the docs array
+//   const profit = orders.reduce((sum: number, order) => sum + (order.profit || 0), 0);
+
+//   // Return the profit along with the paginated orders
+//   return {
+//     profit,
+//     orders,
+//   };
+// };
+
+

@@ -2,22 +2,59 @@ import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import Product from './product.model';
 import User from '../user/user.model';
+import Pricing from '../pricing/pricing.model';
+
 import ApiError from '../errors/ApiError';
 import { IOptions, QueryResult } from '../paginate/paginate';
 import { IProductDoc, NewProduct, UpdateProductBody } from './product.interfaces';
 
 
-export const createProduct = async (userId: mongoose.Types.ObjectId, productData: NewProduct): Promise<IProductDoc> => {
+// export const createProduct = async (userId: mongoose.Types.ObjectId, productData: NewProduct): Promise<IProductDoc> => {
+//   // Check if user exists in the database
+//   const user = await User.findById(userId);
+//   if (!user) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'User really not found');
+//   }
+
+//   // CHECK IF USER HAS NIN
+//   // If all checks pass, create the product
+//   return Product.create(productData);
+// };
+
+export const createProduct = async (
+  userId: mongoose.Types.ObjectId,
+  productData: NewProduct
+): Promise<IProductDoc> => {
   // Check if user exists in the database
   const user = await User.findById(userId);
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User really not found'); 
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
 
-  // CHECK IF USER HAS NIN
+  // Check if user has a NIN
+  // if (!user.nin) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, 'User must have a valid NIN to create a product');
+  // }
 
-  // If all checks pass, create the product
-  return Product.create(productData);
+  // Fetch the pricing data (assumes there's only one record, otherwise filter accordingly)
+  const pricing = await Pricing.findOne({});
+  if (!pricing || pricing.price === undefined) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Pricing data not found');
+  }
+
+  // Calculate the new price
+  const percentage = pricing.price; // This is the percentage value from the pricing table
+  const additionalPrice = (percentage / 100) * productData.price; // Calculate percentage of the product price
+  const finalPrice = productData.price + additionalPrice; // Add the percentage to the original price
+
+  // Update the product data with the new price
+  const updatedProductData = {
+    ...productData,
+    price: finalPrice,
+  };
+
+  // Create the product with the updated price
+  return Product.create(updatedProductData);
 };
 
 export const queryProducts = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
@@ -104,5 +141,43 @@ export const userProducts = async (userId: mongoose.Types.ObjectId) => {
  
   const products = await Product.find({ userId: userId }); // Replace 'likedBy' with the correct field in your schema
   return products;
+};
+
+export const countProducts = async (
+  filter: Record<string, any>,
+  options: IOptions
+): Promise<{ products: QueryResult; totalProducts: number }> => {
+  // Fetch paginated products
+  const products = await Product.paginate(filter, options);
+
+  // Count total products matching the filter
+  const totalProducts = await Product.countDocuments(filter);
+
+  return { products, totalProducts };
+};
+
+export const countNewProducts = async (
+  filter: Record<string, any>,
+  options: IOptions
+): Promise<{ products: QueryResult; totalNewProducts: number }> => {
+  // Get the start and end of the current day
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0); // Set time to 00:00:00
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999); // Set time to 23:59:59
+
+  // Add date filter to the provided filter
+  const newProductFilter = {
+    ...filter,
+    createdAt: { $gte: startOfDay, $lte: endOfDay },
+  };
+
+  // Fetch paginated products added today
+  const products = await Product.paginate(newProductFilter, options);
+
+  // Count total new products added today
+  const totalNewProducts = await Product.countDocuments(newProductFilter);
+
+  return { products, totalNewProducts };
 };
 

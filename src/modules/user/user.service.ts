@@ -275,18 +275,43 @@ export const oauthSignup = async (userReq: any) => {
 
 }
 
-export const queryNewUsers = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
-  const users = await User.paginate(filter, {
-    ...options,
-    select: '+createdAt +updatedAt', // Ensure timestamps are included
-  });
-  return users;
+export const queryNewUsers = async (
+  filter: Record<string, any>,
+  options: IOptions
+): Promise<{ users: QueryResult; totalNewUsers: number }> => {
+  // Get the start and end of the current day
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0); // Set time to 00:00:00
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999); // Set time to 23:59:59
+
+  // Add date filter to the provided filter
+  const newUserFilter = {
+    ...filter,
+    createdAt: { $gte: startOfDay, $lte: endOfDay },
+  };
+
+  // Fetch paginated users added today
+  const users = await User.paginate(newUserFilter, options);
+
+  // Count total new users added today
+  const totalNewUsers = await User.countDocuments(newUserFilter);
+
+  return { users, totalNewUsers };
 };
 
-export const countqueryUsers = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
+export const countqueryUsers = async (
+  filter: Record<string, any>,
+  options: IOptions
+): Promise<{ users: QueryResult; totalUsers: number }> => {
+  // Fetch paginated users
   const users = await User.paginate(filter, {
     ...options,
     select: '+createdAt +updatedAt', // Ensure timestamps are included
   });
-  return users;
+
+  // Count total users matching the filter
+  const totalUsers = await User.countDocuments(filter);
+
+  return { users, totalUsers };
 };

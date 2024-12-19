@@ -56,6 +56,7 @@ const bundleSchema = new Schema<IBundleDoc>(
       type: Number,
       default: 0,
     },
+  
     currency: {
       type: String,
       default: 'NG',
