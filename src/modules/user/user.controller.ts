@@ -137,22 +137,13 @@ export const userDiscountProducts = catchAsync(async (req: Request, res: Respons
   }
 });
 
-
 export const fetchAnalyticsData = catchAsync(async (req: Request, res: Response) => {
-  // Extract filters and options from query parameters
+  // Extract filters from query parameters
   const userFilter = pick(req.query, ['name', 'role', 'userId']);
-  const productFilter = pick(req.query, ['category', 'status', 'productId']); // Adjust fields as necessary
-  const userOptions: IOptions = pick(req.query, ['sortBy', 'limit', 'page']);
-  const productOptions: IOptions = pick(req.query, ['sortBy', 'limit', 'page']); // Separate options for products if needed
 
   // Call the service with structured input
-  const result = await userService.fetchAnalyticsData(
-    productFilter,
-    userFilter,
-    productOptions,
-    userOptions
-  );
+  const result = await userService.fetchAnalyticsData(userFilter);
 
   // Send the result back to the client
-  res.send(result);
+  res.status(200).send(result);
 });

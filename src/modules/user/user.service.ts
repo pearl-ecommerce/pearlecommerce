@@ -324,15 +324,10 @@ export const oauthSignup = async (userReq: any) => {
 // };
 
 export const fetchAnalyticsData = async (
-  productFilter: Record<string, any>,
-  userFilter: Record<string, any>,
-  productOptions: IOptions,
-  userOptions: IOptions
+  filter: Record<string, any>
 ): Promise<{
-  products: QueryResult;
   totalProducts: number;
   totalNewProducts: number;
-  users: QueryResult;
   totalUsers: number;
   totalNewUsers: number;
   totalRevenue: number;
@@ -345,33 +340,24 @@ export const fetchAnalyticsData = async (
     const endOfDay = new Date();
     endOfDay.setHours(23, 59, 59, 999); // Set time to 23:59:59
 
-    // Create filters for new products and new users
-    const newProductFilter = {
-      ...productFilter,
-      createdAt: { $gte: startOfDay, $lte: endOfDay },
-    };
-    const newUserFilter = {
-      ...userFilter,
+    // Create a filter for today's data
+    const newFilter = {
+      ...filter,
       createdAt: { $gte: startOfDay, $lte: endOfDay },
     };
 
     // Fetch product data
-    const products = await Product.paginate(productFilter, productOptions);
-    const totalProducts = await Product.countDocuments(productFilter);
-    const totalNewProducts = await Product.countDocuments(newProductFilter);
+    const totalProducts = await Product.countDocuments(filter);
+    const totalNewProducts = await Product.countDocuments(newFilter);
 
     // Fetch user data
-    const users = await User.paginate(userFilter, {
-      ...userOptions,
-      select: '+createdAt +updatedAt', // Ensure timestamps are included
-    });
-    const totalUsers = await User.countDocuments(userFilter);
-    const totalNewUsers = await User.countDocuments(newUserFilter);
+    const totalUsers = await User.countDocuments(filter);
+    const totalNewUsers = await User.countDocuments(newFilter);
 
     // Aggregate revenue and profit
     const result = await Order.aggregate([
       {
-        $match: productFilter, // Use productFilter for orders if needed
+        $match: filter, // Apply the same filter for orders if applicable
       },
       {
         $group: {
@@ -385,10 +371,8 @@ export const fetchAnalyticsData = async (
     const totalProfit = result.length > 0 ? result[0].totalProfit : 0;
 
     return {
-      products,
       totalProducts,
       totalNewProducts,
-      users,
       totalUsers,
       totalNewUsers,
       totalRevenue,
@@ -398,4 +382,5 @@ export const fetchAnalyticsData = async (
     throw new Error('Unable to fetch analytics data.');
   }
 };
+
 
