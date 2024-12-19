@@ -251,38 +251,58 @@ export const createOrderAndUpdateUser = async (userId: mongoose.Types.ObjectId, 
 };
 
 // Update the functions with explicit typing
-// export const revenue = async (
-//   filter: Record<string, any>, 
-//   options: IOptions
-// ): Promise<{ totalRevenue: number; orders: QueryResult }> => {
-//   // Paginate and fetch orders based on the filter and options
-//   const orders: QueryResult = await Order.paginate(filter, options);
+export const revenue = async (
+  filter: Record<string, any>
+): Promise<{ totalRevenue: number }> => {
+  try {
+    // Aggregate total revenue based on the filter
+    const totalRevenueResult = await Order.aggregate([
+      {
+        $match: filter, // Apply the filter for matching orders
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: '$revenue' }, // Sum up the 'revenue' field
+        },
+      },
+    ]);
+    // Extract the total revenue amount
+    const totalRevenue =
+      totalRevenueResult.length > 0 ? totalRevenueResult[0].totalRevenue : 0;
 
-//   // Calculate total revenue using the docs array
-//   const totalRevenue = orders.docs.reduce((sum: number, order) => sum + (order.revenue || 0), 0); 
+    return { totalRevenue };
+  } catch (error) {
+    throw new Error('Unable to calculate revenue.');
+  }
+};
 
-//   // Return the total revenue along with the paginated orders
-//   return {
-//     totalRevenue,
-//     orders,
-//   };
-// };
 
-// export const profitcompany = async (
-//   filter: Record<string, any>, 
-//   options: IOptions
-// ): Promise<{ profit: number; orders: QueryResult }> => {
-//   // Paginate and fetch orders based on the filter and options
-//   const orders: QueryResult = await Order.paginate(filter, options);
+export const profitcompany = async (
+  filter: Record<string, any>
+): Promise<{ profit: number }> => {
+  try {
+    // Aggregate total profit based on the filter
+    const profitResult = await Order.aggregate([
+      {
+        $match: filter, // Apply the filter for matching orders
+      },
+      {
+        $group: {
+          _id: null,
+          totalProfit: { $sum: '$profit' }, // Sum up the 'profit' field
+        },
+      },
+    ]);
 
-//   // Calculate profit using the docs array
-//   const profit = orders.reduce((sum: number, order) => sum + (order.profit || 0), 0);
+    // Extract the total profit amount
+    const profit = profitResult.length > 0 ? profitResult[0].totalProfit : 0;
 
-//   // Return the profit along with the paginated orders
-//   return {
-//     profit,
-//     orders,
-//   };
-// };
+    return { profit };
+  } catch (error) {
+    throw new Error('Unable to calculate profit.');
+  }
+};
+
 
 
