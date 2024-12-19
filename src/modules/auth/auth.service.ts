@@ -6,6 +6,8 @@ import tokenTypes from '../token/token.types';
 import { getUserByEmail, getUserById, updateUserById } from '../user/user.service';
 import { IUserDoc, IUserWithTokens } from '../user/user.interfaces';
 import { generateAuthTokens, verifyToken } from '../token/token.service';
+import User from '../user/user.model';
+
 
 /**
  * Login with username and password
@@ -19,9 +21,9 @@ export const loginUserWithEmailAndPassword = async (email: string, password: str
   if (!user || !(await user.isPasswordMatch(password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
   }
-  if (!user.active) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Your account has been deactivated');
-  }
+  // if (!user.active) {
+  //   throw new ApiError(httpStatus.FORBIDDEN, 'Your account has been deactivated');
+  // }
   // Update the last seen timestamp
   user.lastseen = new Date();
   await user.save();
@@ -66,7 +68,9 @@ export const logout = async (refreshToken: string): Promise<void> => {
 export const refreshAuth = async (refreshToken: string): Promise<IUserWithTokens> => {
   try {
     const refreshTokenDoc = await verifyToken(refreshToken, tokenTypes.REFRESH);
-    const user = await getUserById(new mongoose.Types.ObjectId(refreshTokenDoc.user));
+      const user = await User.findById(refreshTokenDoc.user);
+
+    // const user = await getUserById(new mongoose.Types.ObjectId(refreshTokenDoc.user));
     if (!user) {
       throw new Error();
     }
@@ -87,7 +91,9 @@ export const refreshAuth = async (refreshToken: string): Promise<IUserWithTokens
 export const resetPassword = async (resetPasswordToken: any, newPassword: string): Promise<void> => {
   try {
     const resetPasswordTokenDoc = await verifyToken(resetPasswordToken, tokenTypes.RESET_PASSWORD);
-    const user = await getUserById(new mongoose.Types.ObjectId(resetPasswordTokenDoc.user));
+          const user = await User.findById(resetPasswordTokenDoc.user);
+
+    // const user = await getUserById(new mongoose.Types.ObjectId(resetPasswordTokenDoc.user));
     if (!user) {
       throw new Error();
     }
@@ -106,7 +112,9 @@ export const resetPassword = async (resetPasswordToken: any, newPassword: string
 export const verifyEmail = async (verifyEmailToken: any): Promise<IUserDoc | null> => {
   try {
     const verifyEmailTokenDoc = await verifyToken(verifyEmailToken, tokenTypes.VERIFY_EMAIL);
-    const user = await getUserById(new mongoose.Types.ObjectId(verifyEmailTokenDoc.user));
+              const user = await User.findById(verifyEmailTokenDoc.user);
+
+    // const user = await getUserById(new mongoose.Types.ObjectId(verifyEmailTokenDoc.user));
     if (!user) {
       throw new Error();
     }

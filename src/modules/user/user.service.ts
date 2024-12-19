@@ -74,30 +74,38 @@ export const adminUsers = async (filter: Record<string, any>, options: IOptions)
  * @returns {Promise<IUserDoc | null>}
  */
 // export const getUserById = async (id: mongoose.Types.ObjectId): Promise<IUserDoc | null> => User.findById(id);
-export const getUserById = async (id: mongoose.Types.ObjectId): Promise<{ user: IUserDoc | null; totalSales: number }> => {
+export const getUserById = async (
+  id: mongoose.Types.ObjectId
+): Promise<{ user: IUserDoc | null; totalSales: number }> => {
   try {
+    // Fetch the user by ID
     const user = await User.findById(id);
     if (!user) {
       return { user: null, totalSales: 0 };
     }
-    // Calculate total sales from the Orders table
-    const totalSales = await Order.aggregate([
+
+    // Calculate total sales from the Orders table for the user
+    const totalSalesResult = await Order.aggregate([
       {
         $match: {
-          sellerId: id, // Ensure this matches the field name in your Orders schema
+          sellerId: id, // Match orders belonging to the user
         },
       },
       {
         $group: {
           _id: null,
-          totalAmount: { $sum: '$amount' }, // Ensure 'amount' is the field storing the sales value
+          totalAmount: { $sum: '$amount' }, // Sum up the 'amount' field
         },
       },
     ]);
 
+    // Extract the total sales amount
+    const totalSales =
+      totalSalesResult.length > 0 ? totalSalesResult[0].totalAmount : 0;
+
     return {
       user,
-      totalSales: totalSales.length > 0 ? totalSales[0].totalAmount : 0,
+      totalSales,
     };
   } catch (error) {
     console.error('Error fetching user or calculating sales:', error);

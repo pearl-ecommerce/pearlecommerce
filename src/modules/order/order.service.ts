@@ -10,7 +10,7 @@ import Pricing from '../pricing/pricing.model';
 // import Product from '../product/product.model';
 
 import axios from 'axios'; // You might need to install axios for HTTP requests
-type OrderType = typeof Order & Document;
+// type OrderType = typeof Order & Document;
 
 
 const PAYSTACK_SECRET_KEY = 'sk_test_9dfacbeaefe4e9254d1f7ae6ab149bec0270857e'; // Replace with your actual Paystack secret key
