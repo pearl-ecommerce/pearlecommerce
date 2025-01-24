@@ -284,45 +284,6 @@ export const oauthSignup = async (userReq: any) => {
 
 }
 
-// export const queryUsersWithCounts = async (
-//   filter: Record<string, any>,
-//   options: IOptions
-// ): Promise<{
-//   users: QueryResult;
-//   totalUsers: number;
-//   totalNewUsers: number;
-// }> => {
-//   try {
-//     // Get the start and end of the current day
-//     const startOfDay = new Date();
-//     startOfDay.setHours(0, 0, 0, 0); // Set time to 00:00:00
-//     const endOfDay = new Date();
-//     endOfDay.setHours(23, 59, 59, 999); // Set time to 23:59:59
-
-//     // Add date filter for new users
-//     const newUserFilter = {
-//       ...filter,
-//       createdAt: { $gte: startOfDay, $lte: endOfDay },
-//     };
-
-//     // Fetch paginated users based on the main filter
-//     const users = await User.paginate(filter, {
-//       ...options,
-//       select: '+createdAt +updatedAt', // Ensure timestamps are included
-//     });
-
-//     // Count total users matching the filter
-//     const totalUsers = await User.countDocuments(filter);
-
-//     // Count total new users added today
-//     const totalNewUsers = await User.countDocuments(newUserFilter);
-
-//     return { users, totalUsers, totalNewUsers };
-//   } catch (error) {
-//     throw new Error('Unable to query users and counts.');
-//   }
-// };
-
 export const fetchAnalyticsData = async (
   filter: Record<string, any>
 ): Promise<{
@@ -382,5 +343,80 @@ export const fetchAnalyticsData = async (
     throw new Error('Unable to fetch analytics data.');
   }
 };
+
+
+export const overviewsection = async (
+  customerId: string
+): Promise<{
+  totalProducts: number;
+  totalNewProducts: number;
+  totalItemsBought: {
+    count: number;
+    totalSpent: number;
+  };
+  totalItemsSold: {
+    count: number;
+    totalEarned: number;
+  };
+  netBalance: number;
+}> => {
+  try {
+    // Validate customer existence
+    const customer = await User.findById(customerId);
+    if (!customer) {
+      throw new Error('Customer not found');
+    }
+
+    // Get the start and end of the current day
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0); // Set time to 00:00:00
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999); // Set time to 23:59:59
+
+    // Define filters for products and orders associated with the customer
+    const productFilter = { userId: customerId }; // Products created by the customer
+    const newProductFilter = {
+      ...productFilter,
+      createdAt: { $gte: startOfDay, $lte: endOfDay },
+    };
+    const boughtFilter = { userId: customerId }; // Orders where the customer is the buyer
+    const soldFilter = { sellerId: customerId }; // Orders where the customer is the seller
+
+    // Fetch product data
+    const totalProducts = await Product.countDocuments(productFilter);
+    const totalNewProducts = await Product.countDocuments(newProductFilter);
+
+    // Fetch data for items bought
+    const itemsBought = await Order.find(boughtFilter);
+    const totalItemsBoughtCount = itemsBought.length;
+    const totalSpent = itemsBought.reduce((sum, item) => sum + item.amount, 0);
+
+    // Fetch data for items sold
+    const itemsSold = await Order.find(soldFilter);
+    const totalItemsSoldCount = itemsSold.length;
+    const totalEarned = itemsSold.reduce((sum, item) => sum + item.amount, 0);
+
+    // Calculate net balance
+    const netBalance = totalEarned - totalSpent;
+
+    return {
+      totalProducts,
+      totalNewProducts,
+      totalItemsBought: {
+        count: totalItemsBoughtCount,
+        totalSpent,
+      },
+      totalItemsSold: {
+        count: totalItemsSoldCount,
+        totalEarned,
+      },
+      netBalance,
+    };
+  } catch (error) {
+    throw new Error('Unable to fetch customer activity summary.');
+  }
+};
+
+
 
 

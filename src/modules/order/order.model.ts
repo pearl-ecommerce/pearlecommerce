@@ -11,7 +11,7 @@ const orderSchema = new Schema<IOrderDoc>(
       ref: 'User',
     },
       sellerId: {
-      type: Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId, 
       ref: 'User',
      
     },

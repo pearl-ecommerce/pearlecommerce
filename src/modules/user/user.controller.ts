@@ -147,3 +147,16 @@ export const fetchAnalyticsData = catchAsync(async (req: Request, res: Response)
   // Send the result back to the client
   res.status(200).send(result);
 });
+
+
+
+export const userfetchAnalyticsData = catchAsync(async (req: Request, res: Response) => {
+  // Extract filters from query parameters
+  const userId = req.query['userId'] as string;
+
+  // Call the service with structured input
+  const result = await userService.overviewsection(userId);
+
+  // Send the result back to the client
+  res.status(200).send(result);
+});
