@@ -13,6 +13,11 @@ router.post('/fetchAnalyticsData', auth(), userController.fetchAnalyticsData);
 
 router.post('/userfetchAnalyticsData', auth(), userController.userfetchAnalyticsData);
 
+router.post('/userfetchVisualChart', auth(), userController.userfetchVisualChart);
+
+router.post('/userfetchInsights', auth(), userController.userfetchInsights);
+
+router.post('/userfetchCustomization', auth(), userController.userfetchCustomization);
 
 
 export default router;

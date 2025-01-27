@@ -22,7 +22,7 @@ const allRoles = {
     'manageCategories', 'getCategories', 'managePayments', 'getPayments', 'managePayments',
     'manageOrder', 'getOrders', 'manageSellers', 'verify-and-create-order',
     'become-seller', 'follow', 'unfollow', 'followers', 'userProducts', 'adminlogin',
-    'manageCart','getCarts','removecart','managePricing','getPricing','manageDiscount','getCarts','getDiscount','addDiscountToUser','manageBundle', 'getBundles', 'removebundle','allgetBundles','activate','deactivate','fetchAnalyticsData'
+    'manageCart','getCarts','removecart','managePricing','getPricing','manageDiscount','getCarts','getDiscount','addDiscountToUser','manageBundle', 'getBundles', 'removebundle','allgetBundles','activate','deactivate','fetchAnalyticsData','userfetchCustomization','userfetchInsights','userfetchVisualChart','userfetchAnalyticsData'
 
   ]
 };

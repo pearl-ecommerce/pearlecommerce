@@ -35,6 +35,10 @@ const orderSchema = new Schema<IOrderDoc>(
           required: true,
           min: 1,
         },
+        category: {
+      type: String,
+      
+    },
         description: {
       type: String,
     },

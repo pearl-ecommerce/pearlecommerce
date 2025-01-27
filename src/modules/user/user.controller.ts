@@ -160,3 +160,40 @@ export const userfetchAnalyticsData = catchAsync(async (req: Request, res: Respo
   // Send the result back to the client
   res.status(200).send(result);
 });
+
+
+
+export const userfetchVisualChart = catchAsync(async (req: Request, res: Response) => {
+  // Extract filters from query parameters
+  const userId = req.query['userId'] as string;
+
+  // Call the service with structured input
+  const result = await userService.getChartData(userId);
+
+  // Send the result back to the client
+  res.status(200).send(result);
+});
+
+// . Insights & Suggestions
+export const userfetchInsights = catchAsync(async (req: Request, res: Response) => {
+  // Extract filters from query parameters
+  const userId = req.query['userId'] as string;
+   const period = req.query['period'] as string;
+
+  // Call the service with structured input
+  const result = await userService.getUserAnalytics(userId, period);
+
+  // Send the result back to the client
+  res.status(200).send(result);
+});
+
+export const userfetchCustomization = catchAsync(async (req: Request, res: Response) => {
+  // Extract filters from query parameters
+  const userId = req.query['userId'] as string;
+const userFilter = pick(req.query, ['name', 'role', 'userId']);
+  // Call the service with structured input
+  const result = await userService.getFilteredOrders(userId, userFilter);
+
+  // Send the result back to the client
+  res.status(200).send(result);
+});
