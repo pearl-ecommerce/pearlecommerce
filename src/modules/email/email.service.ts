@@ -152,10 +152,10 @@ export const sendAccountCreated = async (to: string, name: string): Promise<void
 //   await sendEmail(to, subject, text, html);
 // };
 
-export const sendLoginEmail = async (to: string, firstName: string): Promise<void> => {
-    const subject = `Welcome Back, ${firstName}! You’ve Successfully Logged In`;
+export const sendLoginEmail = async (to: string, ): Promise<void> => {
+    const subject = `Welcome Back, ! You’ve Successfully Logged In`;
 
-    const text = `Hi ${firstName},
+    const text = `Hi ,
 
 Welcome back! We're glad to see you logged into your account successfully.
 
@@ -175,7 +175,7 @@ This is an automated email from a no-reply address. Please do not reply.`;
           </div>
   
           <!-- Greeting -->
-          <h4 style="font-size: 24px; font-weight: bold; text-align: center; color: #4A00E0;">Hi ${firstName},</h4>
+          <h4 style="font-size: 24px; font-weight: bold; text-align: center; color: #4A00E0;">Hi ,</h4>
   
           <!-- Body Content -->
           <p style="font-size: 16px; line-height: 1.6; text-align: center;">

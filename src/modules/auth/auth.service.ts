@@ -21,15 +21,29 @@ export const loginUserWithEmailAndPassword = async (email: string, password: str
   if (!user || !(await user.isPasswordMatch(password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
   }
-  // if (!user.active) {
-  //   throw new ApiError(httpStatus.FORBIDDEN, 'Your account has been deactivated');
-  // }
-  // Update the last seen timestamp
+
   user.lastseen = new Date();
+  //  const firstname = user.firstName;
   await user.save();
   return user;
 };
+// export const loginUserWithEmailAndPassword = async (
+//   email: string,
+//   password: string
+// ): Promise<{ user: IUserDoc; firstname: string }> => {
+//   const user = await getUserByEmail(email);
 
+//   if (!user || !(await user.isPasswordMatch(password))) {
+//     throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect email or password");
+//   }
+
+//   user.lastseen = new Date();
+//   const firstname = user.firstName;
+//   await user.save();
+
+//   // Return both user and firstname in an object
+//   return { user, firstname };
+// };
 
 export const loginAdminWithEmailAndPassword = async (email: string, password: string): Promise<IUserDoc> => {
   const admin = await getUserByEmail(email);

@@ -28,6 +28,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const user = await authService.loginUserWithEmailAndPassword(email, password);
   const tokens = await tokenService.generateAuthTokens(user);
+  
   const message = "login successful";
    await emailService.sendLoginEmail(req.body.email);
   res.status(200).send({user, tokens,message });
