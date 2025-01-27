@@ -153,7 +153,7 @@ export const sendAccountCreated = async (to: string, name: string): Promise<void
 // };
 
 export const sendLoginEmail = async (to: string, ): Promise<void> => {
-    const subject = `Welcome Back, ! You’ve Successfully Logged In`;
+    const subject = `Welcome Back, ! You’ve Successfully Logged In.`;
 
     const text = `Hi ,
 
