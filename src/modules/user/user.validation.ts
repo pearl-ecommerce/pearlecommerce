@@ -7,7 +7,7 @@ const createUserBody: Record<keyof NewCreatedUser, any> = {
   middleName: Joi.string().allow(''),
   lastName: Joi.string().required(),
   email: Joi.string().required().email(),
-  password: Joi.string().required().custom(password),
+  password: Joi.string().custom(password),
   phone: Joi.string(),
   dateOfBirth: Joi.date().max('now').iso(),
   imageUrl: Joi.string(),
@@ -95,6 +95,7 @@ export const updateUser = {
         active: Joi.boolean().default(true),
         followers: Joi.string().custom(objectId),
         following: Joi.string().custom(objectId),
+         role: Joi.string().required().valid('superadmin', 'admin','viewers', 'seller'), 
 
       }),
       nin: Joi.string().length(11),
