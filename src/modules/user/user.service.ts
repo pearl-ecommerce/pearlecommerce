@@ -13,6 +13,28 @@ import { NewCreatedUser, UpdateUserBody, IUserDoc, NewRegisteredUser } from './u
  * @param {NewCreatedUser} userBody
  * @returns {Promise<IUserDoc>}
  */
+
+//admin creation
+// export const createUser = async (userBody: NewCreatedUser, currentUserId: string | null): Promise<IUserDoc> => {
+//   // Check if currentUserId is provided and if the user has an admin role
+//   if (!currentUserId) {
+//     throw new ApiError(httpStatus.FORBIDDEN, 'User ID is required');
+//   }
+//   const currentUser = await User.findById(currentUserId); // Fetch the current user's details from the database
+//   if (!currentUser) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+//   }
+//   if (currentUser.role !== 'admin') {
+//     throw new ApiError(httpStatus.FORBIDDEN, 'Only admins can create users');
+//   }
+//   // Check if the email is already taken
+//   if (await User.isEmailTaken(userBody.email)) {
+//     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+//   }
+//   // Create the new user
+//   return User.create(userBody);
+// };
+
 export const createUser = async (userBody: NewCreatedUser, currentUserId: string | null): Promise<IUserDoc> => {
   // Check if currentUserId is provided and if the user has an admin role
   if (!currentUserId) {
@@ -25,13 +47,25 @@ export const createUser = async (userBody: NewCreatedUser, currentUserId: string
   if (currentUser.role !== 'admin') {
     throw new ApiError(httpStatus.FORBIDDEN, 'Only admins can create users');
   }
+
+  // Set a default password based on the role
+  if (userBody.role === 'admin') {
+    userBody.password = 'admin123'; // Default password for admin
+  } else if (userBody.role === 'superadmin') {
+    userBody.password = 'superadmin123'; // Default password for superadmin
+  } else if (userBody.role === 'viewer') {
+    userBody.password = 'viewer123'; // Default password for viewer
+  }
+
   // Check if the email is already taken
   if (await User.isEmailTaken(userBody.email)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
+
   // Create the new user
   return User.create(userBody);
 };
+
  
 
 /**

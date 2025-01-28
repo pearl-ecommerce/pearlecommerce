@@ -9,20 +9,49 @@ import { sendSuccessResponse, sendErrorResponse } from '../utils/response';
 
 
 
+// export const register = catchAsync(async (req: Request, res: Response) => {
+//   const user = await userService.registerUser(req.body);
+//   const tokens = await tokenService.generateAuthTokens(user);
+//   // Define a response object with status and message
+//   const response = {
+//     status: true,
+//     message: 'User registered successfully',
+//     data: { user, tokens } // Include user and tokens as data
+//   };
+//   await emailService.sendSuccessfulRegistration(req.body.email, tokens.access.token, req.body.firstName);
+//   await emailService.sendAccountCreated(req.body.email, req.body.firstName);
+
+//   res.status(httpStatus.CREATED).json(response);
+// });
+
 export const register = catchAsync(async (req: Request, res: Response) => {
   const user = await userService.registerUser(req.body);
-  const tokens = await tokenService.generateAuthTokens(user);   
+  const tokens = await tokenService.generateAuthTokens(user);   
+
+  // If the user has a generic password, trigger the forgot password flow
+  if (
+    user.password === 'admin123' || 
+    user.password === 'superadmin123' || 
+    user.password === 'viewer123'
+  ) {
+    // Call forgotPassword to send a reset token for changing the password
+    await emailService.sendResetPasswordEmail(req.body.email, await tokenService.generateResetPasswordToken(req.body.email));
+  }
+
   // Define a response object with status and message
   const response = {
     status: true,
     message: 'User registered successfully',
     data: { user, tokens } // Include user and tokens as data
   };
+
+  // Send email notifications
   await emailService.sendSuccessfulRegistration(req.body.email, tokens.access.token, req.body.firstName);
   await emailService.sendAccountCreated(req.body.email, req.body.firstName);
 
   res.status(httpStatus.CREATED).json(response);
 });
+
 
 export const login = catchAsync(async (req: Request, res: Response) => {
   const { email, password } = req.body;

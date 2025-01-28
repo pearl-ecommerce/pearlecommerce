@@ -32,7 +32,7 @@ const createUserBody: Record<keyof NewCreatedUser, any> = {
     accountNumber: Joi.string().length(10), // Assuming account number is 10 digits
     bankName: Joi.string(),
   }),
-  role: Joi.string().required().valid('user', 'admin', 'seller'),
+  role: Joi.string().required().valid('superadmin', 'admin','viewers', 'seller'), 
    lastseen: Joi.date(),
    active: Joi.boolean().default(true), 
  followers: Joi.string().custom(objectId),

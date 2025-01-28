@@ -107,6 +107,7 @@ const orderSchema = new Schema<IOrderDoc>(
     notes: {
       type: String,
     },
+     
   },
  {
     timestamps: true,

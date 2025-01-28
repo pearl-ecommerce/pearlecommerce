@@ -45,6 +45,22 @@ export const loginUserWithEmailAndPassword = async (email: string, password: str
 //   return { user, firstname };
 // };
 
+// export const loginAdminWithEmailAndPassword = async (email: string, password: string): Promise<IUserDoc> => {
+//   const admin = await getUserByEmail(email);
+//   if (!admin || !(await admin.isPasswordMatch(password))) {
+//     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
+//   }
+//   if (admin.role !== 'admin') {
+//     throw new ApiError(httpStatus.FORBIDDEN, 'Only admins can log in');
+//   }
+//     if (!admin.active) {
+//     throw new ApiError(httpStatus.FORBIDDEN, 'Your account has been deactivated');
+//   }
+//   admin.lastseen = new Date();
+//   await admin.save();
+//   return admin;
+// };
+
 export const loginAdminWithEmailAndPassword = async (email: string, password: string): Promise<IUserDoc> => {
   const admin = await getUserByEmail(email);
   if (!admin || !(await admin.isPasswordMatch(password))) {
@@ -53,13 +69,24 @@ export const loginAdminWithEmailAndPassword = async (email: string, password: st
   if (admin.role !== 'admin') {
     throw new ApiError(httpStatus.FORBIDDEN, 'Only admins can log in');
   }
-    if (!admin.active) {
+  if (!admin.active) {
     throw new ApiError(httpStatus.FORBIDDEN, 'Your account has been deactivated');
   }
+
+  // Check if the admin password is a default one
+  if (
+    password === 'admin123' ||
+    password === 'superadmin123' ||
+    password === 'viewer123'
+  ) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Please change your password');
+  }
+
   admin.lastseen = new Date();
   await admin.save();
   return admin;
 };
+
 
 /**
  * Logout

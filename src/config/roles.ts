@@ -15,7 +15,7 @@ const allRoles = {
     'become-seller', 'follow', 'unfollow', 'followers', 'userProducts', 'adminlogin',
     'manageCart', 'getCarts', 'removecart', 'managePricing', 'getPricing',
     'manageDiscount', 'getCarts', 'getDiscount', 'addDiscountToUser',
-        'manageBundle', 'getBundles', 'removebundle','allgetBundles','activate','deactivate','fetchAnalyticsData'
+        'manageBundle', 'getBundles', 'removebundle','allgetBundles','activate','deactivate','fetchAnalyticsData','manageRole','getRole'
 
   ],
   seller: ['getProducts', 'searchProducts', 'manageProducts', 'getUsers', 'manageSellers', 'getStores', 'manageSellers', 'manageUsers',

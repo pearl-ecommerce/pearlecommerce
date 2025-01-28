@@ -12,6 +12,9 @@ import bundleRoute from './bundle.route';
 import pricingRoute from './pricing.route';
 import discountRoute from './discount.route';
 import analyticsRoute from './analytics.route';
+import roleRoute from './role.route';
+
+
 
 
 import config from '../../config/config';
@@ -71,6 +74,10 @@ const defaultIRoute: IRoute[] = [
    {
     path: '/discount',
     route: discountRoute,
+  },
+  {
+    path: '/role',
+    route: roleRoute,
   },
    {
     path: '/analytics',

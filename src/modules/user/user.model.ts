@@ -3,7 +3,6 @@ import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import toJSON from '../toJSON/toJSON';
 import paginate from '../paginate/paginate';
-import { roles } from '../../config/roles';
 import { IUserDoc, IUserModel } from './user.interfaces';
 
 const userSchema = new Schema<IUserDoc>(
@@ -90,9 +89,10 @@ const userSchema = new Schema<IUserDoc>(
     },
     role: {
       type: String,
-      enum: roles,
+      enum: ['superadmin', 'admin','viewers', 'seller'],
       default: 'seller',
     },
+    
   userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
