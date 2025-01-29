@@ -4,20 +4,52 @@ import mongoose from 'mongoose';
 import catchAsync from '../utils/catchAsync';
 import ApiError from '../errors/ApiError';
 import pick from '../utils/pick';
+import { tokenService } from '../token';
+import { emailService } from '../email';
 import { IOptions } from '../paginate/paginate';
 import * as userService from './user.service';
 
 // create admin
+// export const createUser = catchAsync(async (req: Request, res: Response) => {
+//   const currentUserId = req.body.userId;
+  
+//   const user = await userService.createUser(req.body,currentUserId);
+//    const response = {
+//     status: true,
+//     message: 'User created successfully',
+//     data: user // Include user and tokens as data
+//   };
+//   res.status(httpStatus.CREATED).send(response);
+// });
+
 export const createUser = catchAsync(async (req: Request, res: Response) => {
   const currentUserId = req.body.userId;
-  
+
   const user = await userService.createUser(req.body,currentUserId);
-   const response = {
+  const tokens = await tokenService.generateAuthTokens(user);   
+
+  // If the user has a generic password, trigger the forgot password flow
+  if (
+    user.password === 'admin123' || 
+    user.password === 'superadmin123' || 
+    user.password === 'viewer123'
+  ) {
+    // Call forgotPassword to send a reset token for changing the password
+    await emailService.sendResetPasswordEmail(req.body.email, await tokenService.generateResetPasswordToken(req.body.email));
+  }
+
+  // Define a response object with status and message
+  const response = {
     status: true,
-    message: 'User created successfully',
-    data: user // Include user and tokens as data
+    message: 'User registered successfully',
+    data: { user, tokens } // Include user and tokens as data
   };
-  res.status(httpStatus.CREATED).send(response);
+
+  // Send email notifications
+  await emailService.sendSuccessfulRegistration(req.body.email, tokens.access.token, req.body.firstName);
+  await emailService.sendAccountCreated(req.body.email, req.body.firstName);
+
+  res.status(httpStatus.CREATED).json(response);
 });
 
 export const getUsers = catchAsync(async (req: Request, res: Response) => {
