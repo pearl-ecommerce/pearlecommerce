@@ -95,12 +95,13 @@ export const updateUser = {
         active: Joi.boolean().default(true),
         followers: Joi.string().custom(objectId),
         following: Joi.string().custom(objectId),
-         role: Joi.string().required().valid('superadmin', 'admin','viewers', 'seller'), 
+        
 
       }),
       nin: Joi.string().length(11),
       itemToSell: Joi.string().valid('electronics', 'clothing', 'food', 'furniture', 'other'),
       businessName: Joi.string().allow(null, ''),
+       role: Joi.string().valid('superadmin', 'admin','viewers', 'seller'), 
       socialMediaLinks: Joi.object({
         facebook: Joi.string().uri().allow(null, ''),
         twitter: Joi.string().uri().allow(null, ''),

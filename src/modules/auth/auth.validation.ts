@@ -11,7 +11,7 @@ const registerBody: Record<keyof NewRegisteredUser, any> = {
     imageUrl: Joi.string(),
   description: Joi.string(),
   discount: Joi.string(),
-  password: Joi.string().required().custom(password),
+  password: Joi.string().custom(password),
    lastseen: Joi.date(),
   active: Joi.string(),
   followers: Joi.array().items(Joi.string()).default([]),   // Add this
