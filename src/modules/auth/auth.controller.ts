@@ -64,6 +64,13 @@ export const forgotPassword = catchAsync(async (req: Request, res: Response) => 
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+export const forgotPasswordAdmin = catchAsync(async (req: Request, res: Response) => {
+   console.log('Request Body:', req.body); // Log the request body
+  const resetPasswordToken = await tokenService.generateResetPasswordToken(req.body.email);
+  await emailService.sendResetPasswordEmailAdmin(req.body.email, resetPasswordToken);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
 export const resetPassword = catchAsync(async (req: Request, res: Response) => {
   await authService.resetPassword(req.query['token'], req.body.password);
   res.status(httpStatus.NO_CONTENT).send();

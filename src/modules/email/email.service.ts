@@ -41,7 +41,24 @@ export const sendResetPasswordEmail = async (to: string, token: string): Promise
   const subject = 'Reset password';
   // replace this url with the link to the reset password page of your front-end app
   // const resetPasswordUrl = `http://link-to-app/reset-password?token=${token}`;
-   const resetPasswordUrl = `www.reselii.com/v1/auth/reset-password?token=${token}`;
+   const resetPasswordUrl = `https://reselli-frontend.vercel.app/reset-password?token=${token}`;
+  // const resetPasswordUrl = `http://localhost:3000/v1/auth/reset-password?token=${token}`;
+  const text = `Hi,
+  To reset your password, click on this link: ${resetPasswordUrl}
+  If you did not request any password resets, then ignore this email.`;
+  const html = `<div style="margin:30px; padding:30px; border:1px solid black; border-radius: 20px 10px;"><h4><strong>Dear user,</strong></h4>
+  <p>To reset your password, click on this link: ${resetPasswordUrl}</p>
+  <p>If you did not request any password resets, please ignore this email.</p>
+  <p>Thanks,</p>
+  <p><strong>Pearl Ecommerce</strong></p></div>`;
+  await sendEmail(to, subject, text, html);
+};
+
+export const sendResetPasswordEmailAdmin = async (to: string, token: string): Promise<void> => {
+  const subject = 'Reset password';
+  // replace this url with the link to the reset password page of your front-end app
+  // const resetPasswordUrl = `http://link-to-app/reset-password?token=${token}`;
+    const resetPasswordUrl = `https://reselli-admin-panel.vercel.app/reset-password?token=${token}`;
   // const resetPasswordUrl = `http://localhost:3000/v1/auth/reset-password?token=${token}`;
   const text = `Hi,
   To reset your password, click on this link: ${resetPasswordUrl}
