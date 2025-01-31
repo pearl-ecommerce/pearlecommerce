@@ -34,8 +34,9 @@ export const createUser = catchAsync(async (req: Request, res: Response) => {
     user.password === 'superadmin123' || 
     user.password === 'viewer123'
   ) {
+    
     // Call forgotPassword to send a reset token for changing the password
-    await emailService.sendResetPasswordEmail(req.body.email, await tokenService.generateResetPasswordToken(req.body.email));
+    await emailService.sendResetPasswordEmailCreated(req.body.email,user.password, await tokenService.generateResetPasswordToken(req.body.email));
   }
 
   // Define a response object with status and message
@@ -61,9 +62,10 @@ export const getUsers = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const adminuser = catchAsync(async (req: Request, res: Response) => {
+   const  userId = req.body;
   const filter = pick(req.query, ['name', 'role','userId']);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
-  const result = await userService.adminUsers(filter, options);
+  const result = await userService.adminUsers(userId,filter, options);
   res.send(result);
 });
 

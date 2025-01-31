@@ -38,7 +38,7 @@ import { NewCreatedUser, UpdateUserBody, IUserDoc, NewRegisteredUser } from './u
 export const createUser = async (userBody: NewCreatedUser, currentUserId: string | null): Promise<IUserDoc> => {
   // Check if currentUserId is provided and if the user has an admin role
   if (!currentUserId) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'User ID is required');
+    throw new ApiError(httpStatus.FORBIDDEN, 'User ID is required'); 
   }
   const currentUser = await User.findById(currentUserId); // Fetch the current user's details from the database
   if (!currentUser) {
@@ -97,9 +97,43 @@ export const queryUsers = async (filter: Record<string, any>, options: IOptions)
   return users;
 };
 
-export const adminUsers = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
-  const adminFilter = { ...filter, role: 'admin' }; // Ensure role is admin
-  const users = await User.paginate(adminFilter, options);
+// export const adminUsers = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
+//   const adminFilter = { ...filter, role: 'admin' }; // Ensure role is admin
+//   const users = await User.paginate(adminFilter, options);
+//   return users;
+// };
+
+export const adminUsers = async (
+  userId: string,
+  filter: Record<string, any>,
+  options: IOptions
+): Promise<QueryResult> => { 
+  // Fetch the user to determine their role
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  let roleFilter = {};
+
+  if (user.role === 'superuser') {
+    // Superuser: Show all users except 'seller'
+    roleFilter = { role: { $ne: 'seller' } };
+  } else if (user.role === 'admin') {
+    // Admin: Show all users except 'superadmin' and 'seller'
+    roleFilter = { role: { $nin: ['superadmin', 'seller'] } };
+  } else if (user.role === 'viewer') {
+    // Viewer: Show only users with the 'viewer' role
+    roleFilter = { role: 'viewer' };
+  } else {
+    throw new Error('Unauthorized role');
+  }
+
+  // Merge filters
+  const finalFilter = { ...filter, ...roleFilter };
+
+  // Fetch users based on the final filter
+  const users = await User.paginate(finalFilter, options);
   return users;
 };
 
