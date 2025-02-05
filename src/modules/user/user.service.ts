@@ -111,12 +111,12 @@ export const adminUsers = async (
   // Fetch the user to determine their role
   const user = await User.findById(userId);
   if (!user) {
-    throw new Error('User not found');
+    throw new Error('cayleb! User not found');
   }
 
   let roleFilter = {};
 
-  if (user.role === 'superuser') {
+  if (user.role === 'superadmin') {
     // Superuser: Show all users except 'seller'
     roleFilter = { role: { $ne: 'seller' } };
   } else if (user.role === 'admin') {
