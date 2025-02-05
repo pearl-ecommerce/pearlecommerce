@@ -71,7 +71,7 @@ export const getUsers = catchAsync(async (req: Request, res: Response) => {
 
 // Assuming userId is now part of the route parameter.
 export const adminuser = catchAsync(async (req: Request, res: Response) => {
-   const userId = req.params['userId'] as string;  // Accessing userId from the route params
+   const userId = req.query['userId'] as string;  // Accessing userId from the route params
    const filter = pick(req.query, ['name', 'role', 'userId']);  // Filtering query params
    const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);  // Extracting options
    const result = await userService.adminUsers(userId, filter, options);  // Passing the params to the service
