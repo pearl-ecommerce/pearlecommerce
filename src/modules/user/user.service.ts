@@ -44,9 +44,10 @@ export const createUser = async (userBody: NewCreatedUser, currentUserId: string
   if (!currentUser) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
-  if (currentUser.role !== 'admin') {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Only admins can create users');
-  }
+ 
+  if (!['admin', 'superadmin'].includes(currentUser.role)) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Only admins or superadmins can create users');
+}
 
   // Set a default password based on the role
   if (userBody.role === 'admin') {
