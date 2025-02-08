@@ -225,11 +225,12 @@ export const fetchAnalyticsData = catchAsync(async (req: Request, res: Response)
 
 
 export const userfetchAnalyticsData = catchAsync(async (req: Request, res: Response) => {
-  // Extract filters from query parameters
+  // Extract userId and filters from query parameters
   const userId = req.query['userId'] as string;
+  const filters = pick(req.query, ['category', 'date', 'transactionType']);
 
   // Call the service with structured input
-  const result = await userService.overviewsection(userId);
+  const result = await userService.overviewsection(userId, filters);
 
   // Send the result back to the client
   res.status(200).send(result);
@@ -237,36 +238,14 @@ export const userfetchAnalyticsData = catchAsync(async (req: Request, res: Respo
 
 
 
-export const userfetchVisualChart = catchAsync(async (req: Request, res: Response) => {
-  // Extract filters from query parameters
-  const userId = req.query['userId'] as string;
-
-  // Call the service with structured input
-  const result = await userService.getChartData(userId);
-
-  // Send the result back to the client
-  res.status(200).send(result);
-});
 
 // . Insights & Suggestions
 export const userfetchInsights = catchAsync(async (req: Request, res: Response) => {
   // Extract filters from query parameters
   const userId = req.query['userId'] as string;
-   const period = req.query['period'] as string;
-
+const filters = pick(req.query, ['category', 'date', 'transactionType']);
   // Call the service with structured input
-  const result = await userService.getUserAnalytics(userId, period);
-
-  // Send the result back to the client
-  res.status(200).send(result);
-});
-
-export const userfetchCustomization = catchAsync(async (req: Request, res: Response) => {
-  // Extract filters from query parameters
-  const userId = req.query['userId'] as string;
-const userFilter = pick(req.query, ['name', 'role', 'userId']);
-  // Call the service with structured input
-  const result = await userService.getFilteredOrders(userId, userFilter);
+  const result = await userService.getUserAnalytics(userId, filters);
 
   // Send the result back to the client
   res.status(200).send(result);
