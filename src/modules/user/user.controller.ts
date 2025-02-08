@@ -27,19 +27,6 @@ export const createUser = catchAsync(async (req: Request, res: Response) => {
 
   const user = await userService.createUser(req.body,currentUserId);
   const tokens = await tokenService.generateAuthTokens(user);   
-
-  // If the user has a generic password, trigger the forgot password flow
-  if (
-    user.password === 'admin123' || 
-    user.password === 'superadmin123' || 
-    user.password === 'viewer123'
-  ) {
-    
-    // Call forgotPassword to send a reset token for changing the password
-    await emailService.sendResetPasswordEmailCreated(req.body.email,user.password, await tokenService.generateResetPasswordToken(req.body.email));
-  }
-
-  // Define a response object with status and message
   const response = {
     status: true,
     message: 'User registered successfully',
@@ -47,9 +34,9 @@ export const createUser = catchAsync(async (req: Request, res: Response) => {
   };
 
   // Send email notifications
-  await emailService.sendSuccessfulRegistration(req.body.email, tokens.access.token, req.body.firstName);
+  await emailService.sendAdminPassword(req.body.email,user.password);
+  // await emailService.sendSuccessfulRegistration(req.body.email, tokens.access.token, req.body.firstName);
   await emailService.sendAccountCreated(req.body.email, req.body.firstName);
-
   res.status(httpStatus.CREATED).json(response);
 });
 
