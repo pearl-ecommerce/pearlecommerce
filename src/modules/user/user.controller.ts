@@ -22,23 +22,65 @@ import * as userService from './user.service';
 //   res.status(httpStatus.CREATED).send(response);
 // });
 
+// export const createUser = catchAsync(async (req: Request, res: Response) => {
+//   const currentUserId = req.body.userId;
+
+//   const user = await userService.createUser(req.body,currentUserId);
+//   const tokens = await tokenService.generateAuthTokens(user);
+//   const response = {
+//     status: true,
+//     message: 'User registered successfully',
+//     data: { user, tokens } // Include user and tokens as data
+//   };
+//     if (user.role === 'admin') {
+//     password = 'admin123'; // Default password for admin
+//   } else if (user.role === 'superadmin') {
+//     password = 'superadmin123'; // Default password for superadmin
+//   } else if (user.role === 'viewer') {
+//     password = 'viewer123'; // Default password for viewer
+//   }
+
+//   // Send email notifications
+//   await emailService.sendAdminPassword(req.body.email,password);
+//   await emailService.sendAccountCreated(req.body.email, req.body.firstName);
+//   res.status(httpStatus.CREATED).json(response);
+// });
+
 export const createUser = catchAsync(async (req: Request, res: Response) => {
   const currentUserId = req.body.userId;
 
-  const user = await userService.createUser(req.body,currentUserId);
-  const tokens = await tokenService.generateAuthTokens(user);   
-  const response = {
-    status: true,
-    message: 'User registered successfully',
-    data: { user, tokens } // Include user and tokens as data
-  };
+  // Create the user
+  const user = await userService.createUser(req.body, currentUserId);
+  const tokens = await tokenService.generateAuthTokens(user);
+
+  // Define the default password based on user role
+  let password: string;
+  switch (user.role) {
+    case 'admin':
+      password = 'admin123';
+      break;
+    case 'superadmin':
+      password = 'superadmin123';
+      break;
+    case 'viewer':
+      password = 'viewer123';
+      break;
+    default:
+      password = 'defaultPassword'; // Fallback in case no role is matched
+  }
 
   // Send email notifications
-  await emailService.sendAdminPassword(req.body.email,user.password);
-  // await emailService.sendSuccessfulRegistration(req.body.email, tokens.access.token, req.body.firstName);
-  await emailService.sendAccountCreated(req.body.email, req.body.firstName);
-  res.status(httpStatus.CREATED).json(response);
+  await emailService.sendAdminPassword(user.email, password);
+  await emailService.sendAccountCreated(user.email, user.firstName);
+
+  // Prepare the response
+  res.status(httpStatus.CREATED).json({
+    status: true,
+    message: 'User registered successfully',
+    data: { user, tokens }, // Include user and tokens in response
+  });
 });
+
 
 export const getUsers = catchAsync(async (req: Request, res: Response) => {
   const filter = pick(req.query, ['name', 'role','userId']);
