@@ -144,20 +144,19 @@ export const resetPassword = async (resetPasswordToken: any, newPassword: string
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password reset failed');
   }
 };
-
-export const changePassword = async (email: any, newPassword: string): Promise<void> => {
+export const changePassword = async (email: string, newPassword: string): Promise<string> => {
   try {
-    // const resetPasswordTokenDoc = await verifyToken(resetPasswordToken, tokenTypes.RESET_PASSWORD);
-         const user = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
-    // const user = await getUserById(new mongoose.Types.ObjectId(resetPasswordTokenDoc.user));
     if (!user) {
-      throw new Error();
+      throw new Error("User not found");
     }
+
     await updateUserById(user.id, { password: newPassword });
-    
+
+    return "Password changed successfully";
   } catch (error) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Password changed failed');
+    throw new Error(`Error changing password}`);
   }
 };
 

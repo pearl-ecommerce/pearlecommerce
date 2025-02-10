@@ -15,7 +15,7 @@ const allRoles = {
     'become-seller', 'follow', 'unfollow', 'followers', 'userProducts', 'adminlogin',
     'manageCart', 'getCarts', 'removecart', 'managePricing', 'getPricing',
     'manageDiscount', 'getCarts', 'getDiscount', 'addDiscountToUser',
-        'manageBundle', 'getBundles', 'removebundle','allgetBundles','activate','deactivate','fetchAnalyticsData','manageRole','getRole','userfetchCustomization','userfetchInsights','userfetchVisualChart','userfetchAnalyticsData',
+        'manageBundle', 'getBundles', 'removebundle','allgetBundles','activate','deactivate','fetchAnalyticsData','manageRole','getRole','userfetchCustomization','userfetchInsights','userfetchVisualChart','userfetchAnalyticsData','change-passwords'
 
   ],
   seller: ['getProducts', 'searchProducts', 'manageProducts', 'getUsers', 'manageSellers', 'getStores', 'manageSellers', 'manageUsers',
@@ -33,7 +33,7 @@ const allRoles = {
     'become-seller', 'follow', 'unfollow', 'followers', 'userProducts', 'adminlogin',
     'manageCart', 'getCarts', 'removecart', 'managePricing', 'getPricing',
     'manageDiscount', 'getCarts', 'getDiscount', 'addDiscountToUser',
-        'manageBundle', 'getBundles', 'removebundle','allgetBundles','activate','deactivate','fetchAnalyticsData','manageRole','getRole','userfetchCustomization','userfetchInsights','userfetchVisualChart','userfetchAnalyticsData',],
+        'manageBundle', 'getBundles', 'removebundle','allgetBundles','activate','deactivate','fetchAnalyticsData','manageRole','getRole','userfetchCustomization','userfetchInsights','userfetchVisualChart','userfetchAnalyticsData','change-passwords'],
   viewers:[],
 };
 
