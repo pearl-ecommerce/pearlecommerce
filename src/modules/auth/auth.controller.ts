@@ -77,7 +77,8 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const changePassword = catchAsync(async (req: Request, res: Response) => {
-  await authService.changePassword(req.body.password, req.body.email);
+    const { email, password } = req.body;
+  await authService.changePassword(email, password);
   res.status(httpStatus.NO_CONTENT).send();
 });
 

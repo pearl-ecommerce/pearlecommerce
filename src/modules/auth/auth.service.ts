@@ -145,7 +145,7 @@ export const resetPassword = async (resetPasswordToken: any, newPassword: string
   }
 };
 export const changePassword = async (email: string, newPassword: string): Promise<string> => {
-  try {
+  
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -155,9 +155,7 @@ export const changePassword = async (email: string, newPassword: string): Promis
     await updateUserById(user.id, { password: newPassword });
 
     return "Password changed successfully";
-  } catch (error) {
-    throw new Error(`Error changing password}`);
-  }
+ 
 };
 
 /**
