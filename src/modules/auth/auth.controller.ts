@@ -76,6 +76,11 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+export const changePassword = catchAsync(async (req: Request, res: Response) => {
+  await authService.changePassword(req.body.password, req.body.email);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
 export const sendVerificationEmail = catchAsync(async (req: Request, res: Response) => {
   const verifyEmailToken = await tokenService.generateVerifyEmailToken(req.user);
   await emailService.sendVerificationEmail(req.user.email, verifyEmailToken, req.user.firstName);

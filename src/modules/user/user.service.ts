@@ -51,11 +51,11 @@ export const createUser = async (userBody: NewCreatedUser, currentUserId: string
 
   // Set a default password based on the role
   if (userBody.role === 'admin') {
-    userBody.password = 'admin123'; // Default password for admin
+    userBody.password = 'Admin123?'; // Default password for admin
   } else if (userBody.role === 'superadmin') {
-    userBody.password = 'superadmin123'; // Default password for superadmin
+    userBody.password = 'Superadmin123?'; // Default password for superadmin
   } else if (userBody.role === 'viewer') {
-    userBody.password = 'viewer123'; // Default password for viewer
+    userBody.password = 'Viewer123?'; // Default password for viewer
   }
 
   // Check if the email is already taken

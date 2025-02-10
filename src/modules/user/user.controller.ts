@@ -57,13 +57,13 @@ export const createUser = catchAsync(async (req: Request, res: Response) => {
   let password: string;
   switch (user.role) {
     case 'admin':
-      password = 'admin123';
+      password = 'Admin123?';
       break;
     case 'superadmin':
-      password = 'superadmin123';
+      password = 'Superadmin123?';
       break;
     case 'viewer':
-      password = 'viewer123';
+      password = 'Viewer123?';
       break;
     default:
       password = 'defaultPassword'; // Fallback in case no role is matched

@@ -75,9 +75,9 @@ export const loginAdminWithEmailAndPassword = async (email: string, password: st
 
   // Check if the admin password is a default one
   if (
-    password === 'admin123' ||
-    password === 'superadmin123' ||
-    password === 'viewer123'
+    password === 'Admin123?' ||
+    password === 'Superadmin123?' ||
+    password === 'Viewer123?'
   ) {
     throw new ApiError(httpStatus.FORBIDDEN, 'Please change your password');
   }
@@ -142,6 +142,22 @@ export const resetPassword = async (resetPasswordToken: any, newPassword: string
     await Token.deleteMany({ user: user.id, type: tokenTypes.RESET_PASSWORD });
   } catch (error) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password reset failed');
+  }
+};
+
+export const changePassword = async (email: any, newPassword: string): Promise<void> => {
+  try {
+    // const resetPasswordTokenDoc = await verifyToken(resetPasswordToken, tokenTypes.RESET_PASSWORD);
+         const user = await User.findOne({ email });
+
+    // const user = await getUserById(new mongoose.Types.ObjectId(resetPasswordTokenDoc.user));
+    if (!user) {
+      throw new Error();
+    }
+    await updateUserById(user.id, { password: newPassword });
+    
+  } catch (error) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Password changed failed');
   }
 };
 
