@@ -78,9 +78,12 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
 
 export const changePassword = catchAsync(async (req: Request, res: Response) => {
     const { email, password } = req.body;
-  await authService.changePassword(email, password);
-  res.status(httpStatus.NO_CONTENT).send();
+
+    await authService.changePassword(email, password);
+
+    res.status(httpStatus.OK).json({ message: 'Admin password changed successfully.' });
 });
+
 
 export const sendVerificationEmail = catchAsync(async (req: Request, res: Response) => {
   const verifyEmailToken = await tokenService.generateVerifyEmailToken(req.user);
