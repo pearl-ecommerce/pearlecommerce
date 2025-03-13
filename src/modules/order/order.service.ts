@@ -15,35 +15,10 @@ import axios from 'axios'; // You might need to install axios for HTTP requests
 
 const PAYSTACK_SECRET_KEY = 'sk_test_9dfacbeaefe4e9254d1f7ae6ab149bec0270857e'; // Replace with your actual Paystack secret key
 const PAYSTACK_BASE_URL = 'https://api.paystack.co';
+const LOGISTICS_API_URL = 'https://api.terminal.africa/v1/shipping/shipments';
 
-// Function to initiate payment with Paystack
-const paystackInitiatePayment = async (amount: number, email: string) => {
-  try {
-     console.log('amount:', amount);
-    console.log('email:', email);
-    const response = await axios.post(
-      `https://api.paystack.co/transaction/initialize`,
-      {
-        amount: amount * 100, // Paystack expects the amount in kobo
-        email,
-          // callback_url: 'http://localhost:3000/v1/order/verify-payment', // Replace with your callback URL
-        // callback_url: 'www.reselii.com/v1/order/verify-and-create-order',
-                callback_url: 'https://reselli-frontend.vercel.app/success-verification',
-      },
-      {
-        headers: {
-          Authorization: `Bearer sk_test_9dfacbeaefe4e9254d1f7ae6ab149bec0270857e`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Payments initiation failed');
-  }
-};
 
-// Function to verify payment with Paystack
+// Function to verify payment with Paystack and initiate logistics
 export const verifyAndUpdateOrder = async (reference: string) => {
   console.log('reference number', reference);
   try {
@@ -59,11 +34,13 @@ export const verifyAndUpdateOrder = async (reference: string) => {
     if (!status || data.status !== 'success') {
       throw new ApiError(httpStatus.BAD_REQUEST, 'Payment verification failed');
     }
+
     // Step 2: Find the order with the corresponding reference
     const order = await Order.findOne({ reference });
     if (!order) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
     }
+
     // Step 3: Update the order with payment details
     order.paymentStatus = 'completed';
     order.paymentDetails = {
@@ -72,9 +49,28 @@ export const verifyAndUpdateOrder = async (reference: string) => {
       paidAt: data.paid_at,
     };
     await order.save();
+
+    // Step 4: Call the logistics API to handle pickup & delivery
+    const logisticsResponse = await axios.post(`${LOGISTICS_API_URL}/create-shipment`, {
+      orderId: order.id,
+      recipientName: order.customerName,
+      recipientAddress: order.deliveryAddress,
+      recipientPhone: order.customerPhone,
+      packageDetails: order.items, // Assuming items contain details like weight, size
+    });
+
+    if (logisticsResponse.status !== 200) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Logistics initiation failed');
+    }
+
+    // Step 5: Update order with logistics details
+    order.logisticsStatus = 'processing';
+    order.logisticsDetails = logisticsResponse.data;
+    await order.save();
+
     return order;
   } catch (error) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Payment verification failed');
+    throw new ApiError(httpStatus.BAD_REQUEST, error.message || 'Payment verification or logistics initiation failed');
   }
 };
 

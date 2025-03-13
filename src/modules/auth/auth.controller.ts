@@ -9,6 +9,7 @@ import { sendSuccessResponse, sendErrorResponse } from '../utils/response';
 
 
 
+
 export const register = catchAsync(async (req: Request, res: Response) => {
   const user = await userService.registerUser(req.body);
   const tokens = await tokenService.generateAuthTokens(user);
@@ -109,5 +110,20 @@ export const oauthSignin = catchAsync(async (req: Request, res: Response) => {
     sendSuccessResponse(res, httpStatus.OK, "user successfully Signed up", data);
   } catch (error: any) {
     sendErrorResponse(res, error.statusCode, error.message);
+  }
+});
+
+export const verifyUserNIN = catchAsync(async (req: Request, res: Response) => {
+  try {
+    const { nin } = req.body;
+
+    if (!nin) {
+      return sendErrorResponse(res, httpStatus.BAD_REQUEST, "NIN is required");
+    }
+
+    const verificationData = await authService.verifyNIN(nin);
+    return sendSuccessResponse(res, httpStatus.OK, "NIN verified successfully", verificationData);
+  } catch (error: any) {
+    return sendErrorResponse(res, error.statusCode || httpStatus.INTERNAL_SERVER_ERROR, error.message);
   }
 });

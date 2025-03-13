@@ -7,6 +7,7 @@ import { getUserByEmail, updateUserById } from '../user/user.service';
 import { IUserDoc, IUserWithTokens } from '../user/user.interfaces';
 import { generateAuthTokens, verifyToken } from '../token/token.service';
 import User from '../user/user.model';
+import axios from "axios";
 
 
 /**
@@ -150,7 +151,7 @@ export const changePassword = async (email: string, newPassword: string): Promis
 
     if (!user) {
       throw new Error("User not found");
-    }
+    } 
 
     await updateUserById(user.id, { password: newPassword });
 
@@ -177,5 +178,31 @@ export const verifyEmail = async (verifyEmailToken: any): Promise<IUserDoc | nul
     return updatedUser;
   } catch (error) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Email verification failed');
+  }
+};
+export const verifyNIN = async (nin: string) => {
+  try {
+    const response = await axios.post(
+      "https://api.youverify.co/v2/identities/nin/verify",
+      { nin },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: `Bearer ${config.YOUVERIFY_API_KEY}`, // Ensure API key is set in your .env file
+        },
+      }
+    );
+
+    if (response.data?.success) {
+      return response.data.data;
+    } else {
+      throw new ApiError(httpStatus.BAD_REQUEST, response.data?.message || "NIN verification failed");
+    }
+  } catch (error: any) {
+    console.error("NIN Verification Error:", error?.response?.data || error.message);
+    throw new ApiError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      error?.response?.data?.message || "Error verifying NIN"
+    );
   }
 };

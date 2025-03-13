@@ -13,7 +13,7 @@ import pricingRoute from './pricing.route';
 import discountRoute from './discount.route';
 import analyticsRoute from './analytics.route';
 import roleRoute from './role.route';
-
+import logisticsRoute from './logistics.route';
 
 
 
@@ -82,6 +82,10 @@ const defaultIRoute: IRoute[] = [
    {
     path: '/analytics',
     route: analyticsRoute,
+  },
+   {
+    path: '/logistics',
+    route: logisticsRoute,
   }
 
 ];
