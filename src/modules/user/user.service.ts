@@ -353,6 +353,7 @@ export const oauthSignup = async (userReq: any) => {
 
 }
 
+// backend code
 export const fetchAnalyticsData = async (
   filter: Record<string, any>
 ): Promise<{
@@ -412,6 +413,8 @@ export const fetchAnalyticsData = async (
     throw new Error('Unable to fetch analytics data.');
   }
 };
+// end backend code 
+
 interface ChartData {
   barChart: Array<{ period: string; itemsBought: number; itemsSold: number }>;
   pieChart: Array<{ category: string; spending: number }>;
@@ -562,6 +565,8 @@ const parseDate = (dateStr?: string): Date | undefined => {
 };
 
 
+// bar chart for sold and brought.
+
 export const overviewsection = async (
   customerId: string,
   filters: { startDate?: string; endDate?: string }
@@ -570,84 +575,78 @@ export const overviewsection = async (
     // Validate customer existence
     const customer = await User.findById(customerId);
     if (!customer) {
-      throw new Error('Customer not found');
+      throw new Error("Customer not found");
     }
 
-    // Function to convert dd/mm/yyyy → yyyy-mm-dd
-const parseDate = (dateStr?: string): Date | undefined => {
-  if (!dateStr) return undefined;
+    const currentYear = new Date().getFullYear();
 
-  const parts = dateStr.split("/");
-  if (parts.length !== 3) return undefined; // Ensure correct format
+    // Function to parse date from dd/mm/yyyy → yyyy-mm-dd
+    const parseDate = (dateStr?: string): Date | undefined => {
+      if (!dateStr) return undefined;
 
-  const day = Number(parts[0]);
-  const month = Number(parts[1]);
-  const year = Number(parts[2]);
+      const parts = dateStr.split("/");
+      if (parts.length !== 3) return undefined; // Ensure correct format
 
-  if (isNaN(day) || isNaN(month) || isNaN(year)) return undefined; // Ensure valid numbers
+      const day = Number(parts[0]);
+      const month = Number(parts[1]);
+      const year = Number(parts[2]);
 
-  return new Date(year, month - 1, day); // Month is zero-based
-};
+      if (isNaN(day) || isNaN(month) || isNaN(year)) return undefined; // Ensure valid numbers
 
-    // Parse date filters
-    const startDate = parseDate(filters.startDate) || new Date(0);
-    const endDate = parseDate(filters.endDate) || new Date();
+      return new Date(year, month - 1, day); // Month is zero-based
+    };
 
-    // Bar Chart: Items Sold vs. Items Bought Over Time
-    const barChart = await Order.aggregate([
+    // Determine date range
+    const startDate = parseDate(filters.startDate) || new Date(currentYear, 0, 1); // Jan 1st
+    let endDate = parseDate(filters.endDate) || new Date(currentYear, 11, 31, 23, 59, 59); // Dec 31st
+
+    if (filters.endDate) {
+      const parsedEndDate = parseDate(filters.endDate);
+      if (parsedEndDate) {
+        endDate = new Date(parsedEndDate.getFullYear(), parsedEndDate.getMonth() + 1, 0, 23, 59, 59);
+      }
+    }
+
+    // Create a map of all months with zero values
+    const allMonths = Array.from({ length: 12 }, (_, i) => ({
+      period: `${currentYear}-${(i + 1).toString().padStart(2, "0")}`,
+      itemsBought: 0,
+      itemsSold: 0,
+    }));
+
+    // Fetch transaction data from database
+    const transactions = await Order.aggregate([
       { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
       {
         $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
           itemsBought: { $sum: { $cond: [{ $eq: ["$userId", customerId] }, 1, 0] } },
-          itemsSold: { $sum: { $cond: [{ $eq: ["$sellerId", customerId] }, 1, 0] } }
-        }
+          itemsSold: { $sum: { $cond: [{ $eq: ["$sellerId", customerId] }, 1, 0] } },
+        },
       },
-      { $sort: { _id: 1 } }
-    ]).then(data => data.map(d => ({ period: d._id, itemsBought: d.itemsBought, itemsSold: d.itemsSold })));
+      { $sort: { _id: 1 } },
+    ]);
 
-    // Line Chart: Revenue Growth Over Time
-    const lineChart = await Order.aggregate([
-      { $match: { sellerId: customerId, createdAt: { $gte: startDate, $lte: endDate } } },
-      {
-        $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-          revenue: { $sum: "$amount" }
-        }
-      },
-      { $sort: { _id: 1 } }
-    ]).then(data => data.map(d => ({ period: d._id, revenue: d.revenue })));
+    // Merge the data
+    const barChart = allMonths.map((month) => {
+      const data = transactions.find((t) => t._id === month.period);
+      return {
+        period: month.period,
+        itemsBought: data ? data.itemsBought : 0,
+        itemsSold: data ? data.itemsSold : 0,
+      };
+    });
 
-    // Pie Chart: Sales Breakdown by Category
-    const pieChart = await Order.aggregate([
-      { $match: { sellerId: customerId, createdAt: { $gte: startDate, $lte: endDate } } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "productId",
-          foreignField: "_id",
-          as: "product"
-        }
-      },
-      { $unwind: "$product" },
-      {
-        $group: {
-          _id: "$product.category",
-          spending: { $sum: "$amount" }
-        }
-      }
-    ]).then(data => data.map(d => ({ category: d._id, spending: d.spending })));
-
-   return { 
-  barChart, 
-  lineChart, 
-  pieChart,
-  bestSellingCategory: null, // Placeholder, replace with actual data if available
-  mostBoughtItems: [], // Placeholder, replace with actual data if available
-  trendAnalysis: null // Placeholder, replace with actual data if available
-};
-
+    return {
+      barChart,
+      lineChart: [], // Add similar logic for revenue if needed
+      pieChart: [], // Add category breakdown if needed
+      bestSellingCategory: null,
+      mostBoughtItems: [],
+      trendAnalysis: null,
+    };
   } catch (error) {
-    throw new Error('Unable to fetch analytics data.');
+    throw new Error("Unable to fetch analytics data.");
   }
 };
+

@@ -24,10 +24,10 @@ export const verifyAndCreateOrder = catchAsync(async (req: Request, res: Respons
   if (!reference) {
   return res.status(httpStatus.BAD_REQUEST).send({ message: 'Reference is required' });
   }
-  const updatedOrder = await orderService.verifyAndUpdateOrder(reference as string);
+ // const updatedOrder = await orderService.verifyAndUpdateOrder(reference as string);
   return res.status(httpStatus.OK).json({
     message: 'Payment verified and order updated successfully',
-    order: updatedOrder,
+    // order: updatedOrder,
   });
 });
 

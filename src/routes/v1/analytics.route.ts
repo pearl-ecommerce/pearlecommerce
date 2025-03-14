@@ -11,7 +11,7 @@ const router: Router = express.Router();
 
 router.post('/fetchAnalyticsData', auth(), userController.fetchAnalyticsData);
 
-router.post('/userfetchAnalyticsData', auth(), userController.userfetchAnalyticsData);
+router.post('/userfetchAnalyticsData', userController.userfetchAnalyticsData);
 
 router.post('/userfetchInsights', auth(), userController.userfetchInsights);
 

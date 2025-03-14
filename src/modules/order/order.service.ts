@@ -6,73 +6,74 @@ import { IOptions, QueryResult } from '../paginate/paginate';
 import { IOrderDoc, NewOrder, UpdateOrderBody } from './order.interfaces';
 import User from '../user/user.model';
 import Pricing from '../pricing/pricing.model';
+// import * as paymentService from '../payment/payment.service';
 
 // import Product from '../product/product.model';
 
-import axios from 'axios'; // You might need to install axios for HTTP requests
+// import axios from 'axios'; // You might need to install axios for HTTP requests
 // type OrderType = typeof Order & Document;
 
 
-const PAYSTACK_SECRET_KEY = 'sk_test_9dfacbeaefe4e9254d1f7ae6ab149bec0270857e'; // Replace with your actual Paystack secret key
-const PAYSTACK_BASE_URL = 'https://api.paystack.co';
-const LOGISTICS_API_URL = 'https://api.terminal.africa/v1/shipping/shipments';
+// const PAYSTACK_SECRET_KEY = 'sk_test_9dfacbeaefe4e9254d1f7ae6ab149bec0270857e'; // Replace with your actual Paystack secret key
+// const PAYSTACK_BASE_URL = 'https://api.paystack.co';
+// const LOGISTICS_API_URL = 'https://api.terminal.africa/v1/shipping/shipments';
 
 
 // Function to verify payment with Paystack and initiate logistics
-export const verifyAndUpdateOrder = async (reference: string) => {
-  console.log('reference number', reference);
-  try {
-    // Step 1: Verify payment with Paystack
-    const response = await axios.get(`${PAYSTACK_BASE_URL}/transaction/verify/${reference}`, {
-      headers: {
-        Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-      },
-    });
+// export const verifyAndUpdateOrder = async (reference: string) => {
+//   console.log('reference number', reference);
+//   try {
+//     // Step 1: Verify payment with Paystack
+//     const response = await axios.get(`${PAYSTACK_BASE_URL}/transaction/verify/${reference}`, {
+//       headers: {
+//         Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+//       },
+//     });
 
-    const { status, data } = response.data;
+//     const { status, data } = response.data;
 
-    if (!status || data.status !== 'success') {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Payment verification failed');
-    }
+//     if (!status || data.status !== 'success') {
+//       throw new ApiError(httpStatus.BAD_REQUEST, 'Payment verification failed');
+//     }
 
-    // Step 2: Find the order with the corresponding reference
-    const order = await Order.findOne({ reference });
-    if (!order) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
-    }
+//     // Step 2: Find the order with the corresponding reference
+//     const order = await Order.findOne({ reference });
+//     if (!order) {
+//       throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
+//     }
 
-    // Step 3: Update the order with payment details
-    order.paymentStatus = 'completed';
-    order.paymentDetails = {
-      transactionId: data.id,
-      amount: data.amount / 100, // Convert from kobo to NGN
-      paidAt: data.paid_at,
-    };
-    await order.save();
+//     // Step 3: Update the order with payment details
+//     order.paymentStatus = 'completed';
+//     order.paymentDetails = {
+//       transactionId: data.id,
+//       amount: data.amount / 100, // Convert from kobo to NGN
+//       paidAt: data.paid_at,
+//     };
+//     await order.save();
 
-    // Step 4: Call the logistics API to handle pickup & delivery
-    const logisticsResponse = await axios.post(`${LOGISTICS_API_URL}/create-shipment`, {
-      orderId: order.id,
-      recipientName: order.customerName,
-      recipientAddress: order.deliveryAddress,
-      recipientPhone: order.customerPhone,
-      packageDetails: order.items, // Assuming items contain details like weight, size
-    });
+//     // Step 4: Call the logistics API to handle pickup & delivery
+//     // const logisticsResponse = await axios.post(`${LOGISTICS_API_URL}/create-shipment`, {
+//     //   orderId: order.id,
+//     //   recipientName: order.customerName,
+//     //   recipientAddress: order.deliveryAddress,
+//     //   recipientPhone: order.customerPhone,
+//     //   packageDetails: order.items, // Assuming items contain details like weight, size
+//     // });
 
-    if (logisticsResponse.status !== 200) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Logistics initiation failed');
-    }
+//     // if (logisticsResponse.status !== 200) {
+//     //   throw new ApiError(httpStatus.BAD_REQUEST, 'Logistics initiation failed');
+//     // }
 
-    // Step 5: Update order with logistics details
-    order.logisticsStatus = 'processing';
-    order.logisticsDetails = logisticsResponse.data;
-    await order.save();
+//     // // Step 5: Update order with logistics details
+//     // order.logisticsStatus = 'processing';
+//     // order.logisticsDetails = logisticsResponse.data;
+//     await order.save();
 
-    return order;
-  } catch (error) {
-    throw new ApiError(httpStatus.BAD_REQUEST, error.message || 'Payment verification or logistics initiation failed');
-  }
-};
+//     return order;
+//   } catch (error) {
+
+//   }
+// };
 
 // export const createOrder = async (orderBody: NewOrder): Promise<any> => {
 //   const { amount, email } = orderBody;
@@ -107,7 +108,8 @@ export const verifyAndUpdateOrder = async (reference: string) => {
 // };
 
 export const createOrder = async (orderBody: NewOrder): Promise<any> => {
-  const { amount, email } = orderBody;
+  // const { amount, email } = orderBody;
+    const { amount, email } = orderBody;
 
   // Step 1: Retrieve the price (percentage) from the Pricing table
   const pricing = await Pricing.findOne(); // Update this query to get the specific pricing if needed
@@ -129,26 +131,28 @@ export const createOrder = async (orderBody: NewOrder): Promise<any> => {
     revenue,
     amount: finalAmount,
     profit,
+    email,
   });
 
   try {
     // Step 4: Initiate payment with Paystack
-    const paymentInitiation = await paystackInitiatePayment(amount, email);
+    // const paymentInitiation = await paymentService.paystackInitiatePayment(amount, email);
+   
 
-    if (!paymentInitiation?.data?.reference || !paymentInitiation?.data?.authorization_url) {
-      throw new Error('Failed to initiate payment');
-    }
+    // if (!paymentInitiation?.data?.reference || !paymentInitiation?.data?.authorization_url) {
+    //   throw new Error('Failed to initiate payment');
+    // }
 
-    // Step 5: Update the order with the payment reference and URL
-    newOrder.reference = paymentInitiation.data.reference;
-    await newOrder.save();
+    // // Step 5: Update the order with the payment reference and URL
+    // newOrder.reference = paymentInitiation.data.reference;
+    // await newOrder.save();
 
-    // Step 6: Return the order ID and payment URL
-    return {
-      orderId: newOrder.id,
-      paymentUrl: paymentInitiation.data.authorization_url,
-      message: 'Payment initiated successfully',
-    };
+    // // Step 6: Return the order ID and payment URL
+    // return {
+    //   orderId: newOrder.id,
+    //   paymentUrl: paymentInitiation.data.authorization_url,
+    //   message: 'Payment initiated successfully',
+    // };
   } catch (error) {
     // If payment initiation fails, remove the created order
     await Order.findByIdAndDelete(newOrder.id);
