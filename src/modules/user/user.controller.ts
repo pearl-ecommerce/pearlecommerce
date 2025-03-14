@@ -227,23 +227,20 @@ export const fetchAnalyticsData = catchAsync(async (req: Request, res: Response)
 export const userfetchAnalyticsData = catchAsync(async (req: Request, res: Response) => {
   // Extract userId and filters from query parameters
   const userId = req.query['userId'] as string;
-  const filters = pick(req.query, ['category', 'date', 'transactionType']);
+  const filters = pick(req.query, ['category', 'startDate', 'endDate', 'transactionType']);
 
-  // Call the service with structured input
   const result = await userService.overviewsection(userId, filters);
-
   // Send the result back to the client
-  res.status(200).send(result);
+  res.status(200).send(result); 
 });
-
-
 
 
 // . Insights & Suggestions
 export const userfetchInsights = catchAsync(async (req: Request, res: Response) => {
-  // Extract filters from query parameters
+  // Extract userId and filters from query parameters
   const userId = req.query['userId'] as string;
-const filters = pick(req.query, ['category', 'date', 'transactionType']);
+  const filters = pick(req.query, ['category', 'startDate', 'endDate', 'transactionType']);
+
   // Call the service with structured input
   const result = await userService.getUserAnalytics(userId, filters);
 
