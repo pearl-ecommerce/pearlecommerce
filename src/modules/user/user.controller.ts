@@ -227,7 +227,7 @@ export const fetchAnalyticsData = catchAsync(async (req: Request, res: Response)
 export const userfetchAnalyticsData = catchAsync(async (req: Request, res: Response) => {
   // Extract userId and filters from query parameters
   const userId = req.query['userId'] as string;
-  const filters = pick(req.query, ['category', 'startDate', 'endDate', 'transactionType']);
+  const filters = pick(req.query, ['category', 'year', 'transactionType']);
 
   const result = await userService.overviewsection(userId, filters);
   // Send the result back to the client

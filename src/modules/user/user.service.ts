@@ -7,6 +7,7 @@ import Product from '../product/product.model';
 import ApiError from '../errors/ApiError';
 import { IOptions, QueryResult } from '../paginate/paginate';
 import { NewCreatedUser, UpdateUserBody, IUserDoc, NewRegisteredUser } from './user.interfaces';
+// import { number } from 'joi';
 
 /**
  * Create a user
@@ -422,6 +423,7 @@ interface ChartData {
   bestSellingCategory: { category: string; totalQuantity: number; totalAmount: number } | null;
   mostBoughtItems: { productId: string; totalQuantity: number; totalAmount: number }[];
   trendAnalysis: { totalSpending: number; trend: string } | null;
+  year:number;
 }
 
 // not sure it working yet 
@@ -558,6 +560,7 @@ const parseDate = (dateStr?: string): Date | undefined => {
     bestSellingCategory,
     mostBoughtItems,
     trendAnalysis,
+    year: startDate.getFullYear(),
     barChart: [],
     pieChart: [],
     lineChart: [],
@@ -566,10 +569,9 @@ const parseDate = (dateStr?: string): Date | undefined => {
 
 
 // bar chart for sold and brought.
-
 export const overviewsection = async (
   customerId: string,
-  filters: { startDate?: string; endDate?: string }
+  year: number
 ): Promise<ChartData> => {
   try {
     // Validate customer existence
@@ -578,48 +580,29 @@ export const overviewsection = async (
       throw new Error("Customer not found");
     }
 
-    const currentYear = new Date().getFullYear();
+    // Define month names
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
 
-    // Function to parse date from dd/mm/yyyy → yyyy-mm-dd
-    const parseDate = (dateStr?: string): Date | undefined => {
-      if (!dateStr) return undefined;
+    // Start and end dates for the given year
+    const startDate = new Date(year, 0, 1); // January 1st
+    const endDate = new Date(year, 11, 31, 23, 59, 59); // December 31st
 
-      const parts = dateStr.split("/");
-      if (parts.length !== 3) return undefined; // Ensure correct format
-
-      const day = Number(parts[0]);
-      const month = Number(parts[1]);
-      const year = Number(parts[2]);
-
-      if (isNaN(day) || isNaN(month) || isNaN(year)) return undefined; // Ensure valid numbers
-
-      return new Date(year, month - 1, day); // Month is zero-based
-    };
-
-    // Determine date range
-    const startDate = parseDate(filters.startDate) || new Date(currentYear, 0, 1); // Jan 1st
-    let endDate = parseDate(filters.endDate) || new Date(currentYear, 11, 31, 23, 59, 59); // Dec 31st
-
-    if (filters.endDate) {
-      const parsedEndDate = parseDate(filters.endDate);
-      if (parsedEndDate) {
-        endDate = new Date(parsedEndDate.getFullYear(), parsedEndDate.getMonth() + 1, 0, 23, 59, 59);
-      }
-    }
-
-    // Create a map of all months with zero values
-    const allMonths = Array.from({ length: 12 }, (_, i) => ({
-      period: `${currentYear}-${(i + 1).toString().padStart(2, "0")}`,
+    // Initialize default data for all months
+    const allMonths = monthNames.map((month) => ({
+      period: month,
       itemsBought: 0,
       itemsSold: 0,
     }));
 
-    // Fetch transaction data from database
+    // Fetch transaction data from the database
     const transactions = await Order.aggregate([
       { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
       {
         $group: {
-          _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
+          _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } }, // YYYY-MM format
           itemsBought: { $sum: { $cond: [{ $eq: ["$userId", customerId] }, 1, 0] } },
           itemsSold: { $sum: { $cond: [{ $eq: ["$sellerId", customerId] }, 1, 0] } },
         },
@@ -628,25 +611,29 @@ export const overviewsection = async (
     ]);
 
     // Merge the data
-    const barChart = allMonths.map((month) => {
-      const data = transactions.find((t) => t._id === month.period);
+    const barChart = allMonths.map((month, index) => {
+      const monthNumber = (index + 1).toString().padStart(2, "0"); // Convert to "01"-"12"
+      const data = transactions.find((t) => t._id.endsWith(`-${monthNumber}`)); // Match month part
       return {
-        period: month.period,
+        period: month.period, // Extracts the string month name
+        year: year, // Adds the year
         itemsBought: data ? data.itemsBought : 0,
         itemsSold: data ? data.itemsSold : 0,
       };
     });
 
     return {
+      year, // Include the year at the root level
       barChart,
-      lineChart: [], // Add similar logic for revenue if needed
-      pieChart: [], // Add category breakdown if needed
+      lineChart: [],
+      pieChart: [],
       bestSellingCategory: null,
       mostBoughtItems: [],
       trendAnalysis: null,
     };
   } catch (error) {
-    throw new Error("Unable to fetch analytics data.");
+    console.error("Error fetching analytics datas:", error);
+    throw new Error("Unable to fetch analytics datas.");
   }
 };
 
