@@ -13,11 +13,15 @@ export const addItem = async (userId: string, productId: string, quantity: numbe
   }
   // Step 2: Calculate the total price
   const price = product.price;
-  const imageUrl = product.imageUrl[0];
+  const imageUrl = product.imageUrl[0]; 
   const totalPrice = price * quantity;
   const sellerId = product.userId;
   const description = product.description;
   const name = product.name;
+  const category = product.category;
+  const subCategory = product.subCategory;
+  const subsubcategory = product.subsubcategory;
+  
 
   const existingBundle = await Bundle.findOne({ userId, productId });
 
@@ -38,10 +42,14 @@ export const addItem = async (userId: string, productId: string, quantity: numbe
       imageUrl, 
       sellerId,
       description,
-      name
+      name,
+      category,
+      subCategory,
+      subsubcategory
     });
     return newBundle;
   }
+
 };
 
 // Get bundle by bundleID

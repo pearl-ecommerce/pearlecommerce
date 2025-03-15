@@ -414,160 +414,119 @@ export const fetchAnalyticsData = async (
     throw new Error('Unable to fetch analytics data.');
   }
 };
-// end backend code 
+// end backend code
+
+interface CategoryData {
+  category: string;
+  percentage: number;
+}
 
 interface ChartData {
   barChart: Array<{ period: string; itemsBought: number; itemsSold: number }>;
   pieChart: Array<{ category: string; spending: number }>;
-  lineChart: Array<{ period: string; revenue: number }>;
-  bestSellingCategory: { category: string; totalQuantity: number; totalAmount: number } | null;
-  mostBoughtItems: { productId: string; totalQuantity: number; totalAmount: number }[];
-  trendAnalysis: { totalSpending: number; trend: string } | null;
+  soldByUser: CategoryData[];
+  boughtByUser: CategoryData[];
   year:number;
 }
-
-// not sure it working yet 
 export const getUserAnalytics = async (
   userId: string,
-  period: string,
   filters?: { startDate?: string; endDate?: string }
 ): Promise<ChartData> => {
-  if (!userId || !period) {
-    throw new Error('Invalid input parameters');
+  if (!userId) {
+    throw new Error('User ID is required');
   }
 
-  // Helper function to parse dd/mm/yyyy → Date
-const parseDate = (dateStr?: string): Date | undefined => {
-  if (!dateStr) return undefined;
-
-  const parts = dateStr.split("/");
-  if (parts.length !== 3) return undefined; // Ensure correct format
-
-  const day = Number(parts[0]);
-  const month = Number(parts[1]);
-  const year = Number(parts[2]);
-
-  if (isNaN(day) || isNaN(month) || isNaN(year)) return undefined; // Ensure valid numbers
-
-  return new Date(year, month - 1, day); // Month is zero-based
-};
-
-
-
-  const currentDate = new Date();
-  let startDate: Date;
-  let endDate: Date = new Date(); // Default to today
-
-  if (filters?.startDate && filters?.endDate) {
-    startDate = parseDate(filters.startDate) || new Date(0);
-    endDate = parseDate(filters.endDate) || new Date();
-  } else {
-    if (period === 'monthly') {
-      startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-    } else if (period === 'weekly') {
-      const weekStart = currentDate.getDate() - currentDate.getDay();
-      startDate = new Date(currentDate.setDate(weekStart));
-    } else {
-      throw new Error('Invalid period');
-    }
-  }
-
-  // Helper function to get Best Selling Category
-  const getBestSellingCategory = async () => {
-    try {
-      const result = await Order.aggregate([
-        { $match: { userId, createdAt: { $gte: startDate, $lte: endDate } } },
-        { $unwind: '$items' },
-        {
-          $group: {
-            _id: '$items.category',
-            totalQuantity: { $sum: '$items.quantity' },
-            totalAmount: { $sum: { $multiply: ['$items.quantity', '$items.amount'] } },
-          },
-        },
-        { $sort: { totalQuantity: -1 } },
-        { $limit: 1 },
-      ]);
-      return result[0]
-        ? { category: result[0]._id, totalQuantity: result[0].totalQuantity, totalAmount: result[0].totalAmount }
-        : null;
-    } catch (error) {
-      console.error('Error fetching best selling category:', error);
-      throw error;
-    }
+  // Helper function to parse "YYYY-MM-DD" → Date
+  const parseDate = (dateStr?: string): Date | undefined => {
+    return dateStr ? new Date(dateStr) : undefined;
   };
 
-  // Helper function to get Most Bought Items
-  const getMostBoughtItems = async () => {
-    try {
-      const result = await Order.aggregate([
-        { $match: { userId, createdAt: { $gte: startDate, $lte: endDate } } },
-        { $unwind: '$items' },
-        {
-          $group: {
-            _id: '$items.productId',
-            totalQuantity: { $sum: '$items.quantity' },
-            totalAmount: { $sum: { $multiply: ['$items.quantity', '$items.amount'] } },
-          },
+  const endDate = parseDate(filters?.endDate) || new Date(); // Default: Today
+  const startDate = parseDate(filters?.startDate) || new Date(new Date().setDate(endDate.getDate() - 30)); // Default: Last 30 days
+  const year = startDate.getFullYear(); // Extract year from startDate
+
+  // Function to calculate category percentages
+  const calculateCategoryPercentages = async (matchCondition: object) => {
+    const categoryStats = await Order.aggregate([
+      { $match: matchCondition },
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: '$items.category',
+          totalQuantity: { $sum: '$items.quantity' },
         },
-        { $sort: { totalQuantity: -1 } },
-        { $limit: 5 },
-      ]);
-      return result.map(item => ({
-        productId: item._id,
-        totalQuantity: item.totalQuantity,
-        totalAmount: item.totalAmount,
-      }));
-    } catch (error) {
-      console.error('Error fetching most bought items:', error);
-      throw error;
-    }
+      },
+      { $sort: { totalQuantity: -1 } },
+    ]);
+
+    const totalItems = categoryStats.reduce((sum, item) => sum + item.totalQuantity, 0);
+
+    return categoryStats.map(item => ({
+      category: item._id,
+      percentage: totalItems > 0 ? Math.round((item.totalQuantity / totalItems) * 100) : 0,
+    }));
   };
 
-  // Helper function to get Trend Analysis
-  const getTrendAnalysis = async () => {
-    try {
-      const result = await Order.aggregate([
-        { $match: { userId, createdAt: { $gte: startDate, $lte: endDate } } },
-        {
-          $group: {
-            _id: null,
-            totalSpending: { $sum: '$amount' },
-          },
+  // Function to calculate spending per category for Pie Chart
+  const calculateSpendingPerCategory = async (matchCondition: object) => {
+    const spendingStats = await Order.aggregate([
+      { $match: matchCondition },
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: '$items.category',
+          totalSpent: { $sum: { $multiply: ['$items.quantity', '$items.price'] } },
         },
-      ]);
+      },
+      { $sort: { totalSpent: -1 } },
+    ]);
 
-      return result[0]
-        ? {
-            totalSpending: result[0].totalSpending,
-            trend: result[0].totalSpending > 0 ? 'Spending' : 'No Spending',
-          }
-        : null;
-    } catch (error) {
-      console.error('Error fetching trend analysis:', error);
-      throw error;
-    }
+    return spendingStats.map(item => ({
+      category: item._id,
+      spending: item.totalSpent,
+    }));
   };
 
-  // Fetch the analytics data
-  const [bestSellingCategory, mostBoughtItems, trendAnalysis] = await Promise.all([
-    getBestSellingCategory(),
-    getMostBoughtItems(),
-    getTrendAnalysis(),
+  // Function to calculate bar chart data per period
+  const calculateBarChartData = async () => {
+    const barChartData = await Order.aggregate([
+      {
+        $match: {
+          $or: [{ sellerId: userId }, { userId: userId }],
+          createdAt: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m', date: '$createdAt' } }, // Group by Year-Month
+          itemsBought: {
+            $sum: { $cond: [{ $eq: ['$userId', userId] }, { $size: '$items' }, 0] },
+          },
+          itemsSold: {
+            $sum: { $cond: [{ $eq: ['$sellerId', userId] }, { $size: '$items' }, 0] },
+          },
+        },
+      },
+      { $sort: { _id: 1 } }, // Sort by period
+    ]);
+
+    return barChartData.map(item => ({
+      period: item._id,
+      itemsBought: item.itemsBought,
+      itemsSold: item.itemsSold,
+    }));
+  };
+
+  // Fetch Data
+  const [soldByUser, boughtByUser, pieChart, barChart] = await Promise.all([
+    calculateCategoryPercentages({ sellerId: userId, createdAt: { $gte: startDate, $lte: endDate } }),
+    calculateCategoryPercentages({ userId: userId, createdAt: { $gte: startDate, $lte: endDate } }),
+    calculateSpendingPerCategory({ userId: userId, createdAt: { $gte: startDate, $lte: endDate } }),
+    calculateBarChartData(),
   ]);
 
-  return {
-    bestSellingCategory,
-    mostBoughtItems,
-    trendAnalysis,
-    year: startDate.getFullYear(),
-    barChart: [],
-    pieChart: [],
-    lineChart: [],
-  };
+  return { soldByUser, boughtByUser, pieChart, barChart, year };
 };
-
-
 // bar chart for sold and brought.
 export const overviewsection = async (
   customerId: string,
@@ -625,11 +584,10 @@ export const overviewsection = async (
     return {
       year, // Include the year at the root level
       barChart,
-      lineChart: [],
       pieChart: [],
-      bestSellingCategory: null,
-      mostBoughtItems: [],
-      trendAnalysis: null,
+       soldByUser: [],
+  boughtByUser: [],
+ 
     };
   } catch (error) {
     console.error("Error fetching analytics datas:", error);

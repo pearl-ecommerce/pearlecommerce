@@ -36,9 +36,14 @@ const orderSchema = new Schema<IOrderDoc>(
           min: 1,
         },
         category: {
-      type: String,
-      
-    },
+          type: String,      
+        },
+         subCategory: {
+          type: String,      
+        },
+          subsubcategory: {
+          type: String,      
+        },
         description: {
       type: String,
     },

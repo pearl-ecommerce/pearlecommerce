@@ -48,6 +48,14 @@ const bundleSchema = new Schema<IBundleDoc>(
       type: String,
       required: true,
     },
+        subCategory: {
+      type: String,
+      required: true,
+    },
+          subsubcategory: {
+      type: String,
+      required: true,
+    },
     size: {
       type: String,
       default: null,
